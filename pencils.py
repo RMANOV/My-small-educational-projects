@@ -1,0 +1,6 @@
+print ("How many pencils would you like to use: ")
+pencils = int(input())
+print ("Who will be the first (John, Jack): ")
+names= str(input())
+print(pencils * "|")
+print(names + " is going to be the first")
