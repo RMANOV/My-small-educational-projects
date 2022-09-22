@@ -1,5 +1,10 @@
 {
-	"folders": [],
+	"folders": [
+		{
+			"name": "RMANOV",
+			"path": "../Programming Fundamentals Python 09.2022/RMANOV"
+		}
+	],
 	"settings": {
 		"files.autoSave": "afterDelay",
 		"editor.tabCompletion": "on",
