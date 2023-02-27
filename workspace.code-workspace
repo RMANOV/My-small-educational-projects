@@ -20,5 +20,11 @@
 				"type": "node-terminal"
 			}
 		]
+	},
+	"extensions": {
+		"recommendations": [
+			"github.copilot",
+			"tabnine.tabnine-vscode"
+		]
 	}
 }
