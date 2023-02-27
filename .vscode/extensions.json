@@ -1,5 +1,7 @@
 {
     "recommendations": [
-        "GitHub.copilot-nightly"
+        "github.copilot-nightly",
+        "github.copilot",
+        "tabnine.tabnine-vscode"
     ]
 }
