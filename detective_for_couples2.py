@@ -2,31 +2,40 @@ import datetime
 from collections import defaultdict
 import pandas as pd
 
+
 def detective(user):
     LATENCY_MINUTES = 7
     # Read data from file and convert to dictionary
     # def read_excel_data(C / User/r.manov/Desktop/data.xlsx):
     #     df = pd.read_excel(C/User/r.manov/Desktop/data.xlsx)
     #         return df.values.tolist()
-    
 
-
-    
     with open("C:/Users/r.manov/Desktop/Data.txt", "r") as f:
         # ignore only first row - header
         # data = f.readlines()[1:]
-        data = [line.strip('\t').split('\t') for line in f.readlines()]
+        data = [line.strip("\t").split("\t") for line in f.readlines()]
         data = [
             {
                 k: v
                 for k, v in zip(
-                    ["ip", "device_name", "mac", "brand", "user", "first", "last", "count", "active"], row
+                    [
+                        "ip",
+                        "device_name",
+                        "mac",
+                        "brand",
+                        "user",
+                        "first",
+                        "last",
+                        "count",
+                        "active",
+                    ],
+                    row,
                 )
             }
             for row in data
         ]
         for i in data:
-            i['first'] = datetime.datetime.strptime(i['first'], "%d.%m.%Y %H:%M:%S")
+            i["first"] = datetime.datetime.strptime(i["first"], "%d.%m.%Y %H:%M:%S")
             # convert the first date to datetime object
             # i[f"first"] = datetime.datetime.strptime(i[f"first"], "%d.%m.%Y %H:%M:%S")
             i["last"] = datetime.datetime.strptime(i["last"], "%d.%m.%Y %H:%M:%S")
@@ -101,6 +110,7 @@ def main():
     print(*together, sep="\n")
     # Print the number of times the devices are connected and disconnected together
     print(len(together))
+
 
 if __name__ == "__main__":
     main()
