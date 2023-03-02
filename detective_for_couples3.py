@@ -2,26 +2,91 @@ import datetime
 from collections import defaultdict
 
 
+import logging
+import datetime
+
 def read_data(file_path):
     data = []
     with open(file_path, "r") as f:
         device = {}
         for line in f:
-            line = line.strip()
-            if line.startswith("==="):
+            # strip any whitespace from the line
+            line = line.strip(' ')
+            # skip empty lines
+            if not line:
+                continue
+            # skip lines starts with '==='
+            if line.startswith(" ==="):
+                # check if we have a device in the device dict
                 if device:
+                    # add the device to the list and reset the device dict
                     data.append(device)
                     device = {}
-            elif line:
-                key, value = line.split(":", 1)
-                device[key.strip()] = value.strip()
-        if device:
-            data.append(device)
-    for row in data:
-        row["first"] = datetime.datetime.strptime(row["first"], "%d.%m.%Y %H:%M:%S")
-        row["last"] = datetime.datetime.strptime(row["last"], "%d.%m.%Y %H:%M:%S")
-        row["count"] = int(row["count"])
+                # skip to the next line
+                continue
+            # check if the line starts with a valid parameter
+            if line.startswith(" IP Address"):
+                device["ip"] = line.split(":")[1].strip()
+            elif line.startswith(" Device Name"):
+                device["name"] = line.split(":")[1].strip()
+            elif line.startswith(" MAC Address"):
+                device["mac"] = line.split(":")[1].strip()
+            elif line.startswith(" Network Adapter Company"):
+                device["company"] = line.split(":")[1].strip()
+            elif line.startswith(" User Text"):
+                device["user"] = line.split(":")[1].strip()
+            elif line.startswith(" First Detected On"):
+                try:
+                    device["first"] = datetime.datetime.strptime(
+                        line.split(":")[1].strip(), "%d.%m.%Y г. %H:%M:%S"
+                    )
+                except ValueError:
+                    logging.warning(f"Failed to parse 'First Detected On' field: {line}")
+            elif line.startswith(" Last Detected On"):
+                try:
+                    device["last"] = datetime.datetime.strptime(
+                        line.split(":")[1].strip(), "%d.%m.%Y г. %H:%M:%S"
+                    )
+                except ValueError:
+                    logging.warning(f"Failed to parse 'Last Detected On' field: {line}")
+            elif line.startswith("Detection Count"):
+                try:
+                    device["count"] = int(line.split(":")[1].strip())
+                except ValueError:
+                    logging.warning(f"Failed to parse 'Detection Count' field: {line}")
+            elif line.startswith("Active"):
+                device["active"] = line.split(":")[1].strip() == "Yes"
+            else:
+                logging.warning(f"Skipping unrecognized line: {line}")
+            
+            # check if we have all the required fields for a device
+            if all(key in device for key in ("ip", "name", "mac", "company", "user", "first", "last", "count", "active")):
+                # add the device to the list and reset the device dict
+                data.append(device)
+                device = {}
+
     return data
+
+
+
+
+
+    #     for line in f:
+    #         line = line.strip()
+    #         if line.startswith("==="):
+    #             if device:
+    #                 data.append(device)
+    #                 device = {}
+    #         elif line:
+    #             key, value = line.split(":", 1)
+    #             device[key.strip()] = value.strip()
+    #     if device:
+    #         data.append(device)
+    # for row in data:
+    #     row["first"] = datetime.datetime.strptime(row["first"], "%d.%m.%Y %H:%M:%S")
+    #     row["last"] = datetime.datetime.strptime(row["last"], "%d.%m.%Y %H:%M:%S")
+    #     row["count"] = int(row["count"])
+    # return data
 
 
 def get_paired_devices(data):
