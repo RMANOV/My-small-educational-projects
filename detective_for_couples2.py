@@ -7,7 +7,7 @@ def read_data(file_path):
         device = {}
         for line in f:
             line = line.strip()
-            if line.startswith('==='):
+            if '==='):
                 if device:
                     data.append(device)
                     device = {}

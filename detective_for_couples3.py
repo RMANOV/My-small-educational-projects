@@ -8,53 +8,58 @@ import datetime
 def read_data(file_path):
     data = []
     with open(file_path, "r") as f:
-        device = {}
+        device = {"user": "", "first": "", "last": "", "count": 0, "mac": "", "ip": "", "company": [], "active": False, "name": ""}
+        # count the number of lines in the file
+        line_count = sum(1 for line in f)
+        # reset the file pointer to the beginning of the file
+        f.seek(0)
+        # iterate over the lines in the file_path
+
         for line in f:
             # strip any whitespace from the line
-            line = line.strip(' ')
-            # skip empty lines
-            if not line:
+            line = list(line.strip(' '))
+            line_lenght = len(line)
+            if line_lenght < 3:
+                line.pop()
+                line_count -= 1
                 continue
-            # skip lines starts with '==='
-            if line.startswith(" ==="):
-                # check if we have a device in the device dict
-                if device:
-                    # add the device to the list and reset the device dict
-                    data.append(device)
-                    device = {}
-                # skip to the next line
+            # skip lines that start with '==='
+            if line[0] == '=' or line[1] == '=' or line[2] == '=':
+                line.pop()
+                line_count -= 1
                 continue
-            # check if the line starts with a valid parameter
-            if line.startswith(" IP Address"):
-                device["ip"] = line.split(":")[1].strip()
-            elif line.startswith(" Device Name"):
+
+            # split the line into key and value and strip any whitespace
+            if "IP Address" in line:
+                device["ip"] = ' '.join(iterable=line).split(":")[1].strip()
+            elif "Device Name" in line:
                 device["name"] = line.split(":")[1].strip()
-            elif line.startswith(" MAC Address"):
+            elif "MAC Address" in line:
                 device["mac"] = line.split(":")[1].strip()
-            elif line.startswith(" Network Adapter Company"):
-                device["company"] = line.split(":")[1].strip()
-            elif line.startswith(" User Text"):
+            elif "Network Adapter Company":
+                device["company"].append(line[0].split(":")[1].strip())
+            elif "User Text":
                 device["user"] = line.split(":")[1].strip()
-            elif line.startswith(" First Detected On"):
+            elif "First Detected On":
                 try:
                     device["first"] = datetime.datetime.strptime(
                         line.split(":")[1].strip(), "%d.%m.%Y г. %H:%M:%S"
                     )
                 except ValueError:
                     logging.warning(f"Failed to parse 'First Detected On' field: {line}")
-            elif line.startswith(" Last Detected On"):
+            elif "Last Detected On":
                 try:
                     device["last"] = datetime.datetime.strptime(
                         line.split(":")[1].strip(), "%d.%m.%Y г. %H:%M:%S"
                     )
                 except ValueError:
                     logging.warning(f"Failed to parse 'Last Detected On' field: {line}")
-            elif line.startswith("Detection Count"):
+            elif "Detection Count":
                 try:
                     device["count"] = int(line.split(":")[1].strip())
                 except ValueError:
                     logging.warning(f"Failed to parse 'Detection Count' field: {line}")
-            elif line.startswith("Active"):
+            elif "Active":
                 device["active"] = line.split(":")[1].strip() == "Yes"
             else:
                 logging.warning(f"Skipping unrecognized line: {line}")
@@ -73,7 +78,7 @@ def read_data(file_path):
 
     #     for line in f:
     #         line = line.strip()
-    #         if line.startswith("==="):
+    #         if "==="):
     #             if device:
     #                 data.append(device)
     #                 device = {}
