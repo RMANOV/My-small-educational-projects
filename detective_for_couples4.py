@@ -14,8 +14,8 @@
 # Active:
 # ===
 # Calculate the number of times each device was seen with another device
-# Return a list of devices that were seen together at least 3 times,
-# sorted by the number of times they were seen together - +/- X minutes difference in the time of detection
+# Return a list of devices that were seen together connect and disconnect at least 3 times,
+# sorted by the number of times they were seen together - +/- X minutes difference in the time of connection or disconnection
 # The list should be sorted by the number of times the device was seen with another device
 # If two devices were seen together the same number of times, sort them by the user_text
 # Store the result in a file called "together.txt"
@@ -24,7 +24,7 @@
 # User Text: - Device Name: - MAC Address: - IP Address:
 # User Text: - Device Name: - MAC Address: - IP Address:
 # ===
-# The file should be sorted by the number of times the device was seen with another device
+# The file should be sorted by the number of times the device was seen with another device - for every device in the list of devices
 # If two devices were seen together the same number of times, sort them by the user_text
 # The file should be encoded in UTF-8
 # The file should have Unix line endings
@@ -114,29 +114,33 @@ def read_data(file_path):
 
 
 def get_together(data):
+    # create a dictionary where the key is the device and the value is a list of other devices that were seen together - 
+    # connect and disconnect at least 3 times, in difference of +/- X minutes
+    # the list should be sorted by the number of times the device was seen with another device
+    # 1.Iterate over the list of devices 
+    # check if the device is not the same as the other device - by comparing mac addresses
+    # check if the devices date of first detection are the same 
+    #   check if connecting is within the +/- X minutes - if so - set counter +=1 and add the device to the list of other devices
+    #   check if disconnecting is within the +/- X minutes - if so - set counter +=1 and add the device to the list of other devices
+    # check if the devices date of last detection are the same
+    #   check if connecting is within the +/- X minutes - if so - set counter +=1 and add the device to the list of other devices
+    #   check if disconnecting is within the +/- X minutes - if so - set counter +=1 and add the device to the list of other devices
+    # Add the device and the list of other devices to the dictionary and the counter for each other device
+    # 2. In the end - sort the dictionary by the number of times the device was seen with another device - by the counter
+    # 3. If two devices were seen together the same number of times, sort them by the user_text
+    
     together = defaultdict(list)
     for device in data:
         for other_device in data:
-            if device["user"] == other_device["user"]:
-                continue
-            if device["mac"] == other_device["mac"]:
-                continue
-            if device["ip"] == other_device["ip"]:
-                continue
-            if device["company"] == other_device["company"]:
-                continue
-            if device["name"] == other_device["name"]:
-                continue
-            if device["active"] == other_device["active"]:
-                continue
-            if device["count"] == other_device["count"]:
-                continue
-            if device["first"] == other_device["first"]:
-                continue
-            if device["last"] == other_device["last"]:
-                continue
-            together[device["user"]].append(other_device["user"])
+            if device["mac"] != other_device["mac"]:
+                if device["first"] == other_device["first"]:
+                    if abs(device["first"] - other_device["first"]) <= datetime.timedelta(minutes=5): # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
+                        together[device["mac"]].append(other_device["mac"])
+                if device["last"] == other_device["last"]:
+                    if abs(device["last"] - other_device["last"]) <= datetime.timedelta(minutes=5):
+                        together[device["mac"]].append(other_device["mac"])
     return together
+
 
 
 def write_together(together, file_path):
