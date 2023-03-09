@@ -199,12 +199,12 @@ def get_together(data):
                     if abs(
                         device["first"] - other_device["first"]
                     ) <= datetime.timedelta(
-                        minutes=3
+                        minutes=5
                     ):  # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
                         together[device["mac"]].append(other_device["mac"])
                 if device["last"] == other_device["last"]:
                     if abs(device["last"] - other_device["last"]) <= datetime.timedelta(
-                        minutes=3
+                        minutes=5
                     ):  # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
                         together[device["mac"]].append(other_device["mac"])
     # sort the dictionary by the number of times the device was seen with another device - by the counter
@@ -214,6 +214,8 @@ def get_together(data):
             together.items(), key=lambda item: len(item[1]), reverse=True
         )
     }
+    # Filter the dictionary to contain only devices that were seen together at least 3 times and less than 10 times
+    together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 10}
     return together
 
 
