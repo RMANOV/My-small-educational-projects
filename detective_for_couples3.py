@@ -1,3 +1,54 @@
+# Read lines from a file and parse them into a list of dictionaries
+# Each dictionary represents a device
+# The list of dictionaries is returned
+# The file is expected to have the following format:
+# ===
+# IP Address:
+# Device Name:
+# MAC Address:
+# Network Adapter Company:
+# User Text:
+# First Detected On:
+# Last Detected On:
+# Detection Count:
+# Active:
+# ===
+# Calculate the number of times each device was seen with another device
+# Return a list of devices that were seen together at least 3 times, 
+# sorted by the number of times they were seen together - +/- X minutes difference in the time of detection
+# The list should be sorted by the number of times the device was seen with another device
+# If two devices were seen together the same number of times, sort them by the user_text
+# Store the result in a file called "together.txt"
+# The file should have the following format:
+# ===
+# User Text: - Device Name: - MAC Address: - IP Address:
+# User Text: - Device Name: - MAC Address: - IP Address:
+# ===
+# The file should be sorted by the number of times the device was seen with another device
+# If two devices were seen together the same number of times, sort them by the user_text
+# The file should be encoded in UTF-8
+# The file should have Unix line endings
+# The file should not have a trailing newline
+# The file should not have a trailing space
+# The file should not have a trailing TabError()
+# The file should not have a trailing carriage return
+# The file should not have a trailing carriage return line feed
+# The file should not have a trailing line feed
+# The file should not have a trailing form feed
+# The file should not have a trailing vertical TabError()
+# The file should not have a trailing next line
+# The file should not have a trailing no-break space
+# In the next run of the program, the file should be suplemented with the new data and new results
+# The file should not contain duplicates
+# The file should not contain empty lines
+# The file should not contain lines with only whitespace
+# The file should not contain lines with only whitespace and a newline
+
+
+
+
+
+
 import datetime
 from collections import defaultdict
 
