@@ -247,10 +247,16 @@ def get_together(data):
 
 def write_together(together, file_path):
     with open(file_path, "w") as f:
+        # write the device user text and the other devices user text and the number of times the device was seen with other device
+        print("Device", "Other Devices", "Count", sep="\t", file=f)
         for device, other_devices in together.items():
-            f.write(
-                print(f"{device} - {other_devices}")
-            )  # write the device and other devices to the file
+            print(device, other_devices, len(other_devices), sep="\t", file=f)
+
+
+
+
+
+
 
 
 def main():
