@@ -137,8 +137,10 @@ def get_together(data):
                     if abs(device["first"] - other_device["first"]) <= datetime.timedelta(minutes=5): # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
                         together[device["mac"]].append(other_device["mac"])
                 if device["last"] == other_device["last"]:
-                    if abs(device["last"] - other_device["last"]) <= datetime.timedelta(minutes=5):
+                    if abs(device["last"] - other_device["last"]) <= datetime.timedelta(minutes=5): # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
                         together[device["mac"]].append(other_device["mac"])
+    # sort the dictionary by the number of times the device was seen with another device - by the counter
+    together = {k: v for k, v in sorted(together.items(), key=lambda item: len(item[1]), reverse=True)}
     return together
 
 
