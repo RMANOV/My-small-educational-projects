@@ -14,7 +14,7 @@
 # Active:
 # ===
 # Calculate the number of times each device was seen with another device
-# Return a list of devices that were seen together at least 3 times, 
+# Return a list of devices that were seen together at least 3 times,
 # sorted by the number of times they were seen together - +/- X minutes difference in the time of detection
 # The list should be sorted by the number of times the device was seen with another device
 # If two devices were seen together the same number of times, sort them by the user_text
@@ -45,10 +45,6 @@
 # The file should not contain lines with only whitespace and a newline
 
 
-
-
-
-
 import datetime
 from collections import defaultdict
 
@@ -56,10 +52,21 @@ from collections import defaultdict
 import logging
 import datetime
 
+
 def read_data(file_path):
     data = []
     with open(file_path, "r") as f:
-        device = {"user": "", "first": "", "last": "", "count": 0, "mac": "", "ip": "", "company": [], "active": False, "name": ""}
+        device = {
+            "user": "",
+            "first": "",
+            "last": "",
+            "count": 0,
+            "mac": "",
+            "ip": "",
+            "company": [],
+            "active": False,
+            "name": "",
+        }
         # count the number of lines in the file
         line_count = sum(1 for line in f)
         # reset the file pointer to the beginning of the file
@@ -68,21 +75,21 @@ def read_data(file_path):
 
         for line in f:
             # strip any whitespace from the line
-            line = list(line.strip(' '))
+            line = list(line.strip(" "))
             line_lenght = len(line)
             if line_lenght < 3:
                 line.pop()
                 line_count -= 1
                 continue
             # skip lines that start with '==='
-            if line[0] == '=' or line[1] == '=' or line[2] == '=':
+            if line[0] == "=" or line[1] == "=" or line[2] == "=":
                 line.pop()
                 line_count -= 1
                 continue
 
             # split the line into key and value and strip any whitespace
             if "IP Address" in line:
-                device["ip"] = ' '.join(iterable=line).split(":")[1].strip()
+                device["ip"] = line[1].strip()
             elif "Device Name" in line:
                 device["name"] = line.split(":")[1].strip()
             elif "MAC Address" in line:
@@ -97,7 +104,9 @@ def read_data(file_path):
                         line.split(":")[1].strip(), "%d.%m.%Y г. %H:%M:%S"
                     )
                 except ValueError:
-                    logging.warning(f"Failed to parse 'First Detected On' field: {line}")
+                    logging.warning(
+                        f"Failed to parse 'First Detected On' field: {line}"
+                    )
             elif "Last Detected On":
                 try:
                     device["last"] = datetime.datetime.strptime(
@@ -114,18 +123,27 @@ def read_data(file_path):
                 device["active"] = line.split(":")[1].strip() == "Yes"
             else:
                 logging.warning(f"Skipping unrecognized line: {line}")
-            
+
             # check if we have all the required fields for a device
-            if all(key in device for key in ("ip", "name", "mac", "company", "user", "first", "last", "count", "active")):
+            if all(
+                key in device
+                for key in (
+                    "ip",
+                    "name",
+                    "mac",
+                    "company",
+                    "user",
+                    "first",
+                    "last",
+                    "count",
+                    "active",
+                )
+            ):
                 # add the device to the list and reset the device dict
                 data.append(device)
                 device = {}
 
     return data
-
-
-
-
 
     #     for line in f:
     #         line = line.strip()

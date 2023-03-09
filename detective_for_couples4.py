@@ -55,7 +55,7 @@ logging.basicConfig(filename="log.txt", level=logging.DEBUG)
 
 def read_data(file_path):
     data = []
-    with open(file_path, "r") as f:
+    with open("C:/Users/r.manov/Desktop/Data.txt", "r") as f:
         device = {
             "user": "",
             "first": "",
@@ -74,52 +74,93 @@ def read_data(file_path):
         # iterate over the lines in the file_path
 
         for line in f:
-            # strip any whitespace from the line
-            line = list(line.strip(" "))
+            # ['\x00', 'I', '\x00', 'P', '\x00', ' ', '\x00', 'A', '\x00', 'd', '\x00', 'd', '\x00', 'r', ...]
+            # ['я', 'ю', '=', '=', '=', '=', '=', '=', '=', '=', '=', '=', '=', '=', ...]
+            # ['I', 'P', ' ', 'A', 'd', 'd', 'r', 'e', 's', 's', ' ', ' ', ' ', ' ', ...]
+            # remove the 'я' and 'ю' character from the line - it is not a valid character
+
+            # line = [ char for char in line if char != "я" ]
+            # line = [ char for char in line if char != "ю" ]
+            # convert the list of characters to a string
+            # line = "".join(line)
+            line = [char for char in line if char != "\x00"]
+            # line = list(line.strip(" "))
             line_lenght = len(line)
-            if line_lenght < 3:
-                line.pop()
+            if line_lenght < 3 or line_lenght > 80:
+                # line.pop()
                 line_count -= 1
                 continue
             # skip lines that start with '==='
             if line[0] == "=" or line[1] == "=" or line[2] == "=":
-                line.pop()
+                # line.pop()
                 line_count -= 1
                 continue
 
+            line = "".join(line)
+            # 'IP Address        : 192.168.1.35\n'
+            # strip the newline character from the end of the line
+            line = line.strip("\n")
+            # convert the line to a list with the separator ':'
+            line = line.split(":")
+            # 'First Detected On : 04.03.2023 3\x04. 05:57:14'
+            # 'Last Detected On  : 04.03.2023 3\x04. 05:57:14'
+            # remove the '3\x04.' from the line
+            
+            if "First Detected On" in line[0] or "Last Detected On" in line[0]:
+                line[1] = line[1].replace("3\x04.", " ")
+            # convert the date and time to a datetime object
+            if "First Detected On" in line[0]:
+                line[1] = line[1].strip()
+                date, time = line[1].split(" ")
+                day, month, year = date.split(".")
+                hour, minute, second = time.split(":")
+                line[1] = datetime.datetime(
+                    int(year), int(month), int(day), int(hour), int(minute), int(second)
+                )
+                device["first"] = line[1]
+            elif "Last Detected On" in line[0]:
+                line[1] = line[1].strip()
+                date, time = line[1].split(" ")
+                day, month, year = date.split(".")
+                hour, minute, second = time.split(":")
+                line[1] = datetime.datetime(
+                    int(year), int(month), int(day), int(hour), int(minute), int(second)
+                )
+                device["last"] = line[1]
+
             # split the line into key and value and strip any whitespace
-            if "IP Address" in line:
-                device["ip"] = " ".join(iterable=line).split(":")[1].strip()
-            elif "Device Name" in line:
-                device["name"] = " ".join(iterable=line).split(":")[1].strip()
-            elif "MAC Address" in line:
-                device["mac"] = " ".join(iterable=line).split(":")[1].strip()
-            elif "Network Adapter Company" in line:
-                device["company"] = " ".join(iterable=line).split(":")[1].strip()
-            elif "User Text" in line:
-                device["user"] = " ".join(iterable=line).split(":")[1].strip()
-            elif "First Detected On" in line:
-                device["first"] = " ".join(iterable=line).split(":")[1].strip()
-            elif "Last Detected On" in line:
-                device["last"] = " ".join(iterable=line).split(":")[1].strip()
-            elif "Detection Count" in line:
-                device["count"] = int(" ".join(iterable=line).split(":")[1].strip())
-            elif "Active" in line:
-                device["active"] = " ".join(iterable=line).split(":")[1].strip()
+            if "IP Address" in line[0]:
+                device["ip"] = line[1].strip()
+            elif "Device Name" in line[0]:
+                device["name"] = line[1].strip()
+            elif "MAC Address" in line[0]:
+                device["mac"] = line[1].strip()
+            elif "Network Adapter Company" in line[0]:
+                device["company"] = line[1].strip()
+            elif "User Text" in line[0]:
+                device["user"] = line[1].strip()
+            elif "First Detected On" in line[0]:
+                device["first"] = line[1].strip()
+            elif "Last Detected On" in line[0]:
+                device["last"] = line[1].strip()
+            elif "Detection Count" in line[0]:
+                device["count"] = int(line[1].strip())
+            elif "Active" in line[0]:
+                device["active"] = line[1].strip()
                 data.append(device)
-                device = {} # reset the device dictionary
+                device = {}  # reset the device dictionary
             else:
                 continue
     return data
 
 
 def get_together(data):
-    # create a dictionary where the key is the device and the value is a list of other devices that were seen together - 
+    # create a dictionary where the key is the device and the value is a list of other devices that were seen together -
     # connect and disconnect at least 3 times, in difference of +/- X minutes
     # the list should be sorted by the number of times the device was seen with another device
-    # 1.Iterate over the list of devices 
+    # 1.Iterate over the list of devices
     # check if the device is not the same as the other device - by comparing mac addresses
-    # check if the devices date of first detection are the same 
+    # check if the devices date of first detection are the same
     #   check if connecting is within the +/- X minutes - if so - set counter +=1 and add the device to the list of other devices
     #   check if disconnecting is within the +/- X minutes - if so - set counter +=1 and add the device to the list of other devices
     # check if the devices date of last detection are the same
@@ -128,38 +169,49 @@ def get_together(data):
     # Add the device and the list of other devices to the dictionary and the counter for each other device
     # 2. In the end - sort the dictionary by the number of times the device was seen with another device - by the counter
     # 3. If two devices were seen together the same number of times, sort them by the user_text
-    
+
     together = defaultdict(list)
     for device in data:
         for other_device in data:
             if device["mac"] != other_device["mac"]:
                 if device["first"] == other_device["first"]:
-                    if abs(device["first"] - other_device["first"]) <= datetime.timedelta(minutes=5): # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
+                    if abs(
+                        device["first"] - other_device["first"]
+                    ) <= datetime.timedelta(
+                        minutes=5
+                    ):  # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
                         together[device["mac"]].append(other_device["mac"])
                 if device["last"] == other_device["last"]:
-                    if abs(device["last"] - other_device["last"]) <= datetime.timedelta(minutes=5): # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
+                    if abs(device["last"] - other_device["last"]) <= datetime.timedelta(
+                        minutes=5
+                    ):  # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
                         together[device["mac"]].append(other_device["mac"])
     # sort the dictionary by the number of times the device was seen with another device - by the counter
-    together = {k: v for k, v in sorted(together.items(), key=lambda item: len(item[1]), reverse=True)}
+    together = {
+        k: v
+        for k, v in sorted(
+            together.items(), key=lambda item: len(item[1]), reverse=True
+        )
+    }
     return together
-
 
 
 def write_together(together, file_path):
     with open(file_path, "w") as f:
         for device, other_devices in together.items():
-            f.write(f"{device} - {other_devices}") # write the device and other devices to the file
+            f.write(
+                f"{device} - {other_devices}"
+            )  # write the device and other devices to the file
+
 
 def main():
     data = read_data("devices.txt")
     together = get_together(data)
     write_together(together, "together.txt")
 
+
 if __name__ == "__main__":
     main()
-
-
-
 
 
 # def read_data(file_path):
@@ -198,7 +250,7 @@ if __name__ == "__main__":
 
 #             # split the line into key and value and strip any whitespace
 #             if "IP Address" in line:
-#                 device["ip"] = " ".join(iterable=line).split(":")[1].strip()
+#                 device["ip"] = line[1].strip()
 #             elif "Device Name" in line:
 #                 device["name"] = line.split(":")[1].strip()
 #             elif "MAC Address" in line:
