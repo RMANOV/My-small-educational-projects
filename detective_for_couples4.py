@@ -117,6 +117,8 @@ def read_data(file_path):
                 # ['', '04.03.2023', '3\x04.', '05']
                 # get only the date in index 1
                 date = date[0]
+                if date == "":
+                    continue
                 # convert to a datetime object
                 day, month, year = date.split(".")  # ['04', '03', '2023']
                 # convert the date to a datetime object
@@ -218,6 +220,9 @@ def get_together(data):
     for device in data:
         for other_device in data:
             if device["mac"] != other_device["mac"]:
+                # if first or last of one of the devices is missing - skip
+                if "first" not in device or "first" not in other_device:
+                    continue
                 if device["first"] == other_device["first"]:
                     if abs(
                         device["first"] - other_device["first"]
@@ -244,7 +249,7 @@ def write_together(together, file_path):
     with open(file_path, "w") as f:
         for device, other_devices in together.items():
             f.write(
-                f"{device} - {other_devices}"
+                print(f"{device} - {other_devices}")
             )  # write the device and other devices to the file
 
 
