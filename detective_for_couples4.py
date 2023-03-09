@@ -125,31 +125,52 @@ def read_data(file_path):
                 # separate time from line '['First Detected On ', '04.03.2023   05', '57', '14']' - '05:57:14'
                 line[1] = line[1].strip()
                 # time is a last 6 digits in the line
+                # seconds = 14
+                # minutes = 57
+                # hours = 05
+                # convert the line to a string and get the last 6 digits - seconds, minutes and hours
+                line_string = "".join(line)
+                hours = line_string[-6:-4]
+                minutes = line_string[-4:-2]
+                seconds = line_string[-2:]
+                # convert the time to a datetime object
+                time = datetime.datetime(1, 1, 1, int(hours), int(minutes), int(seconds))
+                # combine the date and time to a datetime object
+                line[1] = date + time
+                # add the datetime object to the device dictionary
+                if "First Detected On" in line[0]:
+                    device["first"] = line[1]
+                elif "Last Detected On" in line[0]:
+                    device["last"] = line[1]
+                continue
 
-                
+
+
+
+
 
 
             
-                # line[1] = line[1].replace("3\x04.", " ")
-            # convert the date and time to a datetime object
-            if "First Detected On" in line[0]:
-                line[1] = line[1].strip()
-                date, time = line[1].split(" ")
-                day, month, year = date.split(".")
-                hour, minute, second = time.split(":")
-                line[1] = datetime.datetime(
-                    int(year), int(month), int(day), int(hour), int(minute), int(second)
-                )
-                device["first"] = line[1]
-            elif "Last Detected On" in line[0]:
-                line[1] = line[1].strip()
-                date, time = line[1].split(" ")
-                day, month, year = date.split(".")
-                hour, minute, second = time.split(":")
-                line[1] = datetime.datetime(
-                    int(year), int(month), int(day), int(hour), int(minute), int(second)
-                )
-                device["last"] = line[1]
+            #     # line[1] = line[1].replace("3\x04.", " ")
+            # # convert the date and time to a datetime object
+            # if "First Detected On" in line[0]:
+            #     line[1] = line[1].strip()
+            #     date, time = line[1].split(" ")
+            #     day, month, year = date.split(".")
+            #     hour, minute, second = time.split(":")
+            #     line[1] = datetime.datetime(
+            #         int(year), int(month), int(day), int(hour), int(minute), int(second)
+            #     )
+            #     device["first"] = line[1]
+            # elif "Last Detected On" in line[0]:
+            #     line[1] = line[1].strip()
+            #     date, time = line[1].split(" ")
+            #     day, month, year = date.split(".")
+            #     hour, minute, second = time.split(":")
+            #     line[1] = datetime.datetime(
+            #         int(year), int(month), int(day), int(hour), int(minute), int(second)
+            #     )
+            #     device["last"] = line[1]
 
             # split the line into key and value and strip any whitespace
             if "IP Address" in line[0]:
