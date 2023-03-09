@@ -245,13 +245,21 @@ def get_together(data):
     return together
 
 
-def write_together(together, file_path):
+# replace all mac addresses to user text in the dictionary and write the result to a file together.txt and print the result to the console
+def write_together(together, file_path, data):
     with open(file_path, "w") as f:
-        # write the device user text and the other devices user text and the number of times the device was seen with other device
-        print("Device", "Other Devices", "Count", sep="\t", file=f)
         for device, other_devices in together.items():
-            print(device, other_devices, len(other_devices), sep="\t", file=f)
+            for other_device in other_devices:
+                for d in data:
+                    if d["mac"] == device:
+                        device = d["user"]
+                    if d["mac"] == other_device:
+                        other_device = d["user"]
+            f.write(f"{device} - {other_device} - {len(other_devices)}\r")
+            print(f"{device} - {other_device} - {len(other_devices)}\r")
+    
 
+ 
 
 
 
@@ -262,7 +270,7 @@ def write_together(together, file_path):
 def main():
     data = read_data("devices.txt")
     together = get_together(data)
-    write_together(together, "together.txt")
+    write_together(together, "together.txt", data)
 
 
 if __name__ == "__main__":
