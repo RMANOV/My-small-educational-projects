@@ -146,34 +146,6 @@ def read_data(file_path):
                     device["last"] = line[1]
                 continue
 
-
-
-
-
-
-
-            
-            #     # line[1] = line[1].replace("3\x04.", " ")
-            # # convert the date and time to a datetime object
-            # if "First Detected On" in line[0]:
-            #     line[1] = line[1].strip()
-            #     date, time = line[1].split(" ")
-            #     day, month, year = date.split(".")
-            #     hour, minute, second = time.split(":")
-            #     line[1] = datetime.datetime(
-            #         int(year), int(month), int(day), int(hour), int(minute), int(second)
-            #     )
-            #     device["first"] = line[1]
-            # elif "Last Detected On" in line[0]:
-            #     line[1] = line[1].strip()
-            #     date, time = line[1].split(" ")
-            #     day, month, year = date.split(".")
-            #     hour, minute, second = time.split(":")
-            #     line[1] = datetime.datetime(
-            #         int(year), int(month), int(day), int(hour), int(minute), int(second)
-            #     )
-            #     device["last"] = line[1]
-
             # split the line into key and value and strip any whitespace
             if "IP Address" in line[0]:
                 device["ip"] = line[1].strip()
@@ -227,12 +199,12 @@ def get_together(data):
                     if abs(
                         device["first"] - other_device["first"]
                     ) <= datetime.timedelta(
-                        minutes=5
+                        minutes=3
                     ):  # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
                         together[device["mac"]].append(other_device["mac"])
                 if device["last"] == other_device["last"]:
                     if abs(device["last"] - other_device["last"]) <= datetime.timedelta(
-                        minutes=5
+                        minutes=3
                     ):  # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
                         together[device["mac"]].append(other_device["mac"])
     # sort the dictionary by the number of times the device was seen with another device - by the counter
@@ -257,13 +229,6 @@ def write_together(together, file_path, data):
                         other_device = d["user"]
             f.write(f"{device} - {other_device} - {len(other_devices)}\r")
             print(f"{device} - {other_device} - {len(other_devices)}\r")
-    
-
- 
-
-
-
-
 
 
 
