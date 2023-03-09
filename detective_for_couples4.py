@@ -136,7 +136,7 @@ def read_data(file_path):
                 # convert the time to a datetime object
                 time = datetime.datetime(1, 1, 1, int(hours), int(minutes), int(seconds))
                 # combine the date and time to a datetime object
-                line[1] = date + time
+                line[1] = datetime.datetime.combine(date, time.time())
                 # add the datetime object to the device dictionary
                 if "First Detected On" in line[0]:
                     device["first"] = line[1]
