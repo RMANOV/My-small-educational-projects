@@ -102,12 +102,35 @@ def read_data(file_path):
             line = line.strip("\n")
             # convert the line to a list with the separator ':'
             line = line.split(":")
+
+            
+            if "First Detected On" in line[0] or "Last Detected On" in line[0]:
             # 'First Detected On : 04.03.2023 3\x04. 05:57:14'
             # 'Last Detected On  : 04.03.2023 3\x04. 05:57:14'
             # remove the '3\x04.' from the line
-            
-            if "First Detected On" in line[0] or "Last Detected On" in line[0]:
+            # remove the trailing whitespace from the line
                 line[1] = line[1].replace("3\x04.", " ")
+                line[1] = line[1].strip()
+
+                # separate date
+                date = line[1].split(" ")
+                # ['', '04.03.2023', '3\x04.', '05']
+                # get only the date in index 1
+                date = date[0]
+                # convert to a datetime object
+                day, month, year = date.split(".")  # ['04', '03', '2023']
+                # convert the date to a datetime object
+                date = datetime.datetime(int(year), int(month), int(day))
+
+                # separate time from line '['First Detected On ', '04.03.2023   05', '57', '14']' - '05:57:14'
+                line[1] = line[1].strip()
+                # time is a last 6 digits in the line
+
+                
+
+
+            
+                # line[1] = line[1].replace("3\x04.", " ")
             # convert the date and time to a datetime object
             if "First Detected On" in line[0]:
                 line[1] = line[1].strip()
