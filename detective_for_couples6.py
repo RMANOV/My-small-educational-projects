@@ -203,8 +203,13 @@ def find_together(data):
         devices_with_same_first = 0
         devices_with_same_last = 0
         for other_device in data:
-            
-            if not device["first"] or not other_device["first"] or not device["last"] or not other_device["last"]:
+
+            if (
+                not device["first"]
+                or not other_device["first"]
+                or not device["last"]
+                or not other_device["last"]
+            ):
                 continue
             try:
                 if device["first"] == other_device["first"]:
@@ -220,7 +225,7 @@ def find_together(data):
         if devices_with_same_last > 5:
             last_set.add(device["last"])
             continue
-    
+
     # if the 'first' and 'last' is same - the owner is one person - create a dictionary where the key is the user of the device and the value is a list of other devices that were seen together
     owners = defaultdict(list)
 
@@ -233,20 +238,22 @@ def find_together(data):
             if device["mac"] == other_device["mac"]:
                 continue
             if device["first"] == other_device["first"]:
-                if (
-                    device["first"] - other_device["first"]
-                ).total_seconds() <= 300:
+                if (device["first"] - other_device["first"]).total_seconds() <= 300:
                     together[device["user"]].append(other_device["user"])
             if device["last"] == other_device["last"]:
                 if (
                     device["last"] - other_device["last"]
-                ).total_seconds() <= 300: # cheks if the difference between the last detection is less than 5 minutes
+                ).total_seconds() <= 300:  # cheks if the difference between the last detection is less than 5 minutes
                     together[device["user"]].append(other_device["user"])
-                if (device["first"] - other_device["first"]).total_seconds() <= 60 and (device["last"] - other_device["last"]).total_seconds() <= 60: #
+                if (device["first"] - other_device["first"]).total_seconds() <= 60 and (
+                    device["last"] - other_device["last"]
+                ).total_seconds() <= 60:  #
                     owners[device["user"]].append(other_device["user"])
 
     # sort the dictionary by the number of times the device was seen with another device
-    owners = {k: sorted(v, key=lambda x: together[x], reverse=True) for k, v in owners.items()}
+    owners = {
+        k: sorted(v, key=lambda x: together[x], reverse=True) for k, v in owners.items()
+    }
     # remove devices without first and last detection
     owners = {k: v for k, v in owners.items() if v}
 
@@ -254,22 +261,20 @@ def find_together(data):
     # check if the current set is same as the sets in the list
     # if the current set is not the same as the sets in the list - add it to the list
     # if the current set is the same as the sets in the list - continue
-    unique_owners =[]
+    unique_owners = []
+    for k, v in owners.items():
+        current_set = set()
+        current_set.add(k)
+        current_set.update(v)
+        if current_set not in unique_owners:
+            unique_owners.append(current_set)
+        else:
+            continue
+    # sort the list by the length of the sets - the longest set is the first
+    unique_owners = sorted(unique_owners, key=len, reverse=True)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-  
     # first_set = set()
     # last_set = set()
     # for device in data:
@@ -293,7 +298,7 @@ def find_together(data):
     #         continue
     #     if devices_with_same_last > 5:
     #         continue
-    
+
     # for device in data:
     #     for other_device in data:
     #         if device["mac"] != other_device["mac"]:
@@ -364,19 +369,12 @@ def find_together(data):
 
     # return together
 
-
-
-
-
-
     # for device in data:
     #     for other_device in data:
     #         if device["mac"] != other_device["mac"]:
     #             # if first or last of one of the devices is missing - skip
     #             if "first" not in device or "first" not in other_device:
     #                 continue
-
-
 
     #             if device["first"] == other_device["first"]:
     #                 if abs(
@@ -397,74 +395,77 @@ def find_together(data):
             together.items(), key=lambda item: len(item[1]), reverse=True
         )
     }
-    
+
     # Filter the dictionary to contain only devices that were seen together at least 3 times and less than 10 times
     together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 10}
 
+    unique_sets_together = []
+    for k, v in together.items():
+        current_set = set()
+        current_set.add(k)
+        current_set.update(v)
+        if current_set not in unique_sets_together:
+            unique_sets_together.append(current_set)
+        else:
+            continue
+    unique_sets_together = sorted(unique_sets_together, key=len, reverse=True)
 
-    return together, owners
+    return unique_sets_together, unique_owners
 
 
 # replace all mac addresses to user text in the dictionary and write the result to a file together.txt and print the result to the console
-def write_together(together, file_path, data, owners):
+def write_together(unique_sets_together, file_path, data, unique_owners):
     with open(file_path, "w") as f:
-        for device, other_devices in together.items():
-            for other_device in other_devices:
-                print(f" *** {device} *** - {len(other_devices)}\r")
-                f.write(f" *** {device} *** - {len(other_devices)}\r")
-                print(f"{' * '.join(other_devices)}\r")
-                f.write(f"{' * '.join(other_devices)}\r")
-                print(f'**********************')
-                f.write(f'**********************')
+        # print every set of unique devices and the number of times they were seen together
+        # set1
+            #device1
+            #device2
+            #device3
+            #devicex
+        #**************
+        # set2
+            #device1
+            #device2
+        
+        print(f'==========================================================')
+        f.write(f'==========================================================')
+        number_of_group = 0
+        for group in unique_sets_together:
+            number_of_group += 1
 
-
-
-
-        for owner, devices in owners.items():
-            print(f' *** {owner} - {len(devices)}\r')
-            f.write(f' *** {owner} - {len(devices)}\r')
-            print(f"{' * '.join(devices)}\r")
-            f.write(f"{' * '.join(devices)}\r")
+            print(f'{number_of_group} group together - number of devices is {len(group)}')
+            f.write(f'{number_of_group}')
+            for device in group:
+                print(f'{device}')
+                f.write(f'{device}')
             print(f'**********************')
             f.write(f'**********************')
 
+        # print every set of unique owners and the number of times they were seen together
+        # set1
+            #device1
+            #device2
+            #device3
+            #devicex
+        #**************
+        # set2
+            #device1
+            #device2
+        
+        print(f'==========================================================')
+        f.write(f'==========================================================')
+        number_of_group = 0
+        for group in unique_owners:
+            number_of_group += 1
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            print(f'{number_of_group} owners - number of devices is {len(group)}')
+            f.write(f'{number_of_group}')
+            for device in group:
+                print(f'{device}')
+                f.write(f'{device}')
+            print(f'**********************')
+            f.write(f'**********************')
+        
 
 
 
@@ -498,13 +499,10 @@ def write_together(together, file_path, data, owners):
         # print(f'==========================================================')
 
 
-
-
 def main():
     data = read_data("devices.txt")
-    together, owners = find_together(data)
-    write_together(together, "together.txt", data, owners)
-
+    unique_sets_together, unique_owners = find_together(data)
+    write_together(unique_sets_together, "together.txt", data, unique_owners)
 
 
 if __name__ == "__main__":
