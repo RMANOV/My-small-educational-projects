@@ -103,12 +103,11 @@ def read_data(file_path):
             # convert the line to a list with the separator ':'
             line = line.split(":")
 
-            
             if "First Detected On" in line[0] or "Last Detected On" in line[0]:
-            # 'First Detected On : 04.03.2023 3\x04. 05:57:14'
-            # 'Last Detected On  : 04.03.2023 3\x04. 05:57:14'
-            # remove the '3\x04.' from the line
-            # remove the trailing whitespace from the line
+                # 'First Detected On : 04.03.2023 3\x04. 05:57:14'
+                # 'Last Detected On  : 04.03.2023 3\x04. 05:57:14'
+                # remove the '3\x04.' from the line
+                # remove the trailing whitespace from the line
                 line[1] = line[1].replace("3\x04.", " ")
                 line[1] = line[1].strip()
 
@@ -136,7 +135,9 @@ def read_data(file_path):
                 minutes = line_string[-4:-2]
                 seconds = line_string[-2:]
                 # convert the time to a datetime object
-                time = datetime.datetime(1, 1, 1, int(hours), int(minutes), int(seconds))
+                time = datetime.datetime(
+                    1, 1, 1, int(hours), int(minutes), int(seconds)
+                )
                 # combine the date and time to a datetime object
                 line[1] = datetime.datetime.combine(date, time.time())
                 # add the datetime object to the device dictionary
@@ -189,24 +190,90 @@ def get_together(data):
     # 3. If two devices were seen together the same number of times, sort them by the user_text
 
     together = defaultdict(list)
+
+    # If "first" is the same for more than 5 devices - ignore that line - it is probably a router or PC
+    # create a set of all the first detections of the devices
+    # use the set to check if the first detection of the device is in the set
+    # if it is - use the first detection of the device - if not - skip the device
+    # same for the last detection
+    first_set = set()
+    [first_set.add(device["first"]) for device in data]
+    last_set = set()
+    [last_set.add(device["last"]) for device in data]
+
     for device in data:
         for other_device in data:
             if device["mac"] != other_device["mac"]:
                 # if first or last of one of the devices is missing - skip
                 if "first" not in device or "first" not in other_device:
                     continue
+
+                # if the first detection of the device is not in the set of all the first detections of the devices - skip
+                if device["first"] not in first_set:
+                    continue
+                # if the last detection of the device is not in the set of all the last detections of the devices - skip
+                if device["last"] not in last_set:
+                    continue
+
+                # if the first detection of the device is the same as the first detection of the other device
                 if device["first"] == other_device["first"]:
+                    # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
                     if abs(
                         device["first"] - other_device["first"]
                     ) <= datetime.timedelta(
                         minutes=5
-                    ):  # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
+                    ):
                         together[device["mac"]].append(other_device["mac"])
+                # if the last detection of the device is the same as the last detection of the other device
                 if device["last"] == other_device["last"]:
+                    # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
                     if abs(device["last"] - other_device["last"]) <= datetime.timedelta(
                         minutes=5
-                    ):  # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
+                    ):
                         together[device["mac"]].append(other_device["mac"])
+                # if the first detection of the device is the same as the last detection of the other device
+                if device["first"] == other_device["last"]:
+                    # check if the difference between the first detection of the device and the last detection of the other device is less than 5 minutes
+                    if abs(device["first"] - other_device["last"]) <= datetime.timedelta(
+                        minutes=5
+                    ):
+                        together[device["mac"]].append(other_device["mac"])
+                # if the last detection of the device is the same as the first detection of the other device
+                if device["last"] == other_device["first"]:
+                    # check if the difference between the last detection of the device and the first detection of the other device is less than 5 minutes
+                    if abs(device["last"] - other_device["first"]) <= datetime.timedelta(
+                        minutes=5
+                    ):
+                        together[device["mac"]].append(other_device["mac"])
+
+    # return together
+
+
+
+
+
+
+    # for device in data:
+    #     for other_device in data:
+    #         if device["mac"] != other_device["mac"]:
+    #             # if first or last of one of the devices is missing - skip
+    #             if "first" not in device or "first" not in other_device:
+    #                 continue
+
+
+
+    #             if device["first"] == other_device["first"]:
+    #                 if abs(
+    #                     device["first"] - other_device["first"]
+    #                 ) <= datetime.timedelta(
+    #                     minutes=5
+    #                 ):  # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
+    #                     together[device["mac"]].append(other_device["mac"])
+    #             if device["last"] == other_device["last"]:
+    #                 if abs(device["last"] - other_device["last"]) <= datetime.timedelta(
+    #                     minutes=5
+    #                 ):  # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
+    #                     together[device["mac"]].append(other_device["mac"])
     # sort the dictionary by the number of times the device was seen with another device - by the counter
     together = {
         k: v
@@ -216,6 +283,8 @@ def get_together(data):
     }
     # Filter the dictionary to contain only devices that were seen together at least 3 times and less than 10 times
     together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 10}
+
+    
     return together
 
 
@@ -231,7 +300,6 @@ def write_together(together, file_path, data):
                         other_device = d["user"]
             f.write(f"{device} - {other_device} - {len(other_devices)}\r")
             print(f"{device} - {other_device} - {len(other_devices)}\r")
-
 
 
 def main():
