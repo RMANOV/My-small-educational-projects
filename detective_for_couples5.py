@@ -193,58 +193,100 @@ def get_together(data):
 
     # If "first" is the same for more than 5 devices - ignore that line - it is probably a router or PC
     # create a set of all the first detections of the devices
-    # use the set to check if the first detection of the device is in the set
-    # if it is - use the first detection of the device - if not - skip the device
-    # same for the last detection
-    first_set = set()
-    [first_set.add(device["first"]) for device in data]
-    last_set = set()
-    [last_set.add(device["last"]) for device in data]
+    # create a counter for each 'first' and if the counter is more than 5 devicese - ignore that line
 
+  
+    first_set = set()
+    last_set = set()
+    for device in data:
+        try:
+            first_set.add(device["first"])
+            last_set.add(device["last"])
+        except KeyError:
+            continue
+        devices_with_same_first = 0
+        devices_with_same_last = 0
+        for other_device in data:
+            try:
+                if device["first"] == other_device["first"]:
+                    devices_with_same_first += 1
+                if device["last"] == other_device["last"]:
+                    devices_with_same_last += 1
+            except KeyError:
+                continue
+
+        if devices_with_same_first > 5:
+            continue
+        if devices_with_same_last > 5:
+            continue
+    
     for device in data:
         for other_device in data:
             if device["mac"] != other_device["mac"]:
                 # if first or last of one of the devices is missing - skip
                 if "first" not in device or "first" not in other_device:
                     continue
-
                 # if the first detection of the device is not in the set of all the first detections of the devices - skip
-                if device["first"] not in first_set:
-                    continue
-                # if the last detection of the device is not in the set of all the last detections of the devices - skip
-                if device["last"] not in last_set:
+                try:
+                    if device["first"] not in first_set:
+                        continue
+                    if device["last"] not in last_set:
+                        continue
+
+                    if device["first"] == other_device["first"]:
+                        if device["last"] == other_device["last"]:
+                            together[device["mac"]].append(other_device["mac"])
+                        else:
+                            continue
+                    else:
+                        continue
+                except KeyError:
                     continue
 
-                # if the first detection of the device is the same as the first detection of the other device
-                if device["first"] == other_device["first"]:
-                    # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
-                    if abs(
-                        device["first"] - other_device["first"]
-                    ) <= datetime.timedelta(
-                        minutes=5
-                    ):
-                        together[device["mac"]].append(other_device["mac"])
-                # if the last detection of the device is the same as the last detection of the other device
-                if device["last"] == other_device["last"]:
-                    # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
-                    if abs(device["last"] - other_device["last"]) <= datetime.timedelta(
-                        minutes=5
-                    ):
-                        together[device["mac"]].append(other_device["mac"])
-                # if the first detection of the device is the same as the last detection of the other device
-                if device["first"] == other_device["last"]:
-                    # check if the difference between the first detection of the device and the last detection of the other device is less than 5 minutes
-                    if abs(device["first"] - other_device["last"]) <= datetime.timedelta(
-                        minutes=5
-                    ):
-                        together[device["mac"]].append(other_device["mac"])
-                # if the last detection of the device is the same as the first detection of the other device
-                if device["last"] == other_device["first"]:
-                    # check if the difference between the last detection of the device and the first detection of the other device is less than 5 minutes
-                    if abs(device["last"] - other_device["first"]) <= datetime.timedelta(
-                        minutes=5
-                    ):
-                        together[device["mac"]].append(other_device["mac"])
+    # for device in data:
+    #     for other_device in data:
+    #         if device["mac"] != other_device["mac"]:
+    #             # if first or last of one of the devices is missing - skip
+    #             if "first" not in device or "first" not in other_device:
+    #                 continue
+
+    #             # if the first detection of the device is not in the set of all the first detections of the devices - skip
+    #             if device["first"] not in first_set:
+    #                 continue
+    #             # if the last detection of the device is not in the set of all the last detections of the devices - skip
+    #             if device["last"] not in last_set:
+    #                 continue
+
+    #             # if the first detection of the device is the same as the first detection of the other device
+    #             if device["first"] == other_device["first"]:
+    #                 # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
+    #                 if abs(
+    #                     device["first"] - other_device["first"]
+    #                 ) <= datetime.timedelta(
+    #                     minutes=5
+    #                 ):
+    #                     together[device["mac"]].append(other_device["mac"])
+    #             # if the last detection of the device is the same as the last detection of the other device
+    #             if device["last"] == other_device["last"]:
+    #                 # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
+    #                 if abs(device["last"] - other_device["last"]) <= datetime.timedelta(
+    #                     minutes=5
+    #                 ):
+    #                     together[device["mac"]].append(other_device["mac"])
+    #             # if the first detection of the device is the same as the last detection of the other device
+    #             if device["first"] == other_device["last"]:
+    #                 # check if the difference between the first detection of the device and the last detection of the other device is less than 5 minutes
+    #                 if abs(device["first"] - other_device["last"]) <= datetime.timedelta(
+    #                     minutes=5
+    #                 ):
+    #                     together[device["mac"]].append(other_device["mac"])
+    #             # if the last detection of the device is the same as the first detection of the other device
+    #             if device["last"] == other_device["first"]:
+    #                 # check if the difference between the last detection of the device and the first detection of the other device is less than 5 minutes
+    #                 if abs(device["last"] - other_device["first"]) <= datetime.timedelta(
+    #                     minutes=5
+    #                 ):
+    #                     together[device["mac"]].append(other_device["mac"])
 
     # return together
 
@@ -284,7 +326,7 @@ def get_together(data):
     # Filter the dictionary to contain only devices that were seen together at least 3 times and less than 10 times
     together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 10}
 
-    
+
     return together
 
 
