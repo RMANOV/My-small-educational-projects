@@ -271,7 +271,31 @@ def find_together(data):
         else:
             continue
     # sort the list by the length of the sets - the longest set is the first
-    unique_owners = sorted(unique_owners, key=len, reverse=True)
+    # unique_owners = sorted(unique_owners, key=len, reverse=True)
+    # check if the current set is the subset or superset of the sets in the list
+    # if the current set is the subset or superset of the sets in the list - remove the sets from the list
+    # if the current set is not the subset or superset of the sets in the list - continue
+    for current_set in unique_owners:
+        for other_set in unique_owners:
+            if current_set == other_set:
+                continue
+            if current_set.issubset(other_set) or current_set.issuperset(other_set):
+                unique_owners.remove(other_set)
+            else:
+                continue
+    # check if the current set have 2 or more same elements with another set
+    # if the current set have 2 or more same elements with another set - join the sets
+    # if the current set have less than 2 same elements with another set - continue
+    for current_set in unique_owners:
+        for other_set in unique_owners:
+            if current_set == other_set:
+                continue
+            if len(current_set.intersection(other_set)) >= len(current_set) * 0.7:
+                current_set.update(other_set)
+                unique_owners.remove(other_set)
+            else:
+                continue
+    
 
 
 
@@ -408,7 +432,34 @@ def find_together(data):
             unique_sets_together.append(current_set)
         else:
             continue
-    unique_sets_together = sorted(unique_sets_together, key=len, reverse=True)
+    # check if the set of unique devices is subset or superset of another set of unique devices
+    # if it is - remove the set, in not - continue
+    for i in range(len(unique_sets_together)):
+        for j in range(len(unique_sets_together)):
+            if i != j:
+                if unique_sets_together[i].issubset(unique_sets_together[j]):
+                    unique_sets_together[i] = set()
+                elif unique_sets_together[i].issuperset(unique_sets_together[j]):
+                    unique_sets_together[j] = set()
+                else:
+                    continue
+    
+   # check if the current set have 2 or more same elements with another set
+    # if the current set have half or more same elements with another set - join the sets
+    # if the current set have less than 2 same elements with another set - continue
+    for i in range(len(unique_sets_together)):
+        for j in range(len(unique_sets_together)):
+            if i != j:
+                if len(unique_sets_together[i].intersection(unique_sets_together[j])) >= len(unique_sets_together[i]) * 0.7:
+                    unique_sets_together[i] = unique_sets_together[i].union(unique_sets_together[j])
+                    unique_sets_together[j] = set()
+                else:
+                    continue
+
+    # remove all empty sets
+    unique_sets_together = [x for x in unique_sets_together if x]
+
+
 
     return unique_sets_together, unique_owners
 
