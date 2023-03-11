@@ -170,6 +170,8 @@ def read_data(file_path):
                 device = {}  # reset the device dictionary
             else:
                 continue
+        # if "first" or "last" is missing - remove the device from the list
+        data = [device for device in data if "first" in device and "last" in device]
         return data
 
 
@@ -193,7 +195,53 @@ def get_together(data):
 
     # If "first"  - minutes - is the same for more than 5 devices - ignore that 'first' - it is the start of scaning
     # count how many devices have the same 'first' and 'last' - if more than 5 - ignore that 'first' and 'last' - it is the start of scaning and the end of scaning
-    #
+    # iterate over the list of devices and check if the 'first' and 'last' are the same for more than 5 devices - create a set of 'first' and 'last' and check the length of the set
+    # if so - ignore that 'first' and 'last' - it is the start of scaning and the end of scaning
+    first_set = set()
+    last_set = set()
+    for device in data:
+        devices_with_same_first = 0
+        devices_with_same_last = 0
+        for other_device in data:
+            
+            if not device["first"] or not other_device["first"] or not device["last"] or not other_device["last"]:
+                continue
+            try:
+                if device["first"] == other_device["first"]:
+                    devices_with_same_first += 1
+                if device["last"] == other_device["last"]:
+                    devices_with_same_last += 1
+            except KeyError:
+                continue
+
+        if devices_with_same_first > 5:
+            first_set.add(device["first"])
+            continue
+        if devices_with_same_last > 5:
+            last_set.add(device["last"])
+            continue
+
+    for device in data:
+        if device["first"] in first_set:
+            continue
+        if device["last"] in last_set:
+            continue
+        for other_device in data:
+            if device["mac"] == other_device["mac"]:
+                continue
+            if device["first"] == other_device["first"]:
+                if (
+                    device["first"] - other_device["first"]
+                ).total_seconds() <= 60 * 60 * 24:
+                    together[device["mac"]].append(other_device["mac"])
+            if device["last"] == other_device["last"]:
+                if (
+                    device["last"] - other_device["last"]
+                ).total_seconds() <= 60 * 60 * 24:
+                    together[device["mac"]].append(other_device["mac"])
+
+
+
 
 
 
