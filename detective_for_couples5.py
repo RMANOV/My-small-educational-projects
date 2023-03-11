@@ -48,7 +48,7 @@
 import datetime
 from collections import defaultdict
 import logging
-import datetime
+
 
 logging.basicConfig(filename="log.txt", level=logging.DEBUG)
 
@@ -175,7 +175,7 @@ def read_data(file_path):
         return data
 
 
-def get_together(data):
+def find_together(data):
     # create a dictionary where the key is the device and the value is a list of other devices that were seen together -
     # connect and disconnect at least 3 times, in difference of +/- X minutes
     # the list should be sorted by the number of times the device was seen with another device
@@ -220,6 +220,9 @@ def get_together(data):
         if devices_with_same_last > 5:
             last_set.add(device["last"])
             continue
+    
+    # if the 'first' and 'last' is same - the owner is one person - create a dictionary where the key is the user of the device and the value is a list of other devices that were seen together
+    owners = defaultdict(list)
 
     for device in data:
         if device["first"] in first_set:
@@ -239,6 +242,13 @@ def get_together(data):
                     device["last"] - other_device["last"]
                 ).total_seconds() <= 60 * 60 * 24:
                     together[device["mac"]].append(other_device["mac"])
+                if (device["first"] - other_device["first"]).total_seconds() <= 60 * 60 * 24 and (device["last"] - other_device["last"]).total_seconds() <= 60 * 60 * 24:
+                    owners[device["user"]].append(other_device["mac"])
+
+    # sort the dictionary by the number of times the device was seen with another device
+    owners = {k: sorted(v, key=lambda x: together[x], reverse=True) for k, v in owners.items()}
+    # remove devices without first and last detection
+    owners = {k: v for k, v in owners.items() if v}
 
 
 
@@ -380,16 +390,18 @@ def get_together(data):
             together.items(), key=lambda item: len(item[1]), reverse=True
         )
     }
+    
     # Filter the dictionary to contain only devices that were seen together at least 3 times and less than 10 times
     together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 10}
 
 
-    return together
+    return together, owners
 
 
 # replace all mac addresses to user text in the dictionary and write the result to a file together.txt and print the result to the console
-def write_together(together, file_path, data):
+def write_together(together, file_path, data, owners):
     with open(file_path, "w") as f:
+        device_names = [ d["user"] for d in data ]
         for device, other_devices in together.items():
             for other_device in other_devices:
                 for d in data:
@@ -397,14 +409,108 @@ def write_together(together, file_path, data):
                         device = d["user"]
                     if d["mac"] == other_device:
                         other_device = d["user"]
-            f.write(f"{device} - {other_device} - {len(other_devices)}\r")
-            print(f"{device} - {other_device} - {len(other_devices)}\r")
+            # replace mac addresses to user text
+
+            # *** device ***
+            # *** other_device1 ***
+            # *** other_device2 ***
+            f.write(f" *** {device} ***\r")
+            print(f" *** {device} ***\r")
+            f.write(f" *** {other_device} ***\r")
+            print(f" *** {other_device} ***\r")
+            print(f'**********************')
+        print(f'==========================================================')
+
+        for owner, devices in owners.items():
+            print(f" * {owner} *\r")
+            f.write(f" * {owner} *\r")
+            # replace mac addresses to user text
+            for device in devices:
+                for d in data:
+                    if d["mac"] == device:
+                        device = d["user"]
+                print(f" * {device} *\r")
+                f.write(f" * {device} *\r")
+            # write the result to a file together.txt and print the result to the console
+            # owner
+            # device1, device2, device3, device4, device5 etc.
+            print(f'**********************')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # for device, other_devices in together.items():
+        #     for other_device in other_devices:
+        #         for d in data:
+        #             if d["mac"] == device:
+        #                 device = d["user"]
+        #             if d["mac"] == other_device:
+        #                 other_device = d["user"]
+        #     f.write(f"{device} - {other_device} - {len(other_devices)}\r")
+        #     print(f"{device} - {other_device} - {len(other_devices)}\r")
+        #     print(f'**********************')
+        # print(f'==========================================================')
+
+        # for owner, devices in owners.items():
+        #     # replace mac addresses to user text
+        #     # write the result to a file together.txt and print the result to the console
+        #     # owner
+        #     # device1, device2, device3, device4, device5 etc.
+
+        #     f.write(f'{owner}\r')
+        #     print(f'{owner}\r')
+        #     # replace mac addresses to user text in the dictionary
+        #     devices_names = [d["user"] for d in data if d["mac"] in devices]
+        #     for device in devices_names:
+        #         f.write(f'{device}\r')
+        #         print(f'{device}\r')
+        #     print(f'**********************')
+        #     f.write(f'**********************\r')
+        # print(f'==========================================================')
+
+
 
 
 def main():
     data = read_data("devices.txt")
-    together = get_together(data)
-    write_together(together, "together.txt", data)
+    together, owners = find_together(data)
+    write_together(together, "together.txt", data, owners)
+
 
 
 if __name__ == "__main__":
