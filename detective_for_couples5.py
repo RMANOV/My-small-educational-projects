@@ -414,23 +414,21 @@ def write_together(together, file_path, data, owners):
             # *** device ***
             # *** other_device1 ***
             # *** other_device2 ***
-            f.write(f" *** {device} ***\r")
-            print(f" *** {device} ***\r")
-            f.write(f" *** {other_device} ***\r")
-            print(f" *** {other_device} ***\r")
+            f.write(f" ** {device} **\r")
+            print(f" ** {device} **\r")
+            f.write(f" ** {other_device} **\r")
+            print(f" ** {other_device} **\r")
             print(f'**********************')
         print(f'==========================================================')
 
         for owner, devices in owners.items():
-            print(f" * {owner} *\r")
-            f.write(f" * {owner} *\r")
+            print(f" *** {owner} ***\r")
+            f.write(f" *** {owner} ***\r")
             # replace mac addresses to user text
-            for device in devices:
-                for d in data:
-                    if d["mac"] == device:
-                        device = d["user"]
-                print(f" * {device} *\r")
-                f.write(f" * {device} *\r")
+            dev_names = [ d["user"] for d in data if d["mac"] in devices ]
+            # print all devices of the owner - each device in a new line
+            print(f"{' * '.join(dev_names)}\r")
+            f.write(f"{' * '.join(dev_names)}\r")
             # write the result to a file together.txt and print the result to the console
             # owner
             # device1, device2, device3, device4, device5 etc.
