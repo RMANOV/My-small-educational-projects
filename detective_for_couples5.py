@@ -193,7 +193,7 @@ def get_together(data):
 
     # If "first"  - minutes - is the same for more than 5 devices - ignore that 'first' - it is the start of scaning
     # count how many devices have the same 'first' and 'last' - if more than 5 - ignore that 'first' and 'last' - it is the start of scaning and the end of scaning
-    
+    #
 
 
 
