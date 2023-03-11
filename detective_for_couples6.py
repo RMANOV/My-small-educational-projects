@@ -238,12 +238,12 @@ def find_together(data):
             if device["mac"] == other_device["mac"]:
                 continue
             if device["first"] == other_device["first"]:
-                if (device["first"] - other_device["first"]).total_seconds() <= 300:
+                if (device["first"] - other_device["first"]).total_seconds() <= 200:
                     together[device["user"]].append(other_device["user"])
             if device["last"] == other_device["last"]:
                 if (
                     device["last"] - other_device["last"]
-                ).total_seconds() <= 300:  # cheks if the difference between the last detection is less than 5 minutes
+                ).total_seconds() <= 200:  # cheks if the difference between the last detection is less than 5 minutes
                     together[device["user"]].append(other_device["user"])
                 if (device["first"] - other_device["first"]).total_seconds() <= 60 and (
                     device["last"] - other_device["last"]
