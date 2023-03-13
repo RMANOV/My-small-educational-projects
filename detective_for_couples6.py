@@ -287,26 +287,33 @@ def find_together(data):
     # Create a new set if there is a symmetric difference between the current set and the sets in the list - 
     # from the result of simmetric difference - create a new set - remove result from the current set and the other set
     # if there is no symmetric difference between the current set and the sets in the list - continue
-    number_of_sets = len(unique_owners)
-    while number_of_sets > 1:
-        for current_set in unique_owners:
-            for other_set in unique_owners:
-                if current_set == other_set:
-                    number_of_sets -= 1
+# Loop until there is only one set in the list
+    while len(unique_owners) > 1:
+        # Keep track of whether we created a new set in this iteration
+        created_new_set = False
+        # Iterate over all pairs of sets
+        for i, current_set in enumerate(unique_owners):
+            for j, other_set in enumerate(unique_owners):
+                if i == j:
+                    # Don't compare a set to itself
                     continue
-                if current_set.symmetric_difference(other_set):
-                    new_set = current_set.symmetric_difference(other_set) # create a new set
-                    current_set.difference_update(new_set) # remove result from the current set
-                    other_set.difference_update(new_set) # remove result from the other set
-                    unique_owners.append(new_set) # add the new set to the list
-                    number_of_sets -= 1
+                # Find the symmetric difference between the sets
+                sym_diff = current_set.symmetric_difference(other_set)
+                if sym_diff:
+                    # If there is a symmetric difference, create a new set and remove
+                    # the difference from the current and other sets
+                    new_set = sym_diff
+                    current_set.difference_update(new_set)
+                    other_set.difference_update(new_set)
+                    unique_owners.append(new_set)
+                    created_new_set = True
                     print(*new_set, sep="\n")
                     print('*************')
+        if not created_new_set:
+            # If no new set was created in this iteration, there is no more
+            # symmetric difference to be found, so we can stop
+            break
 
-                else:
-                    number_of_sets -= 1
-                    continue
-        number_of_sets -= 1
 
 
 
@@ -497,24 +504,33 @@ def find_together(data):
     # from the result of simmetric difference - create a new set - remove result from the current set and from other set - 
     # add the result to the new set
     # if there is no symmetric difference between the current set and the sets in the list - continue
-    number_of_sets_together = len(unique_sets_together)
-    while number_of_sets_together > 1:
-        number_of_sets_together -= 1
-        for i in unique_sets_together:
-            for j in unique_sets_together:
-                if i != j:
-                    if unique_sets_together[i].symmetric_difference(unique_sets_together[j]):
-                        new_set = set()
-                        new_set = unique_sets_together[i].symmetric_difference(unique_sets_together[j])
-                        unique_sets_together[i] = unique_sets_together[i].difference(new_set)
-                        unique_sets_together[j] = unique_sets_together[j].difference(new_set)
-                        unique_sets_together.append(new_set)
-                        number_of_sets_together -= 1
-                        print(*new_set, sep = "\n")
-                        print("**********")
-                    else:
-                        number_of_sets_together -= 1
-                        continue
+# Loop until there is only one set in the list
+    while len(unique_sets_together) > 1:
+        # Keep track of whether we created a new set in this iteration
+        created_new_set = False
+        # Iterate over all pairs of sets
+        for i, set1 in enumerate(unique_sets_together):
+            for j, set2 in enumerate(unique_sets_together):
+                if i == j:
+                    # Don't compare a set to itself
+                    continue
+                # Find the symmetric difference between the sets
+                sym_diff = set1.symmetric_difference(set2)
+                if sym_diff:
+                    # If there is a symmetric difference, create a new set and remove
+                    # the difference from set1 and set2 and add the result to the new set
+                    new_set = sym_diff
+                    unique_sets_together[i] = set1.difference(new_set)
+                    unique_sets_together[j] = set2.difference(new_set)
+                    unique_sets_together.append(new_set)
+                    created_new_set = True
+                    print(*new_set, sep="\n")
+                    print('*************')
+        if not created_new_set:
+            # If no new set was created in this iteration, there is no more
+            # symmetric difference to be found, so we can stop
+            break
+
         
     
     
