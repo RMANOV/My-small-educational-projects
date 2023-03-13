@@ -270,27 +270,75 @@ def find_together(data):
             unique_owners.append(current_set)
         else:
             continue
-    # sort the list by the length of the sets - the longest set is the first
+    # sort the list by the length of the sets
     # unique_owners = sorted(unique_owners, key=len, reverse=True)
     # check if the current set is the subset or superset of the sets in the list
     # if the current set is the subset or superset of the sets in the list - remove the sets from the list
     # if the current set is not the subset or superset of the sets in the list - continue
-    for current_set in unique_owners:
-        for other_set in unique_owners:
-            if current_set == other_set:
-                continue
-            if current_set.issubset(other_set) or current_set.issuperset(other_set):
-                unique_owners.remove(other_set)
-            else:
-                continue
-    # check if the current set have 2 or more same elements with another set
+    # for current_set in unique_owners:
+    #     for other_set in unique_owners:
+    #         if current_set == other_set:
+    #             continue
+    #         if current_set.issubset(other_set) or current_set.issuperset(other_set):
+    #             unique_owners.remove(other_set)
+    #         else:
+    #             continue
+
+    # Create a new set if there is a symmetric difference between the current set and the sets in the list - 
+    # from the result of simmetric difference - create a new set - remove result from the current set and the other set
+    # if there is no symmetric difference between the current set and the sets in the list - continue
+    number_of_sets = len(unique_owners)
+    while number_of_sets > 1:
+        for current_set in unique_owners:
+            for other_set in unique_owners:
+                if current_set == other_set:
+                    number_of_sets -= 1
+                    continue
+                if current_set.symmetric_difference(other_set):
+                    new_set = current_set.symmetric_difference(other_set) # create a new set
+                    current_set.difference_update(new_set) # remove result from the current set
+                    other_set.difference_update(new_set) # remove result from the other set
+                    unique_owners.append(new_set) # add the new set to the list
+                    number_of_sets -= 1
+                    print(*new_set, sep="\n")
+                    print('*************')
+
+                else:
+                    number_of_sets -= 1
+                    continue
+        number_of_sets -= 1
+
+
+
+        # number_of_sets -= 1
+        # for current_set in unique_owners:
+        #     for other_set in unique_owners:
+        #         if current_set == other_set:
+        #             continue
+        #         if current_set.symmetric_difference(other_set):
+        #             new_set = current_set.symmetric_difference(other_set) # create a new set
+        #             current_set.difference_update(new_set) # remove result from the current set
+        #             other_set.difference_update(new_set) # remove result from the other set
+        #             unique_owners.append(new_set) # add the new set to the list
+        #             print(*new_set, sep="\n")
+        #             print('*************')
+        #             # wait 1 second to see the result
+        #             # time.sleep(1)
+        #         else:
+        #             continue
+
+
+
+
+
+    # check if the current set have more same elements with another set
     # if the current set have 2 or more same elements with another set - join the sets
     # if the current set have less than 2 same elements with another set - continue
     for current_set in unique_owners:
         for other_set in unique_owners:
             if current_set == other_set:
                 continue
-            if len(current_set.intersection(other_set)) >= len(current_set) * 0.7:
+            if len(current_set.intersection(other_set)) >= len(current_set) * 0.9: # if the current set have 90% or more same elements with another set - join the sets
                 current_set.update(other_set)
                 unique_owners.remove(other_set)
             else:
@@ -434,15 +482,41 @@ def find_together(data):
             continue
     # check if the set of unique devices is subset or superset of another set of unique devices
     # if it is - remove the set, in not - continue
-    for i in range(len(unique_sets_together)):
-        for j in range(len(unique_sets_together)):
-            if i != j:
-                if unique_sets_together[i].issubset(unique_sets_together[j]):
-                    unique_sets_together[i] = set()
-                elif unique_sets_together[i].issuperset(unique_sets_together[j]):
-                    unique_sets_together[j] = set()
-                else:
-                    continue
+    # for i in range(len(unique_sets_together)):
+    #     for j in range(len(unique_sets_together)):
+    #         if i != j:
+    #             if unique_sets_together[i].issubset(unique_sets_together[j]):
+    #                 unique_sets_together[i] = set()
+    #             elif unique_sets_together[i].issuperset(unique_sets_together[j]):
+    #                 unique_sets_together[j] = set()
+    #             else:
+    #                 continue
+
+
+    # Create a new set if there is a symmetric difference between the current set and the sets in the list - 
+    # from the result of simmetric difference - create a new set - remove result from the current set and from other set - 
+    # add the result to the new set
+    # if there is no symmetric difference between the current set and the sets in the list - continue
+    number_of_sets_together = len(unique_sets_together)
+    while number_of_sets_together > 1:
+        number_of_sets_together -= 1
+        for i in unique_sets_together:
+            for j in unique_sets_together:
+                if i != j:
+                    if unique_sets_together[i].symmetric_difference(unique_sets_together[j]):
+                        new_set = set()
+                        new_set = unique_sets_together[i].symmetric_difference(unique_sets_together[j])
+                        unique_sets_together[i] = unique_sets_together[i].difference(new_set)
+                        unique_sets_together[j] = unique_sets_together[j].difference(new_set)
+                        unique_sets_together.append(new_set)
+                        number_of_sets_together -= 1
+                        print(*new_set, sep = "\n")
+                        print("**********")
+                    else:
+                        number_of_sets_together -= 1
+                        continue
+        
+    
     
    # check if the current set have 2 or more same elements with another set
     # if the current set have half or more same elements with another set - join the sets
@@ -450,7 +524,7 @@ def find_together(data):
     for i in range(len(unique_sets_together)):
         for j in range(len(unique_sets_together)):
             if i != j:
-                if len(unique_sets_together[i].intersection(unique_sets_together[j])) >= len(unique_sets_together[i]) * 0.7:
+                if len(unique_sets_together[i].intersection(unique_sets_together[j])) >= len(unique_sets_together[i]) * 0.9:
                     unique_sets_together[i] = unique_sets_together[i].union(unique_sets_together[j])
                     unique_sets_together[j] = set()
                 else:
