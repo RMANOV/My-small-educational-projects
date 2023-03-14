@@ -267,6 +267,30 @@ def find_together(data):
     # remove devices without first and last detection
     owners = {k: v for k, v in owners.items() if v}
 
+    # if one device is in the list of other devices - check where it is seen more times - in the list of other devices or in the list of other devices of the other device
+    # if the device is seen more times in the list of other devices - remove it from the list of current devices of the other device
+        # iterate over the dictionary and check if the current device is in the list of other devices of the other device
+        # if so - check if the current device is seen more times in the list of other devices
+        # if the current device is seen more times in the list of other devices - remove it from the list of other devices of the device
+    # reduce the list of other devices to unique devices - each pair key-value in the dictionary should have unique devices in the list of other devices
+    # some devices do not have "other devices" - ignore them
+    for k, v in owners.items():
+        for other_device in v:
+            if other_device in owners:
+                if k in owners[other_device]:
+                    if v.count(k) > owners[other_device].count(k):
+                        owners[other_device].remove(k)
+                    else:
+                        owners[k].remove(other_device)
+            else:
+                continue
+
+
+
+
+
+
+
     # from every pair key-value in the dictionary - create a set of the key and the value
     # check if the current set is same as the sets in the list
     # if the current set is not the same as the sets in the list - add it to the list
@@ -477,7 +501,31 @@ def find_together(data):
     } # sort the dictionary by the number of times the device was seen with another device in descending order
 
     # Filter the dictionary to contain only devices that were seen together at least 3 times and less than 100 times
-    together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 100}
+    # together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 100}
+    # remove devices without first and last detection
+    together = {k: v for k, v in together.items() if "first" in k and "last" in k}
+
+    # if one device is in the list of other devices - check where it is seen more times - in the list of other devices or in the list of other devices of the other device
+    # if the device is seen more times in the list of other devices - remove it from the list of current devices of the other device
+        # iterate over the dictionary and check if the current device is in the list of other devices of the other device
+        # if so - check if the current device is seen more times in the list of other devices
+        # if the current device is seen more times in the list of other devices - remove it from the list of other devices of the device
+    # reduce the list of other devices to unique devices - each pair key-value in the dictionary should have unique devices in the list of other devices
+    # some devices do not have "other devices" - ignore them
+    for k, v in together.items():
+        if len(v) > 0:
+            for other_device in v:
+                if other_device in together:
+                    if k in together[other_device]:
+                        if v.count(k) > together[other_device].count(k):
+                            together[other_device].remove(k)
+                        else:
+                            v.remove(other_device)
+                else:
+                    continue
+        else:
+            continue
+
 
     unique_sets_together = []
     for k, v in together.items():
