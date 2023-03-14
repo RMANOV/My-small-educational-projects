@@ -280,7 +280,10 @@ def find_together(data):
                 Counter[val] += 1
             else:
                 Counter[val] = 1
-    # remove the old values from the list and add values with the counter as integers
+    # remove the old values from the list and instead add a list with 2 elements - key - other devices name and value - the counter as integer
+    
+    
+    # owners = {k: [val for val in v if val not in Counter] + [Counter[val] for val in v if val in Counter] for k, v in owners.items()}
     # owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
     # owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
     owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
