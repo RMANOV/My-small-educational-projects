@@ -226,7 +226,7 @@ def find_together(data):
             last_set.add(device["last"])
             continue
 
-    # if the 'first' and 'last' is same - the owner is one person - create a dictionary where the key is the user of the device and the value is a list of other devices that were seen together
+    # if the 'first' and 'last' is same  - many times - the owner is one person - create a dictionary where the key is the user of the device and the value is a list of other devices that were seen together
     owners = defaultdict(list)
 
     for device in data:
@@ -254,6 +254,18 @@ def find_together(data):
     owners = {
         k: sorted(v, key=lambda x: together[x], reverse=True) for k, v in owners.items()
     }
+    together = { k: sorted(v, key=lambda x: together[x], reverse=True) for k, v in together.items()}
+    # filter the dictionary - to have only devices that were seen together at least 5 times
+    
+
+    # remove devices that were seen together less than 5 times
+    # owners = {k: v for k, v in owners.items() if len(v) >= 5}
+
+
+
+
+
+
     # Filter the dictionary - to have only devices that were seen together maximum times
         # find the maximum number of times the device was seen with another device
     # max_times = 0
@@ -498,12 +510,13 @@ def find_together(data):
         for k, v in sorted(
             together.items(), key=lambda item: len(item[1]), reverse=True
         )
-    } # sort the dictionary by the number of times the device was seen with another device in descending order
+    } 
 
-    # Filter the dictionary to contain only devices that were seen together at least 3 times and less than 100 times
-    # together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 100}
+
+    # Filter the dictionary to contain only devices that were seen together at least 3 times and less than 1000 times
+    # together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 1000}
     # remove devices without first and last detection
-    together = {k: v for k, v in together.items() if "first" in k and "last" in k}
+    # together = {k: v for k, v in together.items() if "first" in k and "last" in k}
 
     # if one device is in the list of other devices - check where it is seen more times - in the list of other devices or in the list of other devices of the other device
     # if the device is seen more times in the list of other devices - remove it from the list of current devices of the other device
