@@ -280,15 +280,23 @@ def find_together(data):
                 Counter[val] += 1
             else:
                 Counter[val] = 1
-    # remove the values from the list and add it to the dictionary with the counter
-    for k, v in owners.items():
-        for val in v:
-            if val in Counter:
-                owners[k] = Counter[val]
+    # remove the old values from the list and add values with the counter as integers
+    # owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
+    # owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
+    owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
+    
+    # remove duplicates from the list
+    owners = {k: list(set(v)) for k, v in owners.items()}
+
+    # sort dictionary by the number of values and then by the last 2 symbols of the value
+    owners = {k: sorted(v, key=lambda x: (len(x), x[-2:]), reverse=True) for k, v in owners.items()}
+    
     # sort dictionary by the counter
-    owners = {k: sorted(v, key=lambda x: Counter[x], reverse=True) for k, v in owners.items()}
-
-
+    # owners = {k: sorted(v, key=lambda x: Counter[x], reverse=True) for k, v in owners.items()}
+    # in the dictionary - the key is the user of the device and the value is the number of times the device was seen with another device
+    # {'MARIAN DESK XXX': 4, 'qvserver.boni.local': 3, 'SERVER OFFICE': 1, 'era.boni.local': 1, 'srv-santa-01.boni.local': 1, 'ROUTER BONIBACKUP': 1}
+    # first should be the device that has greates values
+    # {'MARIAN DESK XXX': 4, 'qvserver.boni.local': 3, 'SERVER OFFICE': 1, 'era.boni.local': 1, 'srv-santa-01.boni.local': 1, 'ROUTER BONIBACKUP': 1}
     
     Counter2 = {}
     for k, v in together.items():
@@ -298,15 +306,21 @@ def find_together(data):
             else:
                 Counter2[val] = 1
     
-    # remove the values from the list and add it to the dictionary with the counter
-    for k, v in together.items():
-        for val in v:
-            if val in Counter2:
-                together[k] = Counter2[val]
+    # replace old values with key-value pairs - 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'MARIAN DESK XXX' replace with 'MARIAN DESK XXX': 4
+    together = { k: [val for val in v if val not in Counter2] + [f"{val} {Counter2[val]}" for val in v if val in Counter2] for k, v in together.items()}
+
+    # remove duplicates from the list
+    together = {k: list(set(v)) for k, v in together.items()}
+
+    # sort dictionary by the number of values and then by the last 2 symbols of the value
+    together = {k: sorted(v, key=lambda x: (len(x), x[-2:]), reverse=True) for k, v in together.items()}
+
+
+
 
     # sort dictionary by the counter
-    together = {k: sorted(v, key=lambda x: Counter2[x], reverse=True) for k, v in together.items()}
-    
+    # together = {k: sorted(v, key=lambda x: Counter2[x], reverse=True) for k, v in together.items()}
+
 
 
 
@@ -529,16 +543,16 @@ def find_together(data):
         # if the current device is seen more times in the list of other devices - remove it from the list of other devices of the device
     # reduce the list of other devices to unique devices - each pair key-value in the dictionary should have unique devices in the list of other devices
     # some devices do not have "other devices" - ignore them
-    for k, v in owners.items():
-        for other_device in v:
-            if other_device in owners:
-                if k in owners[other_device]:
-                    if v.count(k) > owners[other_device].count(k):
-                        owners[other_device].remove(k)
-                    else:
-                        owners[k].remove(other_device)
-            else:
-                continue
+    # for k, v in owners.items():
+    #     for other_device in v:
+    #         if other_device in owners:
+    #             if k in owners[other_device]:
+    #                 if v.count(k) > owners[other_device].count(k):
+    #                     owners[other_device].remove(k)
+    #                 else:
+    #                     owners[k].remove(other_device)
+    #         else:
+    #             continue
 
 
     # if one device is in the list of other devices - check where it is seen more times - in the list of other devices or in the list of other devices of the other device
@@ -548,112 +562,184 @@ def find_together(data):
         # if the current device is seen more times in the list of other devices - remove it from the list of other devices of the device
     # reduce the list of other devices to unique devices - each pair key-value in the dictionary should have unique devices in the list of other devices
     # some devices do not have "other devices" - ignore them
-    for k, v in together.items():
-        if len(v) > 0:
-            for other_device in v:
-                if other_device in together:
-                    if k in together[other_device]:
-                        if v.count(k) > together[other_device].count(k):
-                            together[other_device].remove(k)
-                        else:
-                            v.remove(other_device)
-                else:
-                    continue
-        else:
-            continue
+    # for k, v in together.items():
+    #     if len(v) > 0:
+    #         for other_device in v:
+    #             if other_device in together:
+    #                 if k in together[other_device]:
+    #                     if v.count(k) > together[other_device].count(k):
+    #                         together[other_device].remove(k)
+    #                     else:
+    #                         v.remove(other_device)
+    #             else:
+    #                 continue
+    #     else:
+    #         continue
 
     # from every pair key-value in the dictionary - create a set of the key and the value
     # check if the current set is same as the sets in the list
     # if the current set is not the same as the sets in the list - add it to the list
     # if the current set is the same as the sets in the list - continue
-    unique_owners = []
-    for k, v in owners.items():
-        current_set = set()
-        current_set.add(k)
-        current_set.update(v)
-        if current_set not in unique_owners:
-            unique_owners.append(current_set)
-        else:
-            continue
+    # unique_owners = []
+    # for k, v in owners.items():
+    #     current_set = set()
+    #     current_set.add(k)
+    #     current_set.update(v)
+    #     if current_set not in unique_owners:
+    #         unique_owners.append(current_set)
+    #     else:
+    #         continue
 
-    unique_sets_together = []
-    for k, v in together.items():
-        current_set = set()
-        current_set.add(k)
-        current_set.update(v)
-        if current_set not in unique_sets_together:
-            unique_sets_together.append(current_set)
-        else:
-            continue
-    # check if the set of unique devices is subset or superset of another set of unique devices
-    # if it is - remove the set, in not - continue
-    # for i in range(len(unique_sets_together)):
-    #     for j in range(len(unique_sets_together)):
-    #         if i != j:
-    #             if unique_sets_together[i].issubset(unique_sets_together[j]):
-    #                 unique_sets_together[i] = set()
-    #             elif unique_sets_together[i].issuperset(unique_sets_together[j]):
-    #                 unique_sets_together[j] = set()
-    #             else:
-    #                 continue
+    # unique_sets_together = []
+    # for k, v in together.items():
+    #     current_set = set()
+    #     current_set.add(k)
+    #     current_set.update(v)
+    #     if current_set not in unique_sets_together:
+    #         unique_sets_together.append(current_set)
+    #     else:
+    #         continue
+    # # check if the set of unique devices is subset or superset of another set of unique devices
+    # # if it is - remove the set, in not - continue
+    # # for i in range(len(unique_sets_together)):
+    # #     for j in range(len(unique_sets_together)):
+    # #         if i != j:
+    # #             if unique_sets_together[i].issubset(unique_sets_together[j]):
+    # #                 unique_sets_together[i] = set()
+    # #             elif unique_sets_together[i].issuperset(unique_sets_together[j]):
+    # #                 unique_sets_together[j] = set()
+    # #             else:
+    # #                 continue
 
-    # Create a new set if there is a intersection between the current set and the sets in the list -
-    # from the result of simmetric intersection - create a new set - remove result from the current set and from other set -
-    # add the result to the new set
-    # if there is no intersection between the current set and the sets in the list - continue
-    # Loop until there is only one set in the list
-    # while len(unique_sets_together) > 1:
-    #     # Keep track of whether we created a new set in this iteration
-    #     created_new_set = False
-    #     # Iterate over all pairs of sets
-    #     for i, set1 in enumerate(unique_sets_together):
-    #         for j, set2 in enumerate(unique_sets_together):
-    #             if i == j:
-    #                 # Don't compare a set to itself
-    #                 continue
-    #             # Find the intersection between the sets
-    #             intersections = set1.intersection(set2)
-    #             if intersections:
-    #                 # If there is a intersection, create a new set and remove
-    #                 # the intersection from set1 and set2 and add the result to the new set
-    #                 new_set = intersections
-    #                 unique_sets_together[i] = set1.intersection(new_set)
-    #                 unique_sets_together[j] = set2.intersection(new_set)
-    #                 unique_sets_together.append(new_set)
-    #                 created_new_set = True
-    #                 print(*new_set, sep="\n")
-    #                 print("*************")
-    #     if not created_new_set:
-    #         # If no new set was created in this iteration, there is no more
-    #         # intersection to be found, so we can stop
-    #         break
+    # # Create a new set if there is a intersection between the current set and the sets in the list -
+    # # from the result of simmetric intersection - create a new set - remove result from the current set and from other set -
+    # # add the result to the new set
+    # # if there is no intersection between the current set and the sets in the list - continue
+    # # Loop until there is only one set in the list
+    # # while len(unique_sets_together) > 1:
+    # #     # Keep track of whether we created a new set in this iteration
+    # #     created_new_set = False
+    # #     # Iterate over all pairs of sets
+    # #     for i, set1 in enumerate(unique_sets_together):
+    # #         for j, set2 in enumerate(unique_sets_together):
+    # #             if i == j:
+    # #                 # Don't compare a set to itself
+    # #                 continue
+    # #             # Find the intersection between the sets
+    # #             intersections = set1.intersection(set2)
+    # #             if intersections:
+    # #                 # If there is a intersection, create a new set and remove
+    # #                 # the intersection from set1 and set2 and add the result to the new set
+    # #                 new_set = intersections
+    # #                 unique_sets_together[i] = set1.intersection(new_set)
+    # #                 unique_sets_together[j] = set2.intersection(new_set)
+    # #                 unique_sets_together.append(new_set)
+    # #                 created_new_set = True
+    # #                 print(*new_set, sep="\n")
+    # #                 print("*************")
+    # #     if not created_new_set:
+    # #         # If no new set was created in this iteration, there is no more
+    # #         # intersection to be found, so we can stop
+    # #         break
 
-    # check if the current set have 2 or more same elements with another set
-    # if the current set have half or more same elements with another set - join the sets
-    # if the current set have less than 2 same elements with another set - continue
-    # for i in range(len(unique_sets_together)):
-    #     for j in range(len(unique_sets_together)):
-    #         if i != j:
-    #             if (
-    #                 len(unique_sets_together[i].intersection(unique_sets_together[j]))
-    #                 >= len(unique_sets_together[i]) * 0.9
-    #             ):
-    #                 unique_sets_together[i] = unique_sets_together[i].union(
-    #                     unique_sets_together[j]
-    #                 )
-    #                 unique_sets_together[j] = set()
-    #             else:
-    #                 continue
+    # # check if the current set have 2 or more same elements with another set
+    # # if the current set have half or more same elements with another set - join the sets
+    # # if the current set have less than 2 same elements with another set - continue
+    # # for i in range(len(unique_sets_together)):
+    # #     for j in range(len(unique_sets_together)):
+    # #         if i != j:
+    # #             if (
+    # #                 len(unique_sets_together[i].intersection(unique_sets_together[j]))
+    # #                 >= len(unique_sets_together[i]) * 0.9
+    # #             ):
+    # #                 unique_sets_together[i] = unique_sets_together[i].union(
+    # #                     unique_sets_together[j]
+    # #                 )
+    # #                 unique_sets_together[j] = set()
+    # #             else:
+    # #                 continue
 
-    # remove all empty sets
-    unique_sets_together = [x for x in unique_sets_together if x]
+    # # remove all empty sets
+    # unique_sets_together = [x for x in unique_sets_together if x]
 
-    return unique_sets_together, unique_owners
+    return together, owners
 
 
-# replace all mac addresses to user text in the dictionary and write the result to a file together.txt and print the result to the console
-def write_together(unique_sets_together, file_path, data, unique_owners):
+
+def write_together(together, file_path, data, owners):
     with open(file_path, "w") as f:
+        print(f"==========================================================")
+        f.write(f"==========================================================")
+        number_of_group = len(together)
+        for k, v in together.items():
+            print(f" Group {number_of_group} -- together")
+            print(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+            print(f"********************")
+            number_of_group -= 1
+            # write it in file
+            f.write(f" Group {number_of_group} -- together")
+            f.write(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+            f.write(f"********************")
+
+
+
+        number_of_owners = len(owners)
+        for k, v in owners.items():
+            print(f" Group {number_of_owners} -- owners")
+            print(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+            print(f"********************")
+            number_of_owners -= 1
+            # write it in file
+            f.write(f" Group {number_of_owners} -- owners")
+            f.write(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+            f.write(f"********************")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # print every set of unique devices and the number of times they were seen together
         # set1
         # device1
@@ -665,46 +751,47 @@ def write_together(unique_sets_together, file_path, data, unique_owners):
         # device1
         # device2
 
-        print(f"==========================================================")
-        f.write(f"==========================================================")
-        number_of_group = 0
-        for group in unique_sets_together:
-            number_of_group += 1
+        # print(f"==========================================================")
+        # f.write(f"==========================================================")
+        # number_of_group = 0
+        # for group in together:
+        #     number_of_group += 1
 
-            print(
-                f"{number_of_group} group together - number of devices is {len(group)}"
-            )
-            f.write(f"{number_of_group}")
-            for device in group:
-                print(f"{device}")
-                f.write(f"{device}")
-            print(f"**********************")
-            f.write(f"**********************")
+        #     print(
+        #         f"{number_of_group} group together - number of devices is {len(group)}"
+        #     )
+        #     f.write(f"{number_of_group}")
+        #     for device in group:
+        #         # print the device name and number
+        #         print(f" {device} - together times {together[group][device]}")
+        #         f.write(f"{device}")
+        #     print(f"**********************")
+        #     f.write(f"**********************")
 
-        # print every set of unique owners and the number of times they were seen together
-        # set1
-        # device1
-        # device2
-        # device3
-        # devicex
-        # **************
-        # set2
-        # device1
-        # device2
+        # # print every set of unique owners and the number of times they were seen together
+        # # set1
+        # # device1
+        # # device2
+        # # device3
+        # # devicex
+        # # **************
+        # # set2
+        # # device1
+        # # device2
 
-        print(f"==========================================================")
-        f.write(f"==========================================================")
-        number_of_group = 0
-        for group in unique_owners:
-            number_of_group += 1
+        # print(f"==========================================================")
+        # f.write(f"==========================================================")
+        # number_of_group = 0
+        # for group in owners:
+        #     number_of_group += 1
 
-            print(f"{number_of_group} owners - number of devices is {len(group)}")
-            f.write(f"{number_of_group}")
-            for device in group:
-                print(f"{device}")
-                f.write(f"{device}")
-            print(f"**********************")
-            f.write(f"**********************")
+        #     print(f"{number_of_group} owners - number of devices is {len(group)}")
+        #     f.write(f"{number_of_group}")
+        #     for device in group:
+        #         print(f"{device} - together times {owners[group][device]}")
+        #         f.write(f"{device}")
+        #     print(f"**********************")
+        #     f.write(f"**********************")
 
         # for device, other_devices in together.items():
         #     for other_device in other_devices:
@@ -738,8 +825,8 @@ def write_together(unique_sets_together, file_path, data, unique_owners):
 
 def main():
     data = read_data("devices.txt")
-    unique_sets_together, unique_owners = find_together(data)
-    write_together(unique_sets_together, "together.txt", data, unique_owners)
+    together, owners = find_together(data)
+    write_together(together, "together.txt", data, owners)
 
 
 if __name__ == "__main__":
