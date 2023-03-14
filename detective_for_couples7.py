@@ -254,6 +254,16 @@ def find_together(data):
     owners = {
         k: sorted(v, key=lambda x: together[x], reverse=True) for k, v in owners.items()
     }
+    # Filter the dictionary - to have only devices that were seen together maximum times
+        # find the maximum number of times the device was seen with another device
+    # max_times = 0
+    # for k, v in owners.items():
+    #     if len(v) > max_times:
+    #         max_times = len(v)
+    # # remove devices that were seen together less than the maximum number of times
+    # owners = {k: v for k, v in owners.items() if len(v) == max_times}
+
+    
     # remove devices without first and last detection
     owners = {k: v for k, v in owners.items() if v}
 
