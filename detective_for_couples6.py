@@ -15,7 +15,7 @@
 # ===
 # Calculate the number of times each device was seen with another device
 # Return a list of devices that were seen together connect and disconnect at least 3 times,
-# sorted by the number of times they were seen together - +/- X minutes difference in the time of connection or disconnection
+# sorted by the number of times they were seen together - +/- X minutes intersection in the time of connection or disconnection
 # The list should be sorted by the number of times the device was seen with another device
 # If two devices were seen together the same number of times, sort them by the user_text
 # Store the result in a file called "together.txt"
@@ -177,7 +177,7 @@ def read_data(file_path):
 
 def find_together(data):
     # create a dictionary where the key is the device and the value is a list of other devices that were seen together -
-    # connect and disconnect at least 3 times, in difference of +/- X minutes
+    # connect and disconnect at least 3 times, in intersection of +/- X minutes
     # the list should be sorted by the number of times the device was seen with another device
     # 1.Iterate over the list of devices
     # check if the device is not the same as the other device - by comparing mac addresses
@@ -238,16 +238,16 @@ def find_together(data):
             if device["mac"] == other_device["mac"]:
                 continue
             if device["first"] == other_device["first"]:
-                if (device["first"] - other_device["first"]).total_seconds() <= 200:
+                if (device["first"] - other_device["first"]).total_seconds() <= 30:
                     together[device["user"]].append(other_device["user"])
             if device["last"] == other_device["last"]:
                 if (
                     device["last"] - other_device["last"]
-                ).total_seconds() <= 200:  # cheks if the difference between the last detection is less than 5 minutes
+                ).total_seconds() <= 30:  # cheks if the difference between the last detection is less than 5 minutes
                     together[device["user"]].append(other_device["user"])
-                if (device["first"] - other_device["first"]).total_seconds() <= 60 and (
+                if (device["first"] - other_device["first"]).total_seconds() <= 10 and (
                     device["last"] - other_device["last"]
-                ).total_seconds() <= 60:  #
+                ).total_seconds() <= 10:  # cheks if the difference between the first and last detection is less than 5 minutes
                     owners[device["user"]].append(other_device["user"])
 
     # sort the dictionary by the number of times the device was seen with another device
@@ -284,38 +284,35 @@ def find_together(data):
     #         else:
     #             continue
 
-    # Create a new set if there is a symmetric difference between the current set and the sets in the list - 
-    # from the result of simmetric difference - create a new set - remove result from the current set and the other set
-    # if there is no symmetric difference between the current set and the sets in the list - continue
-# Loop until there is only one set in the list
-    while len(unique_owners) > 1:
-        # Keep track of whether we created a new set in this iteration
-        created_new_set = False
-        # Iterate over all pairs of sets
-        for i, current_set in enumerate(unique_owners):
-            for j, other_set in enumerate(unique_owners):
-                if i == j:
-                    # Don't compare a set to itself
-                    continue
-                # Find the symmetric difference between the sets
-                sym_diff = current_set.symmetric_difference(other_set)
-                if sym_diff:
-                    # If there is a symmetric difference, create a new set and remove
-                    # the difference from the current and other sets
-                    new_set = sym_diff
-                    current_set.difference_update(new_set)
-                    other_set.difference_update(new_set)
-                    unique_owners.append(new_set)
-                    created_new_set = True
-                    print(*new_set, sep="\n")
-                    print('*************')
-        if not created_new_set:
-            # If no new set was created in this iteration, there is no more
-            # symmetric difference to be found, so we can stop
-            break
-
-
-
+    # Create a new set if there is a intersection between the current set and the sets in the list -
+    # from the result of intersection - create a new set - remove result from the current set and the other set
+    # if there is no intersection between the current set and the sets in the list - continue
+    # Loop until there is only one set in the list
+    # while len(unique_owners) > 1:
+    #     # Keep track of whether we created a new set in this iteration
+    #     created_new_set = False
+    #     # Iterate over all pairs of sets
+    #     for i, current_set in enumerate(unique_owners):
+    #         for j, other_set in enumerate(unique_owners):
+    #             if i == j:
+    #                 # Don't compare a set to itself
+    #                 continue
+    #             # Find the intersection between the sets
+    #             intersection = current_set.intersection(other_set)
+    #             if intersection:
+    #                 # If there is a intersection, create a new set and remove
+    #                 # the intersection from the current and other sets
+    #                 new_set = intersection
+    #                 current_set.difference_update(new_set)
+    #                 other_set.difference_update(new_set)
+    #                 unique_owners.append(new_set)
+    #                 created_new_set = True
+    #                 print(*new_set, sep="\n")
+    #                 print("*************")
+    #     if not created_new_set:
+    #         # If no new set was created in this iteration, there is no more
+    #         # intersection to be found, so we can stop
+    #         break
 
         # number_of_sets -= 1
         # for current_set in unique_owners:
@@ -334,25 +331,20 @@ def find_together(data):
         #         else:
         #             continue
 
-
-
-
-
     # check if the current set have more same elements with another set
     # if the current set have 2 or more same elements with another set - join the sets
     # if the current set have less than 2 same elements with another set - continue
-    for current_set in unique_owners:
-        for other_set in unique_owners:
-            if current_set == other_set:
-                continue
-            if len(current_set.intersection(other_set)) >= len(current_set) * 0.9: # if the current set have 90% or more same elements with another set - join the sets
-                current_set.update(other_set)
-                unique_owners.remove(other_set)
-            else:
-                continue
-    
-
-
+    # for current_set in unique_owners:
+    #     for other_set in unique_owners:
+    #         if current_set == other_set:
+    #             continue
+    #         if (
+    #             len(current_set.intersection(other_set)) >= len(current_set) * 0.9
+    #         ):  # if the current set have 90% or more same elements with another set - join the sets
+    #             current_set.update(other_set)
+    #             unique_owners.remove(other_set)
+    #         else:
+    #             continue
 
     # first_set = set()
     # last_set = set()
@@ -417,7 +409,7 @@ def find_together(data):
 
     #             # if the first detection of the device is the same as the first detection of the other device
     #             if device["first"] == other_device["first"]:
-    #                 # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
+    #                 # check if the intersection between the first detection of the device and the first detection of the other device is less than 5 minutes
     #                 if abs(
     #                     device["first"] - other_device["first"]
     #                 ) <= datetime.timedelta(
@@ -426,21 +418,21 @@ def find_together(data):
     #                     together[device["mac"]].append(other_device["mac"])
     #             # if the last detection of the device is the same as the last detection of the other device
     #             if device["last"] == other_device["last"]:
-    #                 # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
+    #                 # check if the intersection between the last detection of the device and the last detection of the other device is less than 5 minutes
     #                 if abs(device["last"] - other_device["last"]) <= datetime.timedelta(
     #                     minutes=5
     #                 ):
     #                     together[device["mac"]].append(other_device["mac"])
     #             # if the first detection of the device is the same as the last detection of the other device
     #             if device["first"] == other_device["last"]:
-    #                 # check if the difference between the first detection of the device and the last detection of the other device is less than 5 minutes
+    #                 # check if the intersection between the first detection of the device and the last detection of the other device is less than 5 minutes
     #                 if abs(device["first"] - other_device["last"]) <= datetime.timedelta(
     #                     minutes=5
     #                 ):
     #                     together[device["mac"]].append(other_device["mac"])
     #             # if the last detection of the device is the same as the first detection of the other device
     #             if device["last"] == other_device["first"]:
-    #                 # check if the difference between the last detection of the device and the first detection of the other device is less than 5 minutes
+    #                 # check if the intersection between the last detection of the device and the first detection of the other device is less than 5 minutes
     #                 if abs(device["last"] - other_device["first"]) <= datetime.timedelta(
     #                     minutes=5
     #                 ):
@@ -460,12 +452,12 @@ def find_together(data):
     #                     device["first"] - other_device["first"]
     #                 ) <= datetime.timedelta(
     #                     minutes=5
-    #                 ):  # check if the difference between the first detection of the device and the first detection of the other device is less than 5 minutes
+    #                 ):  # check if the intersection between the first detection of the device and the first detection of the other device is less than 5 minutes
     #                     together[device["mac"]].append(other_device["mac"])
     #             if device["last"] == other_device["last"]:
     #                 if abs(device["last"] - other_device["last"]) <= datetime.timedelta(
     #                     minutes=5
-    #                 ):  # check if the difference between the last detection of the device and the last detection of the other device is less than 5 minutes
+    #                 ):  # check if the intersection between the last detection of the device and the last detection of the other device is less than 5 minutes
     #                     together[device["mac"]].append(other_device["mac"])
     # sort the dictionary by the number of times the device was seen with another device - by the counter
     together = {
@@ -499,57 +491,56 @@ def find_together(data):
     #             else:
     #                 continue
 
-
-    # Create a new set if there is a symmetric difference between the current set and the sets in the list - 
-    # from the result of simmetric difference - create a new set - remove result from the current set and from other set - 
+    # Create a new set if there is a intersection between the current set and the sets in the list -
+    # from the result of simmetric intersection - create a new set - remove result from the current set and from other set -
     # add the result to the new set
-    # if there is no symmetric difference between the current set and the sets in the list - continue
-# Loop until there is only one set in the list
-    while len(unique_sets_together) > 1:
-        # Keep track of whether we created a new set in this iteration
-        created_new_set = False
-        # Iterate over all pairs of sets
-        for i, set1 in enumerate(unique_sets_together):
-            for j, set2 in enumerate(unique_sets_together):
-                if i == j:
-                    # Don't compare a set to itself
-                    continue
-                # Find the symmetric difference between the sets
-                sym_diff = set1.symmetric_difference(set2)
-                if sym_diff:
-                    # If there is a symmetric difference, create a new set and remove
-                    # the difference from set1 and set2 and add the result to the new set
-                    new_set = sym_diff
-                    unique_sets_together[i] = set1.difference(new_set)
-                    unique_sets_together[j] = set2.difference(new_set)
-                    unique_sets_together.append(new_set)
-                    created_new_set = True
-                    print(*new_set, sep="\n")
-                    print('*************')
-        if not created_new_set:
-            # If no new set was created in this iteration, there is no more
-            # symmetric difference to be found, so we can stop
-            break
+    # if there is no intersection between the current set and the sets in the list - continue
+    # Loop until there is only one set in the list
+    # while len(unique_sets_together) > 1:
+    #     # Keep track of whether we created a new set in this iteration
+    #     created_new_set = False
+    #     # Iterate over all pairs of sets
+    #     for i, set1 in enumerate(unique_sets_together):
+    #         for j, set2 in enumerate(unique_sets_together):
+    #             if i == j:
+    #                 # Don't compare a set to itself
+    #                 continue
+    #             # Find the intersection between the sets
+    #             intersections = set1.intersection(set2)
+    #             if intersections:
+    #                 # If there is a intersection, create a new set and remove
+    #                 # the intersection from set1 and set2 and add the result to the new set
+    #                 new_set = intersections
+    #                 unique_sets_together[i] = set1.intersection(new_set)
+    #                 unique_sets_together[j] = set2.intersection(new_set)
+    #                 unique_sets_together.append(new_set)
+    #                 created_new_set = True
+    #                 print(*new_set, sep="\n")
+    #                 print("*************")
+    #     if not created_new_set:
+    #         # If no new set was created in this iteration, there is no more
+    #         # intersection to be found, so we can stop
+    #         break
 
-        
-    
-    
-   # check if the current set have 2 or more same elements with another set
+    # check if the current set have 2 or more same elements with another set
     # if the current set have half or more same elements with another set - join the sets
     # if the current set have less than 2 same elements with another set - continue
-    for i in range(len(unique_sets_together)):
-        for j in range(len(unique_sets_together)):
-            if i != j:
-                if len(unique_sets_together[i].intersection(unique_sets_together[j])) >= len(unique_sets_together[i]) * 0.9:
-                    unique_sets_together[i] = unique_sets_together[i].union(unique_sets_together[j])
-                    unique_sets_together[j] = set()
-                else:
-                    continue
+    # for i in range(len(unique_sets_together)):
+    #     for j in range(len(unique_sets_together)):
+    #         if i != j:
+    #             if (
+    #                 len(unique_sets_together[i].intersection(unique_sets_together[j]))
+    #                 >= len(unique_sets_together[i]) * 0.9
+    #             ):
+    #                 unique_sets_together[i] = unique_sets_together[i].union(
+    #                     unique_sets_together[j]
+    #                 )
+    #                 unique_sets_together[j] = set()
+    #             else:
+    #                 continue
 
     # remove all empty sets
     unique_sets_together = [x for x in unique_sets_together if x]
-
-
 
     return unique_sets_together, unique_owners
 
@@ -559,56 +550,55 @@ def write_together(unique_sets_together, file_path, data, unique_owners):
     with open(file_path, "w") as f:
         # print every set of unique devices and the number of times they were seen together
         # set1
-            #device1
-            #device2
-            #device3
-            #devicex
-        #**************
+        # device1
+        # device2
+        # device3
+        # devicex
+        # **************
         # set2
-            #device1
-            #device2
-        
-        print(f'==========================================================')
-        f.write(f'==========================================================')
+        # device1
+        # device2
+
+        print(f"==========================================================")
+        f.write(f"==========================================================")
         number_of_group = 0
         for group in unique_sets_together:
             number_of_group += 1
 
-            print(f'{number_of_group} group together - number of devices is {len(group)}')
-            f.write(f'{number_of_group}')
+            print(
+                f"{number_of_group} group together - number of devices is {len(group)}"
+            )
+            f.write(f"{number_of_group}")
             for device in group:
-                print(f'{device}')
-                f.write(f'{device}')
-            print(f'**********************')
-            f.write(f'**********************')
+                print(f"{device}")
+                f.write(f"{device}")
+            print(f"**********************")
+            f.write(f"**********************")
 
         # print every set of unique owners and the number of times they were seen together
         # set1
-            #device1
-            #device2
-            #device3
-            #devicex
-        #**************
+        # device1
+        # device2
+        # device3
+        # devicex
+        # **************
         # set2
-            #device1
-            #device2
-        
-        print(f'==========================================================')
-        f.write(f'==========================================================')
+        # device1
+        # device2
+
+        print(f"==========================================================")
+        f.write(f"==========================================================")
         number_of_group = 0
         for group in unique_owners:
             number_of_group += 1
 
-            print(f'{number_of_group} owners - number of devices is {len(group)}')
-            f.write(f'{number_of_group}')
+            print(f"{number_of_group} owners - number of devices is {len(group)}")
+            f.write(f"{number_of_group}")
             for device in group:
-                print(f'{device}')
-                f.write(f'{device}')
-            print(f'**********************')
-            f.write(f'**********************')
-        
-
-
+                print(f"{device}")
+                f.write(f"{device}")
+            print(f"**********************")
+            f.write(f"**********************")
 
         # for device, other_devices in together.items():
         #     for other_device in other_devices:
