@@ -257,19 +257,7 @@ def find_together(data):
     # remove devices without first and last detection
     owners = {k: v for k, v in owners.items() if v}
 
-    # from every pair key-value in the dictionary - create a set of the key and the value
-    # check if the current set is same as the sets in the list
-    # if the current set is not the same as the sets in the list - add it to the list
-    # if the current set is the same as the sets in the list - continue
-    unique_owners = []
-    for k, v in owners.items():
-        current_set = set()
-        current_set.add(k)
-        current_set.update(v)
-        if current_set not in unique_owners:
-            unique_owners.append(current_set)
-        else:
-            continue
+
     # sort the list by the length of the sets
     # unique_owners = sorted(unique_owners, key=len, reverse=True)
     # check if the current set is the subset or superset of the sets in the list
@@ -467,8 +455,23 @@ def find_together(data):
         )
     }
 
-    # Filter the dictionary to contain only devices that were seen together at least 3 times and less than 10 times
-    together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 10}
+    # Filter the dictionary to contain only devices that were seen together at least 3 times
+    together = {k: v for k, v in together.items() if len(v) >= 3}
+
+
+    # from every pair key-value in the dictionary - create a set of the key and the value
+    # check if the current set is same as the sets in the list
+    # if the current set is not the same as the sets in the list - add it to the list
+    # if the current set is the same as the sets in the list - continue
+    unique_owners = []
+    for k, v in owners.items():
+        current_set = set()
+        current_set.add(k)
+        current_set.update(v)
+        if current_set not in unique_owners:
+            unique_owners.append(current_set)
+        else:
+            continue
 
     unique_sets_together = []
     for k, v in together.items():
@@ -479,6 +482,8 @@ def find_together(data):
             unique_sets_together.append(current_set)
         else:
             continue
+
+    
     # check if the set of unique devices is subset or superset of another set of unique devices
     # if it is - remove the set, in not - continue
     # for i in range(len(unique_sets_together)):

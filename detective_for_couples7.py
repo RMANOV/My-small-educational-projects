@@ -250,19 +250,63 @@ def find_together(data):
                 ).total_seconds() <= 10:  # cheks if the difference between the first and last detection is less than 5 minutes
                     owners[device["user"]].append(other_device["user"])
 
-    # sort the dictionary by the number of times the device was seen with another device
+    # sort the dictionaries by the number of times the device was seen with another device
     owners = {
         k: sorted(v, key=lambda x: together[x], reverse=True) for k, v in owners.items()
     }
     together = { k: sorted(v, key=lambda x: together[x], reverse=True) for k, v in together.items()}
-    # filter the dictionary - to have only devices that were seen together at least 5 times
+
+    # remove devices without first and last detection
+    owners = {k: v for k, v in owners.items() if v}
+    together = {k: v for k, v in together.items() if v}
+
+
+    # # filter the dictionaries - to have only devices that were seen together at least 5 times
+    # owners = {k: v for k, v in owners.items() if len(v) >= 5}
+    # together = {k: v for k, v in together.items() if len(v) >= 5}
     
 
     # remove devices that were seen together less than 5 times
     # owners = {k: v for k, v in owners.items() if len(v) >= 5}
 
 
+    # for every value in the dictionary - create a counter for that value - remove the value from the list and add it to the dictionary with the counter
+    # ['qvserver.boni.local', 'qvserver.boni.local', 'qvserver.boni.local', 'era.boni.local', 'srv-santa-01.boni.local', 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'SERVER OFFICE', 'ROUTER BONIBACKUP']
+    # {'qvserver.boni.local': 3, 'era.boni.local': 1, 'srv-santa-01.boni.local': 1, 'MARIAN DESK XXX': 4, 'SERVER OFFICE': 1, 'ROUTER BONIBACKUP': 1}
+    Counter = {}
+    for k, v in owners.items():
+        for val in v:
+            if val in Counter:
+                Counter[val] += 1
+            else:
+                Counter[val] = 1
+    # remove the values from the list and add it to the dictionary with the counter
+    for k, v in owners.items():
+        for val in v:
+            if val in Counter:
+                owners[k] = Counter[val]
+    # sort dictionary by the counter
+    owners = {k: sorted(v, key=lambda x: Counter[x], reverse=True) for k, v in owners.items()}
 
+
+    
+    Counter2 = {}
+    for k, v in together.items():
+        for val in v:
+            if val in Counter2:
+                Counter2[val] += 1
+            else:
+                Counter2[val] = 1
+    
+    # remove the values from the list and add it to the dictionary with the counter
+    for k, v in together.items():
+        for val in v:
+            if val in Counter2:
+                together[k] = Counter2[val]
+
+    # sort dictionary by the counter
+    together = {k: sorted(v, key=lambda x: Counter2[x], reverse=True) for k, v in together.items()}
+    
 
 
 
@@ -275,47 +319,7 @@ def find_together(data):
     # # remove devices that were seen together less than the maximum number of times
     # owners = {k: v for k, v in owners.items() if len(v) == max_times}
 
-    
-    # remove devices without first and last detection
-    owners = {k: v for k, v in owners.items() if v}
 
-    # if one device is in the list of other devices - check where it is seen more times - in the list of other devices or in the list of other devices of the other device
-    # if the device is seen more times in the list of other devices - remove it from the list of current devices of the other device
-        # iterate over the dictionary and check if the current device is in the list of other devices of the other device
-        # if so - check if the current device is seen more times in the list of other devices
-        # if the current device is seen more times in the list of other devices - remove it from the list of other devices of the device
-    # reduce the list of other devices to unique devices - each pair key-value in the dictionary should have unique devices in the list of other devices
-    # some devices do not have "other devices" - ignore them
-    for k, v in owners.items():
-        for other_device in v:
-            if other_device in owners:
-                if k in owners[other_device]:
-                    if v.count(k) > owners[other_device].count(k):
-                        owners[other_device].remove(k)
-                    else:
-                        owners[k].remove(other_device)
-            else:
-                continue
-
-
-
-
-
-
-
-    # from every pair key-value in the dictionary - create a set of the key and the value
-    # check if the current set is same as the sets in the list
-    # if the current set is not the same as the sets in the list - add it to the list
-    # if the current set is the same as the sets in the list - continue
-    unique_owners = []
-    for k, v in owners.items():
-        current_set = set()
-        current_set.add(k)
-        current_set.update(v)
-        if current_set not in unique_owners:
-            unique_owners.append(current_set)
-        else:
-            continue
     # sort the list by the length of the sets
     # unique_owners = sorted(unique_owners, key=len, reverse=True)
     # check if the current set is the subset or superset of the sets in the list
@@ -506,17 +510,36 @@ def find_together(data):
     #                 ):  # check if the intersection between the last detection of the device and the last detection of the other device is less than 5 minutes
     #                     together[device["mac"]].append(other_device["mac"])
     # sort the dictionary by the number of times the device was seen with another device in descending order
-    {    k: v
-        for k, v in sorted(
-            together.items(), key=lambda item: len(item[1]), reverse=True
-        )
-    } 
+    # {    k: v
+    #     for k, v in sorted(
+    #         together.items(), key=lambda item: len(item[1]), reverse=True
+    #     )
+    # } 
 
 
     # Filter the dictionary to contain only devices that were seen together at least 3 times and less than 1000 times
     # together = {k: v for k, v in together.items() if len(v) >= 3 and len(v) < 1000}
     # remove devices without first and last detection
     # together = {k: v for k, v in together.items() if "first" in k and "last" in k}
+
+    # if one device is in the list of other devices - check where it is seen more times - in the list of other devices or in the list of other devices of the other device
+    # if the device is seen more times in the list of other devices - remove it from the list of current devices of the other device
+        # iterate over the dictionary and check if the current device is in the list of other devices of the other device
+        # if so - check if the current device is seen more times in the list of other devices
+        # if the current device is seen more times in the list of other devices - remove it from the list of other devices of the device
+    # reduce the list of other devices to unique devices - each pair key-value in the dictionary should have unique devices in the list of other devices
+    # some devices do not have "other devices" - ignore them
+    for k, v in owners.items():
+        for other_device in v:
+            if other_device in owners:
+                if k in owners[other_device]:
+                    if v.count(k) > owners[other_device].count(k):
+                        owners[other_device].remove(k)
+                    else:
+                        owners[k].remove(other_device)
+            else:
+                continue
+
 
     # if one device is in the list of other devices - check where it is seen more times - in the list of other devices or in the list of other devices of the other device
     # if the device is seen more times in the list of other devices - remove it from the list of current devices of the other device
@@ -539,6 +562,19 @@ def find_together(data):
         else:
             continue
 
+    # from every pair key-value in the dictionary - create a set of the key and the value
+    # check if the current set is same as the sets in the list
+    # if the current set is not the same as the sets in the list - add it to the list
+    # if the current set is the same as the sets in the list - continue
+    unique_owners = []
+    for k, v in owners.items():
+        current_set = set()
+        current_set.add(k)
+        current_set.update(v)
+        if current_set not in unique_owners:
+            unique_owners.append(current_set)
+        else:
+            continue
 
     unique_sets_together = []
     for k, v in together.items():
