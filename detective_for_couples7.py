@@ -277,22 +277,40 @@ def find_together(data):
     for k, v in owners.items():
         for val in v:
             if val in Counter:
+                # create a sublist 
+                # with 2 elements - other devices name and the counter as integer
                 Counter[val] += 1
             else:
                 Counter[val] = 1
-    # remove the old values from the list and instead add a list with 2 elements - key - other devices name and value - the counter as integer
-    
+
+    Counter2 = {}
+    for k, v in together.items():
+        for val in v:
+            if val in Counter2:
+                Counter2[val] += 1
+            else:
+                Counter2[val] = 1
+                
+    # remove the old values from the list and instead add a list with 2 elements -other devices name and - the counter as integer
+    owners = { k: [val for val in v if val not in Counter] + [[val,int(Counter[val])] for val in v if val in Counter] for k, v in owners.items()}
+    together = { k: [val for val in v if val not in Counter2] + [[val,int(Counter2[val])] for val in v if val in Counter2] for k, v in together.items()}
     
     # owners = {k: [val for val in v if val not in Counter] + [Counter[val] for val in v if val in Counter] for k, v in owners.items()}
     # owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
     # owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
-    owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
-    
-    # remove duplicates from the list
-    owners = {k: list(set(v)) for k, v in owners.items()}
+    # owners = { k: [int(val) for val in v if val not in Counter] + [[{val},int(Counter[val])]]" for val in v if val in Counter] for k, v in owners.items()}
+    # owners = { k: [int(val) for val in v if val not in Counter] + [[{val},int(Counter[val])] for val in v if val in Counter] for k, v in owners.items() if len(v) >= 5}
+    # owners = { k: [int(val) for val in v if val not in Counter] + [[{val},int(Counter[val])] for val in v if val in Counter] for k, v in owners.items() if len(v) >= 5}
 
-    # sort dictionary by the number of values and then by the last 2 symbols of the value
-    owners = {k: sorted(v, key=lambda x: (len(x), x[-2:]), reverse=True) for k, v in owners.items()}
+    
+    
+    # remove duplicates in the values in the dictionary - but values are lists
+    owners = { k: list(set([tuple(val) for val in v])) for k, v in owners.items()}
+    together = { k: list(set([tuple(val) for val in v])) for k, v in together.items()}
+
+    # sort dictionary by the number of values and then by the second element of the tuple
+    owners = { k: sorted(v, key=lambda x: (len(x), x[1]), reverse=True) for k, v in owners.items()}
+    together = { k: sorted(v, key=lambda x: (len(x), x[1]), reverse=True) for k, v in together.items()}
     
     # sort dictionary by the counter
     # owners = {k: sorted(v, key=lambda x: Counter[x], reverse=True) for k, v in owners.items()}
@@ -301,22 +319,19 @@ def find_together(data):
     # first should be the device that has greates values
     # {'MARIAN DESK XXX': 4, 'qvserver.boni.local': 3, 'SERVER OFFICE': 1, 'era.boni.local': 1, 'srv-santa-01.boni.local': 1, 'ROUTER BONIBACKUP': 1}
     
-    Counter2 = {}
-    for k, v in together.items():
-        for val in v:
-            if val in Counter2:
-                Counter2[val] += 1
-            else:
-                Counter2[val] = 1
+
+
+    # # remove the old values from the list and instead add a list with 2 elements - key - other devices name and value - the counter as integer
+    # together = {k: [val for val in v if val not in Counter2] + [Counter2[val] for val in v if val in Counter2] for k, v in together.items()}
     
-    # replace old values with key-value pairs - 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'MARIAN DESK XXX' replace with 'MARIAN DESK XXX': 4
-    together = { k: [val for val in v if val not in Counter2] + [f"{val} {Counter2[val]}" for val in v if val in Counter2] for k, v in together.items()}
+    # # replace old values with key-value pairs - 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'MARIAN DESK XXX' replace with 'MARIAN DESK XXX': 4
+    # together = { k: [val for val in v if val not in Counter2] + [f"{val} {Counter2[val]}" for val in v if val in Counter2] for k, v in together.items()}
 
-    # remove duplicates from the list
-    together = {k: list(set(v)) for k, v in together.items()}
+    # # remove duplicates from the list
+    # together = {k: list(set(v)) for k, v in together.items()}
 
-    # sort dictionary by the number of values and then by the last 2 symbols of the value
-    together = {k: sorted(v, key=lambda x: (len(x), x[-2:]), reverse=True) for k, v in together.items()}
+    # # sort dictionary by the number of values and then by the last 2 symbols of the value
+    # together = {k: sorted(v, key=lambda x: (len(x), x[-2:]), reverse=True) for k, v in together.items()}
 
 
 
