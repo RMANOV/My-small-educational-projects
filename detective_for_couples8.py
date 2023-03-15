@@ -711,7 +711,7 @@ def get_unique_groups_together_apriory(together):
             if i != j:
                 if (
                     len(set(unique_groups_together2[i]).intersection(set(unique_groups_together2[j])))
-                    >= len(unique_groups_together2[i]) * 0.9
+                    >= len(unique_groups_together2[i]) * 0.7
                 ):
                     unique_groups_together2[i] = set(unique_groups_together2[i]).union(
                         set(unique_groups_together2[j])
@@ -728,7 +728,7 @@ def get_unique_groups_together_apriory(together):
 
 def get_unique_groups_owners_apriory(owners):
     transactions = list(owners.values())
-    results = list(apriori(transactions, min_support=0.02, min_confidence=0.7))
+    results = list(apriori(transactions, min_support=0.02, min_confidence=0.9))
     unique_groups_owners2 = []
 
     for itemset in results:
@@ -744,7 +744,7 @@ def get_unique_groups_owners_apriory(owners):
             if i != j:
                 if (
                     len(set(unique_groups_owners2[i]).intersection(set(unique_groups_owners2[j])))
-                    >= len(unique_groups_owners2[i]) * 0.9
+                    >= len(unique_groups_owners2[i]) * 0.7
                 ):
                     unique_groups_owners2[i] = set(unique_groups_owners2[i]).union(
                         set(unique_groups_owners2[j])
