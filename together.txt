@@ -1,419 +1,201 @@
 ========================================================== Group 61 -- together *** BOBY - JULIA xxx *** - 4 devices 
-rmanov.BONI.LOCAL 24
-BONIBACKUP 14
-HAZAI TV 23
-BOBY 10******************** Group 60 -- together *** HAZAI TV *** - 9 devices 
-PRINTER xrx9c934e440a6c.boni.local 15
-STOYANOV hstoyanov.boni.local 10
-PRINTER npif7a2a1.boni.local 17
-apetrova.BONI.LOCAL 12
-rmanov.BONI.LOCAL 24
-BOBY - JULIA xxx 5
-BONIBACKUP 14
-HAZAI XXX 6
-BOBY 10******************** Group 59 -- together *** OFFICE ROUTER *** - 3 devices 
-PRINTER brw4cebbddc8746.boni.local 13
-BACKUP-NAS 18
-XXXX SASHO 2******************** Group 58 -- together *** BACKUP-NAS *** - 2 devices 
-PRINTER brw4cebbddc8746.boni.local 13
-OFFICE ROUTER 20******************** Group 57 -- together *** MARIA JOTOVA accounting.boni.local *** - 3 devices 
-MARIA JOTOVA PRINTER npiea36a0.boni.local 16
-STOYANOV PRINTER npif7a2a1.boni.local 1
-PRINTER npif7a2a1.boni.local 17******************** Group 56 -- together *** R PRINTER hp451b89.boni.local *** - 3 devices 
-PRINTER xrx9c934e440a6c.boni.local 15
-rmanov.BONI.LOCAL 24
-HAZAI TV 23******************** Group 55 -- together *** ALEX RONI PC *** - 1 devices 
-apetrova.BONI.LOCAL 12******************** Group 54 -- together *** apetrova.BONI.LOCAL *** - 9 devices 
-JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA 5
-LIDIA lgeorgieva.boni.local 5
-rmanov.BONI.LOCAL 24
-ALEX SOYKOVA PC 4
-ALEX RONI PC 1
-HAZAI TV 23
-RONI PC 9
-ALEX 3
-R 5******************** Group 53 -- together *** rmanov.BONI.LOCAL *** - 9 devices 
-PRINTER xrx9c934e440a6c.boni.local 15
-STOYANOV hstoyanov.boni.local 10
-desktop-bnejetr.boni.local 12
-PRINTER hp451b89.boni.local 7
-apetrova.BONI.LOCAL 12
-BOBY - JULIA xxx 5
-BONIBACKUP 14
-HAZAI TV 23
-BOBY 10******************** Group 52 -- together *** ANI NEW PC *** - 4 devices 
-HOLDING PRINTER HP843497B4D24E 18
-STOIANOV laptop-nkl.boni.local 3
-STELIANA MACBOOK-PRO 7
-DAMIANOV PC 8******************** Group 51 -- together *** HOLDING PRINTER HP843497B4D24E *** - 10 devices 
-STOIANOV laptop-nkl.boni.local 3
-win-31iusak7diq.boni.local 15
-win-i62g4feh7qn.boni.local 14
-STELIANA MACBOOK-PRO 7
-LIDIA RADY not BOBY 3
-DAMIANOV PC 8
-ANI NEW PC 8
-BOBY PC 21
-KONICA 19
-JULIA 5******************** Group 50 -- together *** router.boni.local *** - 4 devices 
-RUTER X OFFICE 14
-SRCFE40A14C6 15
-BOBY PC 21
-KONICA 19******************** Group 49 -- together *** RUTER X OFFICE *** - 3 devices 
-router.boni.local 19
-BOBY PC 21
-KONICA 19******************** Group 48 -- together *** DESKTOP-7DCD5T3.BONI.LOCAL *** - 2 devices 
-PRINTER npif7a2a1.boni.local 17
-BOBY mborisova.BONI.LOCAL 1******************** Group 47 -- together *** BOBY mborisova.BONI.LOCAL *** - 4 devices 
-PRINTER xrx9c934e440a6c.boni.local 15
-STOYANOV hstoyanov.boni.local 10
-DESKTOP-7DCD5T3.BONI.LOCAL 1
-HAZAI TV 23******************** Group 46 -- together *** BORIANA MACBOOKAIR-8765 *** - 2 devices 
-DESKTOP-BNEJETR.BONI.LOCAL 3
-BOBY bmarkov.boni.local 11******************** Group 45 -- together *** DESKTOP-BNEJETR.BONI.LOCAL *** - 3 devices 
-BOBY bmarkov.boni.local 11
-BORIANA MACBOOKAIR-8765 1
-STOIANOV NEW XXXX 2******************** Group 44 -- together *** DAMIANOV PC *** - 5 devices 
-HOLDING PRINTER HP843497B4D24E 18
-STELIANA MACBOOK-PRO 7
-LIDIA RADY not BOBY 3
-ANI NEW PC 8
-JULIA 5******************** Group 43 -- together *** ALEX *** - 3 devices 
-JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA 5
-LIDIA lgeorgieva.boni.local 5
-apetrova.BONI.LOCAL 12******************** Group 42 -- together *** LIDIA lgeorgieva.boni.local *** - 4 devices 
-JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA 5
-apetrova.BONI.LOCAL 12
-ALEX 3
-R 5******************** Group 41 -- together *** JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA *** - 4 devices 
-LIDIA lgeorgieva.boni.local 5
-apetrova.BONI.LOCAL 12
-ALEX 3
-R 5******************** Group 40 -- together *** ALEX SOYKOVA PC *** - 3 devices 
-PRINTER xerox33153fl.boni.local 6
-apetrova.BONI.LOCAL 12
-RONI PC 9******************** Group 39 -- together *** BOBY *** - 9 devices 
-desktop-bnejetr.boni.local 12
-BOBY bmarkov.boni.local 11
-TANIO ttanev.boni.local 3
-rmanov.BONI.LOCAL 24
-BOBY - JULIA xxx 5
-BONIBACKUP 14
-HAZAI TV 23
-JULIA 5
-TANIO 4******************** Group 38 -- together *** JULIA jpancheva.boni.local *** - 2 devices 
-RADI rgeorgieva 3
-ANI PC *** 3******************** Group 37 -- together *** JULIA *** - 6 devices 
-HOLDING PRINTER HP843497B4D24E 18
-desktop-bnejetr.boni.local 12
-TANIO ttanev.boni.local 3
-DAMIANOV PC 8
-BOBY 10
-TANIO 4******************** Group 36 -- together *** ANI PC *** *** - 2 devices 
-JULIA jpancheva.boni.local 3
-RADI rgeorgieva 3******************** Group 35 -- together *** PRINTER hp451b89.boni.local *** - 2 devices 
-PRINTER xrx9c934e440a6c.boni.local 15
-rmanov.BONI.LOCAL 24******************** Group 34 -- together *** PRINTER xerox33153fl.boni.local *** - 3 devices 
-ALEX SOYKOVA PC 4
-TANIO NEW XXXX 1
-RONI PC 9******************** Group 33 -- together *** RONI PC *** - 3 devices 
-PRINTER xerox33153fl.boni.local 6
-apetrova.BONI.LOCAL 12
-ALEX SOYKOVA PC 4******************** Group 32 -- together *** STOYANOV hstoyanov.boni.local *** - 6 devices 
-PRINTER xrx9c934e440a6c.boni.local 15
-PRINTER npif7a2a1.boni.local 17
-RADI JULIA BORIANA X 2
-rmanov.BONI.LOCAL 24
-HAZAI TV 23
-HAZAI XXX 6******************** Group 31 -- together *** STOIANOV laptop-nkl.boni.local *** - 3 devices 
-HOLDING PRINTER HP843497B4D24E 18
-win-31iusak7diq.boni.local 15
-ANI NEW PC 8******************** Group 30 -- together *** MARIA JOTOVA PRINTER npiea36a0.boni.local *** - 2 devices 
-MARIA JOTOVA accounting.boni.local 10
-PRINTER npif7a2a1.boni.local 17******************** Group 29 -- together *** PRINTER npif7a2a1.boni.local *** - 6 devices 
-MARIA JOTOVA PRINTER npiea36a0.boni.local 16
-MARIA JOTOVA accounting.boni.local 10
-STOYANOV hstoyanov.boni.local 10
-RADI JULIA BORIANA X 2
-HAZAI TV 23
-HAZAI XXX 6******************** Group 28 -- together *** BONIBACKUP *** - 7 devices 
-desktop-bnejetr.boni.local 12
-BOBY bmarkov.boni.local 11
-rmanov.BONI.LOCAL 24
-BOBY - JULIA xxx 5
-RADI rgeorgieva 3
-HAZAI TV 23
-R 5******************** Group 27 -- together *** BOBY bmarkov.boni.local *** - 6 devices 
-desktop-bnejetr.boni.local 12
-DESKTOP-BNEJETR.BONI.LOCAL 3
-STELIANA MACBOOK-PRO 7
-STOIANOV NEW XXXX 2
-BONIBACKUP 14
-BOBY 10******************** Group 26 -- together *** LIDIA RADY not BOBY *** - 3 devices 
-HOLDING PRINTER HP843497B4D24E 18
-STELIANA MACBOOK-PRO 7
-DAMIANOV PC 8******************** Group 25 -- together *** GARMIN MARIAN *** - 3 devices 
-win-31iusak7diq.boni.local 15
-win-i62g4feh7qn.boni.local 14
-KONICA 19******************** Group 24 -- together *** STOIANOV NEW XXXX *** - 2 devices 
-DESKTOP-BNEJETR.BONI.LOCAL 3
-BOBY bmarkov.boni.local 11******************** Group 23 -- together *** TANIO NEW XXXX *** - 1 devices 
-PRINTER xerox33153fl.boni.local 6******************** Group 22 -- together *** TANIO ttanev.boni.local *** - 4 devices 
-desktop-bnejetr.boni.local 12
-BOBY 10
-JULIA 5
-TANIO 4******************** Group 21 -- together *** RADI rgeorgieva *** - 3 devices 
-JULIA jpancheva.boni.local 3
-BONIBACKUP 14
-ANI PC *** 3******************** Group 20 -- together *** RADI JULIA BORIANA X *** - 2 devices 
-STOYANOV hstoyanov.boni.local 10
-PRINTER npif7a2a1.boni.local 17******************** Group 19 -- together *** STELIANA MACBOOK-PRO *** - 5 devices 
-HOLDING PRINTER HP843497B4D24E 18
-BOBY bmarkov.boni.local 11
-LIDIA RADY not BOBY 3
-DAMIANOV PC 8
-ANI NEW PC 8******************** Group 18 -- together *** TANIO *** - 4 devices 
-desktop-bnejetr.boni.local 12
-TANIO ttanev.boni.local 3
-BOBY 10
-JULIA 5******************** Group 17 -- together *** R *** - 5 devices 
-JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA 5
-desktop-bnejetr.boni.local 12
-LIDIA lgeorgieva.boni.local 5
-apetrova.BONI.LOCAL 12
-BONIBACKUP 14******************** Group 16 -- together *** PRINTER xrx9c934e440a6c.boni.local *** - 5 devices 
-STOYANOV hstoyanov.boni.local 10
-PRINTER hp451b89.boni.local 7
-rmanov.BONI.LOCAL 24
-HAZAI TV 23
-HAZAI XXX 6******************** Group 15 -- together *** desktop-bnejetr.boni.local *** - 5 devices 
-BOBY bmarkov.boni.local 11
-rmanov.BONI.LOCAL 24
-BONIBACKUP 14
-TANIO 4
-R 5******************** Group 14 -- together *** win-31iusak7diq.boni.local *** - 7 devices 
-HOLDING PRINTER HP843497B4D24E 18
-STOIANOV laptop-nkl.boni.local 3
-win-i62g4feh7qn.boni.local 14
-MARIAN ??? PC 12
-SRCFE40A14C6 15
-BOBY PC 21
-KONICA 19******************** Group 13 -- together *** win-i62g4feh7qn.boni.local *** - 4 devices 
-HOLDING PRINTER HP843497B4D24E 18
-win-31iusak7diq.boni.local 15
-MARIAN ??? PC 12
-SRCFE40A14C6 15******************** Group 12 -- together *** MARIAN ??? PC *** - 4 devices 
-win-31iusak7diq.boni.local 15
-win-i62g4feh7qn.boni.local 14
-SRCFE40A14C6 15
-KONICA 19******************** Group 11 -- together *** SRCFE40A14C6 *** - 6 devices 
-win-31iusak7diq.boni.local 15
-win-i62g4feh7qn.boni.local 14
-router.boni.local 19
-MARIAN ??? PC 12
-BOBY PC 21
-KONICA 19******************** Group 10 -- together *** KONICA *** - 7 devices 
-HOLDING PRINTER HP843497B4D24E 18
-win-31iusak7diq.boni.local 15
-router.boni.local 19
-RUTER X OFFICE 14
-MARIAN ??? PC 12
-SRCFE40A14C6 15
-BOBY PC 21******************** Group 9 -- together *** BOBY PC *** - 6 devices 
-HOLDING PRINTER HP843497B4D24E 18
-win-31iusak7diq.boni.local 15
-router.boni.local 19
-RUTER X OFFICE 14
-SRCFE40A14C6 15
-KONICA 19******************** Group 8 -- together *** PRINTER brw4cebbddc8746.boni.local *** - 6 devices 
-ROUTER BONIBACKUP HP843497B4D24E 1
-OFFICE ROUTER 20
-ROUTER OFFICE 1
-BACKUP-NAS 18
-XXXX SASHO 2
-anisec 1******************** Group 7 -- together *** qvserver.boni.local *** - 4 devices 
-srv-santa-01.boni.local 11
-MARIAN DESK XXX 10
-era.boni.local 11
-SERVER OFFICE 13******************** Group 6 -- together *** srv-santa-01.boni.local *** - 4 devices 
-qvserver.boni.local 12
-MARIAN DESK XXX 10
-era.boni.local 11
-SERVER OFFICE 13******************** Group 5 -- together *** era.boni.local *** - 4 devices 
-srv-santa-01.boni.local 11
-qvserver.boni.local 12
-MARIAN DESK XXX 10
-SERVER OFFICE 13******************** Group 4 -- together *** HAZAI XXX *** - 4 devices 
-PRINTER xrx9c934e440a6c.boni.local 15
-STOYANOV hstoyanov.boni.local 10
-PRINTER npif7a2a1.boni.local 17
-HAZAI TV 23******************** Group 3 -- together *** JESSIKA jivanova.boni.local *** - 1 devices 
-HAZAI MALKATA 1******************** Group 2 -- together *** HAZAI MALKATA *** - 1 devices 
-JESSIKA jivanova.boni.local 1******************** Group 1 -- together *** MARIAN DESK XXX *** - 5 devices 
-srv-santa-01.boni.local 11
-qvserver.boni.local 12
-ROUTER BONIBACKUP 2
-era.boni.local 11
-SERVER OFFICE 13******************** Group 0 -- together *** SERVER OFFICE *** - 6 devices 
-srv-santa-01.boni.local 11
-qvserver.boni.local 12
-ROUTER BONIBACKUP 2
-MARIAN DESK XXX 10
-era.boni.local 11
-SERVER OFFICE 13******************** Group 49 -- owners *** HAZAI TV *** - 5 devices 
-PRINTER xrx9c934e440a6c.boni.local 8
-PRINTER npif7a2a1.boni.local 2
-rmanov.BONI.LOCAL 13
-BOBY - JULIA xxx 5
-BOBY 3******************** Group 48 -- owners *** OFFICE ROUTER *** - 3 devices 
-PRINTER brw4cebbddc8746.boni.local 7
-BACKUP-NAS 4
-XXXX SASHO 2******************** Group 47 -- owners *** BACKUP-NAS *** - 2 devices 
-PRINTER brw4cebbddc8746.boni.local 7
-OFFICE ROUTER 6******************** Group 46 -- owners *** MARIA JOTOVA accounting.boni.local *** - 2 devices 
-MARIA JOTOVA PRINTER npiea36a0.boni.local 7
-STOYANOV PRINTER npif7a2a1.boni.local 1******************** Group 45 -- owners *** R PRINTER hp451b89.boni.local *** - 3 devices 
-PRINTER xrx9c934e440a6c.boni.local 8
-rmanov.BONI.LOCAL 13
-HAZAI TV 12******************** Group 44 -- owners *** ALEX RONI PC *** - 1 devices 
-apetrova.BONI.LOCAL 3******************** Group 43 -- owners *** apetrova.BONI.LOCAL *** - 8 devices 
-JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA 2
-LIDIA lgeorgieva.boni.local 4
-rmanov.BONI.LOCAL 13
-ALEX SOYKOVA PC 3
-ALEX RONI PC 1
-HAZAI TV 12
-RONI PC 5
-ALEX 3******************** Group 42 -- owners *** rmanov.BONI.LOCAL *** - 9 devices 
-PRINTER xrx9c934e440a6c.boni.local 8
-STOYANOV hstoyanov.boni.local 5
-PRINTER hp451b89.boni.local 2
-desktop-bnejetr.boni.local 5
-apetrova.BONI.LOCAL 3
-BOBY - JULIA xxx 5
-BONIBACKUP 6
-HAZAI TV 12
-BOBY 3******************** Group 41 -- owners *** HOLDING PRINTER HP843497B4D24E *** - 8 devices 
-win-31iusak7diq.boni.local 9
-win-i62g4feh7qn.boni.local 8
-STELIANA MACBOOK-PRO 1
-LIDIA RADY not BOBY 3
-DAMIANOV PC 5
-BOBY PC 13
-KONICA 10
-JULIA 3******************** Group 40 -- owners *** RUTER X OFFICE *** - 3 devices 
-router.boni.local 5
-BOBY PC 13
-KONICA 10******************** Group 39 -- owners *** DESKTOP-BNEJETR.BONI.LOCAL *** - 2 devices 
-BORIANA MACBOOKAIR-8765 1
-STOIANOV NEW XXXX 2******************** Group 38 -- owners *** LIDIA lgeorgieva.boni.local *** - 1 devices 
-ALEX 3******************** Group 37 -- owners *** JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA *** - 2 devices 
-LIDIA lgeorgieva.boni.local 4
-ALEX 3******************** Group 36 -- owners *** BOBY - JULIA xxx *** - 1 devices 
-BOBY 3******************** Group 35 -- owners *** BOBY *** - 5 devices 
-desktop-bnejetr.boni.local 5
-TANIO ttanev.boni.local 3
-BOBY - JULIA xxx 5
-JULIA 3
-TANIO 1******************** Group 34 -- owners *** JULIA *** - 2 devices 
-TANIO ttanev.boni.local 3
-DAMIANOV PC 5******************** Group 33 -- owners *** ANI PC *** *** - 2 devices 
-JULIA jpancheva.boni.local 3
-RADI rgeorgieva 1******************** Group 32 -- owners *** PRINTER hp451b89.boni.local *** - 1 devices 
-rmanov.BONI.LOCAL 13******************** Group 31 -- owners *** PRINTER xerox33153fl.boni.local *** - 3 devices 
-ALEX SOYKOVA PC 3
-TANIO NEW XXXX 1
-RONI PC 5******************** Group 30 -- owners *** RONI PC *** - 3 devices 
-PRINTER xerox33153fl.boni.local 1
-apetrova.BONI.LOCAL 3
-ALEX SOYKOVA PC 3******************** Group 29 -- owners *** router.boni.local *** - 4 devices 
-RUTER X OFFICE 5
-SRCFE40A14C6 8
-BOBY PC 13
-KONICA 10******************** Group 28 -- owners *** STOIANOV laptop-nkl.boni.local *** - 1 devices 
-ANI NEW PC 2******************** Group 27 -- owners *** MARIA JOTOVA PRINTER npiea36a0.boni.local *** - 1 devices 
-MARIA JOTOVA accounting.boni.local 5******************** Group 26 -- owners *** PRINTER npif7a2a1.boni.local *** - 4 devices 
-STOYANOV hstoyanov.boni.local 5
-RADI JULIA BORIANA X 1
-HAZAI TV 12
-HAZAI XXX 1******************** Group 25 -- owners *** BONIBACKUP *** - 4 devices 
-desktop-bnejetr.boni.local 5
-rmanov.BONI.LOCAL 13
-BOBY - JULIA xxx 5
-HAZAI TV 12******************** Group 24 -- owners *** ALEX SOYKOVA PC *** - 1 devices 
-RONI PC 5******************** Group 23 -- owners *** DAMIANOV PC *** - 1 devices 
-LIDIA RADY not BOBY 3******************** Group 22 -- owners *** RADI rgeorgieva *** - 1 devices 
-JULIA jpancheva.boni.local 3******************** Group 21 -- owners *** RADI JULIA BORIANA X *** - 1 devices 
-STOYANOV hstoyanov.boni.local 5******************** Group 20 -- owners *** STELIANA MACBOOK-PRO *** - 3 devices 
-LIDIA RADY not BOBY 3
-DAMIANOV PC 5
-ANI NEW PC 2******************** Group 19 -- owners *** TANIO *** - 2 devices 
-TANIO ttanev.boni.local 3
-JULIA 3******************** Group 18 -- owners *** R *** - 2 devices 
-JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA 2
-LIDIA lgeorgieva.boni.local 4******************** Group 17 -- owners *** BOBY bmarkov.boni.local *** - 3 devices 
-desktop-bnejetr.boni.local 5
-DESKTOP-BNEJETR.BONI.LOCAL 1
-STOIANOV NEW XXXX 2******************** Group 16 -- owners *** PRINTER xrx9c934e440a6c.boni.local *** - 3 devices 
-STOYANOV hstoyanov.boni.local 5
-rmanov.BONI.LOCAL 13
-HAZAI TV 12******************** Group 15 -- owners *** desktop-bnejetr.boni.local *** - 3 devices 
-BOBY bmarkov.boni.local 1
-rmanov.BONI.LOCAL 13
-BONIBACKUP 6******************** Group 14 -- owners *** win-31iusak7diq.boni.local *** - 6 devices 
-HOLDING PRINTER HP843497B4D24E 3
-win-i62g4feh7qn.boni.local 8
-MARIAN ??? PC 7
-SRCFE40A14C6 8
-BOBY PC 13
-KONICA 10******************** Group 13 -- owners *** win-i62g4feh7qn.boni.local *** - 3 devices 
-win-31iusak7diq.boni.local 9
-MARIAN ??? PC 7
-SRCFE40A14C6 8******************** Group 12 -- owners *** MARIAN ??? PC *** - 3 devices 
-win-31iusak7diq.boni.local 9
-win-i62g4feh7qn.boni.local 8
-SRCFE40A14C6 8******************** Group 11 -- owners *** SRCFE40A14C6 *** - 3 devices 
-win-31iusak7diq.boni.local 9
-win-i62g4feh7qn.boni.local 8
-MARIAN ??? PC 7******************** Group 10 -- owners *** KONICA *** - 4 devices 
-HOLDING PRINTER HP843497B4D24E 3
-win-31iusak7diq.boni.local 9
-router.boni.local 5
-BOBY PC 13******************** Group 9 -- owners *** BOBY PC *** - 5 devices 
-HOLDING PRINTER HP843497B4D24E 3
-win-31iusak7diq.boni.local 9
-router.boni.local 5
-RUTER X OFFICE 5
-KONICA 10******************** Group 8 -- owners *** PRINTER brw4cebbddc8746.boni.local *** - 5 devices 
-ROUTER BONIBACKUP HP843497B4D24E 1
-OFFICE ROUTER 6
-ROUTER OFFICE 1
-XXXX SASHO 2
-anisec 1******************** Group 7 -- owners *** qvserver.boni.local *** - 4 devices 
-srv-santa-01.boni.local 8
-MARIAN DESK XXX 5
-era.boni.local 8
-SERVER OFFICE 7******************** Group 6 -- owners *** srv-santa-01.boni.local *** - 4 devices 
-qvserver.boni.local 8
-MARIAN DESK XXX 5
-era.boni.local 8
-SERVER OFFICE 7******************** Group 5 -- owners *** era.boni.local *** - 4 devices 
-srv-santa-01.boni.local 8
-qvserver.boni.local 8
-MARIAN DESK XXX 5
-SERVER OFFICE 7******************** Group 4 -- owners *** BOBY mborisova.BONI.LOCAL *** - 1 devices 
-DESKTOP-7DCD5T3.BONI.LOCAL 1******************** Group 3 -- owners *** STOYANOV hstoyanov.boni.local *** - 2 devices 
-PRINTER xrx9c934e440a6c.boni.local 8
-rmanov.BONI.LOCAL 13******************** Group 2 -- owners *** MARIAN DESK XXX *** - 5 devices 
-srv-santa-01.boni.local 8
-qvserver.boni.local 8
-ROUTER BONIBACKUP 2
-era.boni.local 8
-SERVER OFFICE 7******************** Group 1 -- owners *** SERVER OFFICE *** - 6 devices 
-srv-santa-01.boni.local 8
-qvserver.boni.local 8
-ROUTER BONIBACKUP 2
-MARIAN DESK XXX 5
-era.boni.local 8
-SERVER OFFICE 7******************** Group 0 -- owners *** HAZAI XXX *** - 1 devices 
-PRINTER npif7a2a1.boni.local 2********************
+(('rmanov.BONI.LOCAL', 24), ('HAZAI TV', 23), ('BONIBACKUP', 14), ('BOBY', 10))
+******************** Group 59 -- together *** HAZAI TV *** - 9 devices 
+(('rmanov.BONI.LOCAL', 24), ('PRINTER npif7a2a1.boni.local', 17), ('PRINTER xrx9c934e440a6c.boni.local', 15), ('BONIBACKUP', 14), ('apetrova.BONI.LOCAL', 12), ('BOBY', 10), ('STOYANOV hstoyanov.boni.local', 10), ('HAZAI XXX', 6), ('BOBY - JULIA xxx', 5))
+******************** Group 57 -- together *** OFFICE ROUTER *** - 3 devices 
+(('BACKUP-NAS', 18), ('PRINTER brw4cebbddc8746.boni.local', 13), ('XXXX SASHO', 2))
+******************** Group 55 -- together *** BACKUP-NAS *** - 2 devices 
+(('OFFICE ROUTER', 20), ('PRINTER brw4cebbddc8746.boni.local', 13))
+******************** Group 53 -- together *** MARIA JOTOVA accounting.boni.local *** - 3 devices 
+(('PRINTER npif7a2a1.boni.local', 17), ('MARIA JOTOVA PRINTER npiea36a0.boni.local', 16), ('STOYANOV PRINTER npif7a2a1.boni.local', 1))
+******************** Group 51 -- together *** R PRINTER hp451b89.boni.local *** - 3 devices 
+(('rmanov.BONI.LOCAL', 24), ('HAZAI TV', 23), ('PRINTER xrx9c934e440a6c.boni.local', 15))
+******************** Group 49 -- together *** ALEX RONI PC *** - 1 devices 
+(('apetrova.BONI.LOCAL', 12),)
+******************** Group 47 -- together *** apetrova.BONI.LOCAL *** - 9 devices 
+(('rmanov.BONI.LOCAL', 24), ('HAZAI TV', 23), ('RONI PC', 9), ('JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA', 5), ('LIDIA lgeorgieva.boni.local', 5), ('R', 5), ('ALEX SOYKOVA PC', 4), ('ALEX', 3), ('ALEX RONI PC', 1))
+******************** Group 45 -- together *** rmanov.BONI.LOCAL *** - 9 devices 
+(('HAZAI TV', 23), ('PRINTER xrx9c934e440a6c.boni.local', 15), ('BONIBACKUP', 14), ('apetrova.BONI.LOCAL', 12), ('desktop-bnejetr.boni.local', 12), ('BOBY', 10), ('STOYANOV hstoyanov.boni.local', 10), ('PRINTER hp451b89.boni.local', 7), ('BOBY - JULIA xxx', 5))
+******************** Group 43 -- together *** ANI NEW PC *** - 4 devices 
+(('HOLDING PRINTER HP843497B4D24E', 18), ('DAMIANOV PC', 8), ('STELIANA MACBOOK-PRO', 7), ('STOIANOV laptop-nkl.boni.local', 3))
+******************** Group 41 -- together *** HOLDING PRINTER HP843497B4D24E *** - 10 devices 
+(('BOBY PC', 21), ('KONICA', 19), ('win-31iusak7diq.boni.local', 15), ('win-i62g4feh7qn.boni.local', 14), ('ANI NEW PC', 8), ('DAMIANOV PC', 8), ('STELIANA MACBOOK-PRO', 7), ('JULIA', 5), ('LIDIA RADY not BOBY', 3), ('STOIANOV laptop-nkl.boni.local', 3))
+******************** Group 39 -- together *** router.boni.local *** - 4 devices 
+(('BOBY PC', 21), ('KONICA', 19), ('SRCFE40A14C6', 15), ('RUTER X OFFICE', 14))
+******************** Group 37 -- together *** RUTER X OFFICE *** - 3 devices 
+(('BOBY PC', 21), ('router.boni.local', 19), ('KONICA', 19))
+******************** Group 35 -- together *** DESKTOP-7DCD5T3.BONI.LOCAL *** - 2 devices 
+(('PRINTER npif7a2a1.boni.local', 17), ('BOBY mborisova.BONI.LOCAL', 1))
+******************** Group 33 -- together *** BOBY mborisova.BONI.LOCAL *** - 4 devices 
+(('HAZAI TV', 23), ('PRINTER xrx9c934e440a6c.boni.local', 15), ('STOYANOV hstoyanov.boni.local', 10), ('DESKTOP-7DCD5T3.BONI.LOCAL', 1))
+******************** Group 31 -- together *** BORIANA MACBOOKAIR-8765 *** - 2 devices 
+(('BOBY bmarkov.boni.local', 11), ('DESKTOP-BNEJETR.BONI.LOCAL', 3))
+******************** Group 29 -- together *** DESKTOP-BNEJETR.BONI.LOCAL *** - 3 devices 
+(('BOBY bmarkov.boni.local', 11), ('STOIANOV NEW XXXX', 2), ('BORIANA MACBOOKAIR-8765', 1))
+******************** Group 27 -- together *** DAMIANOV PC *** - 5 devices 
+(('HOLDING PRINTER HP843497B4D24E', 18), ('ANI NEW PC', 8), ('STELIANA MACBOOK-PRO', 7), ('JULIA', 5), ('LIDIA RADY not BOBY', 3))
+******************** Group 25 -- together *** ALEX *** - 3 devices 
+(('apetrova.BONI.LOCAL', 12), ('JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA', 5), ('LIDIA lgeorgieva.boni.local', 5))
+******************** Group 23 -- together *** LIDIA lgeorgieva.boni.local *** - 4 devices 
+(('apetrova.BONI.LOCAL', 12), ('JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA', 5), ('R', 5), ('ALEX', 3))
+******************** Group 21 -- together *** JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA *** - 4 devices 
+(('apetrova.BONI.LOCAL', 12), ('LIDIA lgeorgieva.boni.local', 5), ('R', 5), ('ALEX', 3))
+******************** Group 19 -- together *** ALEX SOYKOVA PC *** - 3 devices 
+(('apetrova.BONI.LOCAL', 12), ('RONI PC', 9), ('PRINTER xerox33153fl.boni.local', 6))
+******************** Group 17 -- together *** BOBY *** - 9 devices 
+(('rmanov.BONI.LOCAL', 24), ('HAZAI TV', 23), ('BONIBACKUP', 14), ('desktop-bnejetr.boni.local', 12), ('BOBY bmarkov.boni.local', 11), ('BOBY - JULIA xxx', 5), ('JULIA', 5), ('TANIO', 4), ('TANIO ttanev.boni.local', 3))
+******************** Group 15 -- together *** JULIA jpancheva.boni.local *** - 2 devices 
+(('RADI rgeorgieva', 3), ('ANI PC ***', 3))
+******************** Group 13 -- together *** JULIA *** - 6 devices 
+(('HOLDING PRINTER HP843497B4D24E', 18), ('desktop-bnejetr.boni.local', 12), ('BOBY', 10), ('DAMIANOV PC', 8), ('TANIO', 4), ('TANIO ttanev.boni.local', 3))
+******************** Group 11 -- together *** ANI PC *** *** - 2 devices 
+(('RADI rgeorgieva', 3), ('JULIA jpancheva.boni.local', 3))
+******************** Group 9 -- together *** PRINTER hp451b89.boni.local *** - 2 devices 
+(('rmanov.BONI.LOCAL', 24), ('PRINTER xrx9c934e440a6c.boni.local', 15))
+******************** Group 7 -- together *** PRINTER xerox33153fl.boni.local *** - 3 devices 
+(('RONI PC', 9), ('ALEX SOYKOVA PC', 4), ('TANIO NEW XXXX', 1))
+******************** Group 5 -- together *** RONI PC *** - 3 devices 
+(('apetrova.BONI.LOCAL', 12), ('PRINTER xerox33153fl.boni.local', 6), ('ALEX SOYKOVA PC', 4))
+******************** Group 3 -- together *** STOYANOV hstoyanov.boni.local *** - 6 devices 
+(('rmanov.BONI.LOCAL', 24), ('HAZAI TV', 23), ('PRINTER npif7a2a1.boni.local', 17), ('PRINTER xrx9c934e440a6c.boni.local', 15), ('HAZAI XXX', 6), ('RADI JULIA BORIANA X', 2))
+******************** Group 1 -- together *** STOIANOV laptop-nkl.boni.local *** - 3 devices 
+(('HOLDING PRINTER HP843497B4D24E', 18), ('win-31iusak7diq.boni.local', 15), ('ANI NEW PC', 8))
+******************** Group -1 -- together *** MARIA JOTOVA PRINTER npiea36a0.boni.local *** - 2 devices 
+(('PRINTER npif7a2a1.boni.local', 17), ('MARIA JOTOVA accounting.boni.local', 10))
+******************** Group -3 -- together *** PRINTER npif7a2a1.boni.local *** - 6 devices 
+(('HAZAI TV', 23), ('MARIA JOTOVA PRINTER npiea36a0.boni.local', 16), ('MARIA JOTOVA accounting.boni.local', 10), ('STOYANOV hstoyanov.boni.local', 10), ('HAZAI XXX', 6), ('RADI JULIA BORIANA X', 2))
+******************** Group -5 -- together *** BONIBACKUP *** - 7 devices 
+(('rmanov.BONI.LOCAL', 24), ('HAZAI TV', 23), ('desktop-bnejetr.boni.local', 12), ('BOBY bmarkov.boni.local', 11), ('BOBY - JULIA xxx', 5), ('R', 5), ('RADI rgeorgieva', 3))
+******************** Group -7 -- together *** BOBY bmarkov.boni.local *** - 6 devices 
+(('BONIBACKUP', 14), ('desktop-bnejetr.boni.local', 12), ('BOBY', 10), ('STELIANA MACBOOK-PRO', 7), ('DESKTOP-BNEJETR.BONI.LOCAL', 3), ('STOIANOV NEW XXXX', 2))
+******************** Group -9 -- together *** LIDIA RADY not BOBY *** - 3 devices 
+(('HOLDING PRINTER HP843497B4D24E', 18), ('DAMIANOV PC', 8), ('STELIANA MACBOOK-PRO', 7))
+******************** Group -11 -- together *** GARMIN MARIAN *** - 3 devices 
+(('KONICA', 19), ('win-31iusak7diq.boni.local', 15), ('win-i62g4feh7qn.boni.local', 14))
+******************** Group -13 -- together *** STOIANOV NEW XXXX *** - 2 devices 
+(('BOBY bmarkov.boni.local', 11), ('DESKTOP-BNEJETR.BONI.LOCAL', 3))
+******************** Group -15 -- together *** TANIO NEW XXXX *** - 1 devices 
+(('PRINTER xerox33153fl.boni.local', 6),)
+******************** Group -17 -- together *** TANIO ttanev.boni.local *** - 4 devices 
+(('desktop-bnejetr.boni.local', 12), ('BOBY', 10), ('JULIA', 5), ('TANIO', 4))
+******************** Group -19 -- together *** RADI rgeorgieva *** - 3 devices 
+(('BONIBACKUP', 14), ('ANI PC ***', 3), ('JULIA jpancheva.boni.local', 3))
+******************** Group -21 -- together *** RADI JULIA BORIANA X *** - 2 devices 
+(('PRINTER npif7a2a1.boni.local', 17), ('STOYANOV hstoyanov.boni.local', 10))
+******************** Group -23 -- together *** STELIANA MACBOOK-PRO *** - 5 devices 
+(('HOLDING PRINTER HP843497B4D24E', 18), ('BOBY bmarkov.boni.local', 11), ('ANI NEW PC', 8), ('DAMIANOV PC', 8), ('LIDIA RADY not BOBY', 3))
+******************** Group -25 -- together *** TANIO *** - 4 devices 
+(('desktop-bnejetr.boni.local', 12), ('BOBY', 10), ('JULIA', 5), ('TANIO ttanev.boni.local', 3))
+******************** Group -27 -- together *** R *** - 5 devices 
+(('BONIBACKUP', 14), ('apetrova.BONI.LOCAL', 12), ('desktop-bnejetr.boni.local', 12), ('JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA', 5), ('LIDIA lgeorgieva.boni.local', 5))
+******************** Group -29 -- together *** PRINTER xrx9c934e440a6c.boni.local *** - 5 devices 
+(('rmanov.BONI.LOCAL', 24), ('HAZAI TV', 23), ('STOYANOV hstoyanov.boni.local', 10), ('PRINTER hp451b89.boni.local', 7), ('HAZAI XXX', 6))
+******************** Group -31 -- together *** desktop-bnejetr.boni.local *** - 5 devices 
+(('rmanov.BONI.LOCAL', 24), ('BONIBACKUP', 14), ('BOBY bmarkov.boni.local', 11), ('R', 5), ('TANIO', 4))
+******************** Group -33 -- together *** win-31iusak7diq.boni.local *** - 7 devices 
+(('BOBY PC', 21), ('KONICA', 19), ('HOLDING PRINTER HP843497B4D24E', 18), ('SRCFE40A14C6', 15), ('win-i62g4feh7qn.boni.local', 14), ('MARIAN ??? PC', 12), ('STOIANOV laptop-nkl.boni.local', 3))
+******************** Group -35 -- together *** win-i62g4feh7qn.boni.local *** - 4 devices 
+(('HOLDING PRINTER HP843497B4D24E', 18), ('SRCFE40A14C6', 15), ('win-31iusak7diq.boni.local', 15), ('MARIAN ??? PC', 12))
+******************** Group -37 -- together *** MARIAN ??? PC *** - 4 devices 
+(('KONICA', 19), ('SRCFE40A14C6', 15), ('win-31iusak7diq.boni.local', 15), ('win-i62g4feh7qn.boni.local', 14))
+******************** Group -39 -- together *** SRCFE40A14C6 *** - 6 devices 
+(('BOBY PC', 21), ('router.boni.local', 19), ('KONICA', 19), ('win-31iusak7diq.boni.local', 15), ('win-i62g4feh7qn.boni.local', 14), ('MARIAN ??? PC', 12))
+******************** Group -41 -- together *** KONICA *** - 7 devices 
+(('BOBY PC', 21), ('router.boni.local', 19), ('HOLDING PRINTER HP843497B4D24E', 18), ('win-31iusak7diq.boni.local', 15), ('SRCFE40A14C6', 15), ('RUTER X OFFICE', 14), ('MARIAN ??? PC', 12))
+******************** Group -43 -- together *** BOBY PC *** - 6 devices 
+(('router.boni.local', 19), ('KONICA', 19), ('HOLDING PRINTER HP843497B4D24E', 18), ('win-31iusak7diq.boni.local', 15), ('SRCFE40A14C6', 15), ('RUTER X OFFICE', 14))
+******************** Group -45 -- together *** PRINTER brw4cebbddc8746.boni.local *** - 6 devices 
+(('OFFICE ROUTER', 20), ('BACKUP-NAS', 18), ('XXXX SASHO', 2), ('ROUTER OFFICE', 1), ('ROUTER BONIBACKUP HP843497B4D24E', 1), ('anisec', 1))
+******************** Group -47 -- together *** qvserver.boni.local *** - 4 devices 
+(('SERVER OFFICE', 13), ('srv-santa-01.boni.local', 11), ('era.boni.local', 11), ('MARIAN DESK XXX', 10))
+******************** Group -49 -- together *** srv-santa-01.boni.local *** - 4 devices 
+(('SERVER OFFICE', 13), ('qvserver.boni.local', 12), ('era.boni.local', 11), ('MARIAN DESK XXX', 10))
+******************** Group -51 -- together *** era.boni.local *** - 4 devices 
+(('SERVER OFFICE', 13), ('qvserver.boni.local', 12), ('srv-santa-01.boni.local', 11), ('MARIAN DESK XXX', 10))
+******************** Group -53 -- together *** HAZAI XXX *** - 4 devices 
+(('HAZAI TV', 23), ('PRINTER npif7a2a1.boni.local', 17), ('PRINTER xrx9c934e440a6c.boni.local', 15), ('STOYANOV hstoyanov.boni.local', 10))
+******************** Group -55 -- together *** JESSIKA jivanova.boni.local *** - 1 devices 
+(('HAZAI MALKATA', 1),)
+******************** Group -57 -- together *** HAZAI MALKATA *** - 1 devices 
+(('JESSIKA jivanova.boni.local', 1),)
+******************** Group -59 -- together *** MARIAN DESK XXX *** - 5 devices 
+(('SERVER OFFICE', 13), ('qvserver.boni.local', 12), ('srv-santa-01.boni.local', 11), ('era.boni.local', 11), ('ROUTER BONIBACKUP', 2))
+******************** Group -61 -- together *** SERVER OFFICE *** - 6 devices 
+(('SERVER OFFICE', 13), ('qvserver.boni.local', 12), ('srv-santa-01.boni.local', 11), ('era.boni.local', 11), ('MARIAN DESK XXX', 10), ('ROUTER BONIBACKUP', 2))
+********************========================================================== Group 37 -- owners *** OFFICE ROUTER *** - 3 devices 
+(('PRINTER brw4cebbddc8746.boni.local', 7), ('BACKUP-NAS', 4), ('XXXX SASHO', 2))
+******************** Group 35 -- owners *** BACKUP-NAS *** - 2 devices 
+(('PRINTER brw4cebbddc8746.boni.local', 7), ('OFFICE ROUTER', 6))
+******************** Group 33 -- owners *** MARIA JOTOVA accounting.boni.local *** - 2 devices 
+(('MARIA JOTOVA PRINTER npiea36a0.boni.local', 7), ('STOYANOV PRINTER npif7a2a1.boni.local', 1))
+******************** Group 31 -- owners *** R PRINTER hp451b89.boni.local *** - 3 devices 
+(('rmanov.BONI.LOCAL', 13), ('PRINTER xrx9c934e440a6c.boni.local', 8), ('HAZAI TV', 8))
+******************** Group 29 -- owners *** ALEX RONI PC *** - 1 devices 
+(('apetrova.BONI.LOCAL', 3),)
+******************** Group 27 -- owners *** apetrova.BONI.LOCAL *** - 3 devices 
+(('rmanov.BONI.LOCAL', 13), ('RONI PC', 2), ('ALEX RONI PC', 1))
+******************** Group 25 -- owners *** rmanov.BONI.LOCAL *** - 7 devices 
+(('PRINTER xrx9c934e440a6c.boni.local', 8), ('HAZAI TV', 8), ('BONIBACKUP', 6), ('desktop-bnejetr.boni.local', 5), ('apetrova.BONI.LOCAL', 3), ('PRINTER hp451b89.boni.local', 2), ('STOYANOV hstoyanov.boni.local', 2))
+******************** Group 23 -- owners *** HOLDING PRINTER HP843497B4D24E *** - 4 devices 
+(('BOBY PC', 13), ('KONICA', 10), ('win-31iusak7diq.boni.local', 9), ('win-i62g4feh7qn.boni.local', 8))
+******************** Group 21 -- owners *** RUTER X OFFICE *** - 3 devices 
+(('BOBY PC', 13), ('KONICA', 10), ('router.boni.local', 7))
+******************** Group 19 -- owners *** LIDIA lgeorgieva.boni.local *** - 1 devices 
+(('JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA', 2),)
+******************** Group 17 -- owners *** JULIA DIMITAR KARAKOLEV XXX HAZAI STARATA NADIA *** - 1 devices 
+(('LIDIA lgeorgieva.boni.local', 2),)
+******************** Group 15 -- owners *** BOBY - JULIA xxx *** - 1 devices 
+(('BOBY', 1),)
+******************** Group 13 -- owners *** BOBY *** - 2 devices 
+(('desktop-bnejetr.boni.local', 5), ('BOBY - JULIA xxx', 1))
+******************** Group 11 -- owners *** PRINTER hp451b89.boni.local *** - 1 devices 
+(('rmanov.BONI.LOCAL', 13),)
+******************** Group 9 -- owners *** PRINTER xerox33153fl.boni.local *** - 1 devices 
+(('RONI PC', 2),)
+******************** Group 7 -- owners *** RONI PC *** - 2 devices 
+(('apetrova.BONI.LOCAL', 3), ('PRINTER xerox33153fl.boni.local', 1))
+******************** Group 5 -- owners *** router.boni.local *** - 4 devices 
+(('BOBY PC', 13), ('KONICA', 10), ('SRCFE40A14C6', 8), ('RUTER X OFFICE', 5))
+******************** Group 3 -- owners *** MARIA JOTOVA PRINTER npiea36a0.boni.local *** - 1 devices 
+(('MARIA JOTOVA accounting.boni.local', 5),)
+******************** Group 1 -- owners *** BONIBACKUP *** - 3 devices 
+(('rmanov.BONI.LOCAL', 13), ('HAZAI TV', 8), ('desktop-bnejetr.boni.local', 5))
+******************** Group -1 -- owners *** HAZAI TV *** - 3 devices 
+(('rmanov.BONI.LOCAL', 13), ('PRINTER xrx9c934e440a6c.boni.local', 8), ('PRINTER npif7a2a1.boni.local', 2))
+******************** Group -3 -- owners *** PRINTER xrx9c934e440a6c.boni.local *** - 3 devices 
+(('rmanov.BONI.LOCAL', 13), ('HAZAI TV', 8), ('STOYANOV hstoyanov.boni.local', 2))
+******************** Group -5 -- owners *** desktop-bnejetr.boni.local *** - 3 devices 
+(('rmanov.BONI.LOCAL', 13), ('BONIBACKUP', 6), ('BOBY bmarkov.boni.local', 1))
+******************** Group -7 -- owners *** win-31iusak7diq.boni.local *** - 6 devices 
+(('BOBY PC', 13), ('KONICA', 10), ('win-i62g4feh7qn.boni.local', 8), ('SRCFE40A14C6', 8), ('MARIAN ??? PC', 7), ('HOLDING PRINTER HP843497B4D24E', 3))
+******************** Group -9 -- owners *** win-i62g4feh7qn.boni.local *** - 3 devices 
+(('win-31iusak7diq.boni.local', 9), ('SRCFE40A14C6', 8), ('MARIAN ??? PC', 7))
+******************** Group -11 -- owners *** MARIAN ??? PC *** - 3 devices 
+(('win-31iusak7diq.boni.local', 9), ('SRCFE40A14C6', 8), ('win-i62g4feh7qn.boni.local', 8))
+******************** Group -13 -- owners *** SRCFE40A14C6 *** - 3 devices 
+(('win-31iusak7diq.boni.local', 9), ('win-i62g4feh7qn.boni.local', 8), ('MARIAN ??? PC', 7))
+******************** Group -15 -- owners *** KONICA *** - 4 devices 
+(('BOBY PC', 13), ('win-31iusak7diq.boni.local', 9), ('router.boni.local', 7), ('HOLDING PRINTER HP843497B4D24E', 3))
+******************** Group -17 -- owners *** BOBY PC *** - 5 devices 
+(('KONICA', 10), ('win-31iusak7diq.boni.local', 9), ('router.boni.local', 7), ('RUTER X OFFICE', 5), ('HOLDING PRINTER HP843497B4D24E', 3))
+******************** Group -19 -- owners *** PRINTER brw4cebbddc8746.boni.local *** - 5 devices 
+(('OFFICE ROUTER', 6), ('XXXX SASHO', 2), ('ROUTER OFFICE', 1), ('ROUTER BONIBACKUP HP843497B4D24E', 1), ('anisec', 1))
+******************** Group -21 -- owners *** qvserver.boni.local *** - 4 devices 
+(('era.boni.local', 8), ('srv-santa-01.boni.local', 8), ('SERVER OFFICE', 7), ('MARIAN DESK XXX', 5))
+******************** Group -23 -- owners *** srv-santa-01.boni.local *** - 4 devices 
+(('era.boni.local', 8), ('qvserver.boni.local', 8), ('SERVER OFFICE', 7), ('MARIAN DESK XXX', 5))
+******************** Group -25 -- owners *** era.boni.local *** - 4 devices 
+(('qvserver.boni.local', 8), ('srv-santa-01.boni.local', 8), ('SERVER OFFICE', 7), ('MARIAN DESK XXX', 5))
+******************** Group -27 -- owners *** PRINTER npif7a2a1.boni.local *** - 2 devices 
+(('HAZAI TV', 8), ('HAZAI XXX', 1))
+******************** Group -29 -- owners *** STOYANOV hstoyanov.boni.local *** - 2 devices 
+(('rmanov.BONI.LOCAL', 13), ('PRINTER xrx9c934e440a6c.boni.local', 8))
+******************** Group -31 -- owners *** BOBY bmarkov.boni.local *** - 1 devices 
+(('desktop-bnejetr.boni.local', 5),)
+******************** Group -33 -- owners *** MARIAN DESK XXX *** - 5 devices 
+(('srv-santa-01.boni.local', 8), ('era.boni.local', 8), ('qvserver.boni.local', 8), ('SERVER OFFICE', 7), ('ROUTER BONIBACKUP', 2))
+******************** Group -35 -- owners *** SERVER OFFICE *** - 6 devices 
+(('srv-santa-01.boni.local', 8), ('era.boni.local', 8), ('qvserver.boni.local', 8), ('SERVER OFFICE', 7), ('MARIAN DESK XXX', 5), ('ROUTER BONIBACKUP', 2))
+******************** Group -37 -- owners *** HAZAI XXX *** - 1 devices 
+(('PRINTER npif7a2a1.boni.local', 2),)
+********************

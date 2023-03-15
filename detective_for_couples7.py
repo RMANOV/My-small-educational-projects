@@ -238,16 +238,16 @@ def find_together(data):
             if device["mac"] == other_device["mac"]:
                 continue
             if device["first"] == other_device["first"]:
-                if (device["first"] - other_device["first"]).total_seconds() <= 30:
+                if abs((device["first"] - other_device["first"]).total_seconds()) <= 300:
                     together[device["user"]].append(other_device["user"])
             if device["last"] == other_device["last"]:
-                if (
+                if abs((
                     device["last"] - other_device["last"]
-                ).total_seconds() <= 30:  # cheks if the difference between the last detection is less than 5 minutes
+                ).total_seconds()) <= 300:  # cheks if the difference between the last detection is less than 5 minutes
                     together[device["user"]].append(other_device["user"])
-                if (device["first"] - other_device["first"]).total_seconds() <= 10 and (
+                if abs((device["first"] - other_device["first"]).total_seconds()) <= 100 and abs((
                     device["last"] - other_device["last"]
-                ).total_seconds() <= 10:  # cheks if the difference between the first and last detection is less than 5 minutes
+                ).total_seconds()) <= 100:  # cheks if the difference between the first and last detection is less than 5 minutes
                     owners[device["user"]].append(other_device["user"])
 
     # sort the dictionaries by the number of times the device was seen with another device
@@ -311,6 +311,8 @@ def find_together(data):
     # sort dictionary by the number of values and then by the second element of the tuple
     owners = { k: sorted(v, key=lambda x: (len(x), x[1]), reverse=True) for k, v in owners.items()}
     together = { k: sorted(v, key=lambda x: (len(x), x[1]), reverse=True) for k, v in together.items()}
+
+    return together, owners
     
     # sort dictionary by the counter
     # owners = {k: sorted(v, key=lambda x: Counter[x], reverse=True) for k, v in owners.items()}
@@ -680,37 +682,122 @@ def find_together(data):
     # # remove all empty sets
     # unique_sets_together = [x for x in unique_sets_together if x]
 
-    return together, owners
+
+def create_unique_groups_of_devices_seen_together(together):
+    counts = defaultdict(int)
+    for k, v in together.items():
+        pair=tuple(([k] + v))
+        counts[pair] += 1
+        
+
+    
+    sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
+
+    unique_groups_together = [ x[0] for x in sorted_counts]
+
+    return unique_groups_together
+
+def create_unique_groups_of_devices_owned_by_same_person(owners):
+    counts = defaultdict(int)
+    for k, v in owners.items():
+        pair=tuple(([k] + v))
+        counts[pair] += 1
+
+    
+    sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
+
+    unique_groups_owners = [ x[0] for x in sorted_counts]
+
+    return unique_groups_owners
 
 
 
-def write_together(together, file_path, data, owners):
+
+
+def write_together(file_path, data, unique_groups_together, unique_groups_owners):
     with open(file_path, "w") as f:
         print(f"==========================================================")
         f.write(f"==========================================================")
-        number_of_group = len(together)
-        for k, v in together.items():
+        number_of_group = len(unique_groups_together)
+        for group in unique_groups_together:
             print(f" Group {number_of_group} -- together")
-            print(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+            # print every element of the tuple in a new line
+            print(f" *** { group[0]} *** - {len(group[1:])} devices \n" + f'{group[1:]}\n')
             print(f"********************")
             number_of_group -= 1
-            # write it in file
+
+            # write it in File
             f.write(f" Group {number_of_group} -- together")
-            f.write(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+            # print every element of the tuple in a new line
+            f.write(f" *** { group[0]} *** - {len(group[1:])} devices \n" + f'{group[1:]}\n')
             f.write(f"********************")
+            number_of_group -= 1
+        print(f"==========================================================")
+        f.write(f"==========================================================")
 
-
-
-        number_of_owners = len(owners)
-        for k, v in owners.items():
-            print(f" Group {number_of_owners} -- owners")
-            print(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+        owners_group = len(unique_groups_owners)
+        for group in unique_groups_owners:
+            print(f" Group {owners_group} -- owners")
+            # print every element of the tuple in a new line
+            print(f" *** {  group[0]} *** - {len(group[1:])} devices \n" + f'{group[1:]}\n')
             print(f"********************")
-            number_of_owners -= 1
-            # write it in file
-            f.write(f" Group {number_of_owners} -- owners")
-            f.write(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+            owners_group -= 1
+
+            # write it in File
+            f.write(f" Group { owners_group} -- owners")
+            # print every element of the tuple in a new line
+            f.write(f" *** { group[0]} *** - {len(group[1:])} devices \n" + f'{group[1:]}\n')
             f.write(f"********************")
+            owners_group -= 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # number_of_group = len(together)
+        # for k, v in together.items():
+        #     print(f" Group {number_of_group} -- together")
+        #     print(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+        #     print(f"********************")
+        #     number_of_group -= 1
+        #     # write it in file
+        #     f.write(f" Group {number_of_group} -- together")
+        #     f.write(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+        #     f.write(f"********************")
+
+
+
+        # number_of_owners = len(owners)
+        # for k, v in owners.items():
+        #     print(f" Group {number_of_owners} -- owners")
+        #     print(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+        #     print(f"********************")
+        #     number_of_owners -= 1
+        #     # write it in file
+        #     f.write(f" Group {number_of_owners} -- owners")
+        #     f.write(f" *** {k} *** - {len(v)} devices \n"+"\n".join(v))
+        #     f.write(f"********************")
 
 
 
@@ -844,7 +931,9 @@ def write_together(together, file_path, data, owners):
 def main():
     data = read_data("devices.txt")
     together, owners = find_together(data)
-    write_together(together, "together.txt", data, owners)
+    unique_groups_together = create_unique_groups_of_devices_seen_together(together)
+    unique_groups_owners = create_unique_groups_of_devices_owned_by_same_person(owners)
+    write_together("together.txt", data, unique_groups_together, unique_groups_owners)
 
 
 if __name__ == "__main__":
