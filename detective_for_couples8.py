@@ -695,7 +695,7 @@ def find_together(data):
     # implementation of Apriori algorithm - values of the dictionaries treat like transactions to find frequent itemsets
 def get_unique_groups_together_apriory(together):
     transactions = list(together.values())
-    results = list(apriori(transactions, min_support=0.015, min_confidence=0.7))
+    results = list(apriori(transactions, min_support=0.02, min_confidence=0.9))
     unique_groups_together2 = []
 
     for itemset in results:
@@ -711,7 +711,7 @@ def get_unique_groups_together_apriory(together):
             if i != j:
                 if (
                     len(set(unique_groups_together2[i]).intersection(set(unique_groups_together2[j])))
-                    >= len(unique_groups_together2[i]) * 0.7
+                    >= len(unique_groups_together2[i]) * 0.9
                 ):
                     unique_groups_together2[i] = set(unique_groups_together2[i]).union(
                         set(unique_groups_together2[j])
@@ -728,13 +728,33 @@ def get_unique_groups_together_apriory(together):
 
 def get_unique_groups_owners_apriory(owners):
     transactions = list(owners.values())
-    results = list(apriori(transactions, min_support=0.03, min_confidence=0.7))
+    results = list(apriori(transactions, min_support=0.02, min_confidence=0.7))
     unique_groups_owners2 = []
 
     for itemset in results:
         devices = tuple(sorted([device for device in itemset.items]))
         if not any(devices in group for group in unique_groups_owners2):
             unique_groups_owners2.append(devices)
+
+    # create a set from every tuple in the list
+    # check if the current set have 2/3  or more same elements with another set - if yes - join the sets, if not - continue
+    # remove all empty sets
+    for i in range(len(unique_groups_owners2)):
+        for j in range(len(unique_groups_owners2)):
+            if i != j:
+                if (
+                    len(set(unique_groups_owners2[i]).intersection(set(unique_groups_owners2[j])))
+                    >= len(unique_groups_owners2[i]) * 0.9
+                ):
+                    unique_groups_owners2[i] = set(unique_groups_owners2[i]).union(
+                        set(unique_groups_owners2[j])
+                    )
+                    unique_groups_owners2[j] = set()
+                else:
+                    continue
+
+    # remove all empty sets
+    unique_groups_owners2 = [x for x in unique_groups_owners2 if x]
 
     return unique_groups_owners2
 
@@ -818,46 +838,33 @@ def write_together2(file_path, data, unique_groups_together2, unique_groups_owne
     with open(file_path, "w") as f:
         print(f"==========================================================")
         f.write(f"==========================================================")
-        number_of_group = len(unique_groups_together)
-        for group in unique_groups_together:
-            print(f" Group {number_of_group} -- together")
-            # print every element of the tuple in a new line
-            print(
-                f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n"
-            )
+        number_of_group = len(unique_groups_together2)
+        for group in unique_groups_together2:
+            print(f" Group {number_of_group} of {len(unique_groups_together2)} -- together - apriori")
+            # list with dictionaries, that content sets -  print every set in a new line
+            print(*group, sep="\n")
             print(f"********************")
             number_of_group -= 1
-
             # write it in File
-            f.write(f" Group {number_of_group} -- together")
+            # f.write(f" Group {number_of_group} -- together - apriori")
             # print every element of the tuple in a new line
-            f.write(
-                f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n"
-            )
-            f.write(f"********************")
-            number_of_group -= 1
+            # f.write(*group, sep="\n")
+            # f.write(f"********************")
+
         print(f"==========================================================")
         f.write(f"==========================================================")
 
-        owners_group = len(unique_groups_owners)
-        for group in unique_groups_owners:
-            print(f" Group {owners_group} -- owners")
-            # print every element of the tuple in a new line
-            print(
-                f" *** {  group[0]} *** - {len(group[1:])} devices \n"
-                + f"{group[1:]}\n"
-            )
+        owners_group = len(unique_groups_owners2)
+        for group in unique_groups_owners2:
+            print(f" Group {owners_group} of {len(unique_groups_owners2)} -- owners - apriori")
+            print(*group, sep="\n")
             print(f"********************")
             owners_group -= 1
-
             # write it in File
-            f.write(f" Group { owners_group} -- owners")
-            # print every element of the tuple in a new line
-            f.write(
-                f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n"
-            )
-            f.write(f"********************")
-            owners_group -= 1
+            # f.write(f" Group { owners_group} -- owners - apriori")
+            # f.write(*group, sep="\n")
+            # f.write(f"********************")
+
 
 
 
