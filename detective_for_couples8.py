@@ -792,7 +792,7 @@ def write_together(file_path, data, unique_groups_together, unique_groups_owners
         f.write(f"==========================================================")
         number_of_group = len(unique_groups_together)
         for group in unique_groups_together:
-            print(f" Group {number_of_group} -- together")
+            print(f" Group {number_of_group} of {len(unique_groups_together)} -- together")
             # print every element of the tuple in a new line
             print(
                 f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n"
@@ -812,7 +812,7 @@ def write_together(file_path, data, unique_groups_together, unique_groups_owners
 
         owners_group = len(unique_groups_owners)
         for group in unique_groups_owners:
-            print(f" Group {owners_group} -- owners")
+            print(f" Group {owners_group} of {len(unique_groups_owners)} -- owners")
             # print every element of the tuple in a new line
             print(
                 f" *** {  group[0]} *** - {len(group[1:])} devices \n"
