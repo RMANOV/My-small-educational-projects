@@ -511,3 +511,70 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# # Define a class for graph
+# class Graph:
+#     # Initialize the graph with an empty dictionary
+#     def __init__(self):
+#         self.graph = {}
+
+#     # Add a node to the graph with an optional list of neighbors
+#     def add_node(self, node, neighbors=None):
+#         if node not in self.graph:
+#             self.graph[node] = neighbors or []
+
+#     # Add an edge between two nodes in the graph
+#     def add_edge(self, node1, node2):
+#         if node1 in self.graph and node2 in self.graph:
+#             self.graph[node1].append(node2)
+#             self.graph[node2].append(node1)
+
+#     # Remove a node from the graph and its edges
+#     def remove_node(self, node):
+#         if node in self.graph:
+#             for neighbor in self.graph[node]:
+#                 self.graph[neighbor].remove(node)
+#             del self.graph[node]
+
+#     # Remove an edge between two nodes in the graph
+#     def remove_edge(self, node1, node2):
+#         if node1 in self.graph and node2 in self.graph:
+#             if node2 in self.graph[node1]:
+#                 self.graph[node1].remove(node2)
+#             if node1 in self.graph[node2]:
+#                 self.graph[node2].remove(node1)
+
+#     # Get the list of neighbors of a node in the graph
+#     def get_neighbors(self, node):
+#         if node in self.graph:
+#             return self.graph[node]
+#         else:
+#             return None
+
+#     # Get the number of nodes in the graph
+#     def get_size(self):
+#         return len(self.graph)
+
+#     # Check if a path exists between two nodes using DFS algorithm
+#     def has_path_dfs(self, start, end):
+#         # Initialize a stack for DFS traversal
+#         stack = []
+#         # Initialize a set for visited nodes
+#         visited = set()
+#         # Push the start node to the stack
+#         stack.append(start)
+#         # Loop until the stack is empty
+#         while stack:
+#             # Pop a node from the stack
+#             current = stack.pop()
+#             # Mark it as visited
+#             visited.add(current)
+#             # Check if it is the end node
+#             if current == end:
+#                 return True
+#             # Push its unvisited neighbors to the stack 
+#             for neighbor in self.get_neighbors(current):
+#                 if neighbor not in visited:
+#                     stack.append(neighbor)
+#         # Return False if no path found 
+#         return False
