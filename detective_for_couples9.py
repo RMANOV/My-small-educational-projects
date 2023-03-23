@@ -1,7 +1,7 @@
 # Read lines from a file and parse them into a list of dictionaries
 # Each dictionary represents a device
 # The list of dictionaries is returned
-# The file is expected to have the following format:
+# The data file is expected to have the following format without duplicates:
 # ===
 # IP Address:
 # Device Name:
@@ -13,6 +13,7 @@
 # Detection Count:
 # Active:
 # ===
+# Old implementation of the function
 # Calculate the number of times each device was seen with another device
 # Return a list of devices that were seen together connect and disconnect at least 3 times,
 # sorted by the number of times they were seen together - +/- X minutes intersection in the time of connection or disconnection
@@ -38,11 +39,27 @@
 # The file should not have a trailing vertical TabError()
 # The file should not have a trailing next line
 # The file should not have a trailing no-break space
-# In the next run of the program, the file should be suplemented with the new data and new results
+# The file should not have a trailing line separator
 # The file should not contain duplicates
 # The file should not contain empty lines
 # The file should not contain lines with only whitespace
 # The file should not contain lines with only whitespace and a newline
+# New implementation of the function - using apriori algorithm
+# Calculate the number of times each device was seen with another device
+# Return a list of devices that were seen together connect and disconnect at least 3 times,
+# sorted by the number of times they were seen together - +/- X minutes intersection in the time of connection or disconnection
+# The list should be sorted by the number of times the device was seen with another device
+# Every record in the list should be a treated as a transaction in aprirori algorithm
+# Aprirori algorithm should be used to find the most frequent itemsets of devices that were seen together
+# The result is 2 lists of itemsets - owners and seen together - 
+# difference is in the number of times they were seen together and shortest time interval between 
+# the first and last time they were seen together
+ 
+
+
+
+
+
 
 
 import datetime
