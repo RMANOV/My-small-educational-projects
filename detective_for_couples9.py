@@ -224,9 +224,15 @@ def find_together(data):
                 continue
             if abs((device["first"] - other_device["first"]).total_seconds()) <= 300:
                 if abs((device["last"] - other_device["last"]).total_seconds()) <= 300:
-                    # owners[device["user"]].add(device["mac"]) # add the device MAC address to the owner
-                    # owners[other_device["user"]].add(other_device["user"]) # add the other device MAC address to the owner
-                    
+                    # owners[device["user"]].add(device["mac"])
+                    owners[device["user"]].add(other_device["user"])
+
+
+
+
+
+
+
 
     # count how many times each device was seen with other devices
     device_counts = Counter(device for devices in together.values() for device in devices)
@@ -328,12 +334,70 @@ def create_unique_groups_of_devices_seen_together(together, data):
 
     unique_groups_together = [x[0] for x in sorted_counts]
 
+    # # check if the current set have 2/3  or more same elements with another set - if yes - join the sets, if not - continue
+    # for i in range(len(unique_groups_together)):
+    #     for j in range(len(unique_groups_together)):
+    #         if i != j:
+    #             if (
+    #                 len(
+    #                     set(unique_groups_together[i]).intersection(
+    #                         set(unique_groups_together[j])
+    #                     )
+    #                 )
+    #                 >= len(unique_groups_together[i]) * 0.95
+    #             ):
+    #                 unique_groups_together[i] = set(unique_groups_together[i]).union(
+    #                     set(unique_groups_together[j])
+    #                 )
+    #                 unique_groups_together[j] = set()
+    #             else:
+    #                 continue
+
+    # remove all empty sets
+    unique_groups_together = [x for x in unique_groups_together if x]
+
     return unique_groups_together
 
 
 def create_unique_groups_of_devices_owned_by_same_person(owners, data):
     # create a list of tuples - each tuple is a group of devices owned by the same person
     unique_groups_owners = []
+    # for each owner create set of all the devices owned by him
+    for owner in owners:
+        # create an empty set
+        # add the owner to the set
+        # add all the devices owned by the owner to the set
+        # add the set to the list
+        # remove old record from the list
+        # from  this ('ALEX XXX', {'JESSIKA', 'TANIO XXX', 'ALEX SOYKOVA LI4EN NOV XXX'})
+        # create this frozenset ('ALEX XXX', 'JESSIKA', 'TANIO XXX', 'ALEX SOYKOVA LI4EN NOV XXX')
+        # and add it to the list
+        unique_groups_owners.append( frozenset([owner[0]] + list(owner[1])) )
+
+   
+    # check if the current set have 2/3  or more same elements with another set - if yes - join the sets, if not - continue
+    # remove all empty sets
+    # for i in range(len(unique_groups_owners)):
+    #     for j in range(len(unique_groups_owners)):
+    #         if i != j:
+    #             if (
+    #                 len(
+    #                     set(unique_groups_owners[i]).intersection(
+    #                         set(unique_groups_owners[j])
+    #                     )
+    #                 )
+    #                 >= len(unique_groups_owners[i]) * 0.95
+    #             ):
+    #                 unique_groups_owners[i] = set(unique_groups_owners[i]).union(
+    #                     set(unique_groups_owners[j])
+    #                 )
+    #                 unique_groups_owners[j] = set()
+    #             else:
+    #                 continue
+
+    # remove all empty sets
+    unique_groups_owners = [x for x in unique_groups_owners if x]
+
 
     
 
@@ -351,41 +415,50 @@ def write_together(file_path, data, unique_groups_together, unique_groups_owners
         number_of_group = len(unique_groups_together)
         for group in unique_groups_together:
             print(
-                f" Group {number_of_group} of {len(unique_groups_together)} -- together"
+                f" Group {number_of_group} of {len(unique_groups_together)} --{len(group)} devices  together\n"
             )
-            # print every element of the tuple in a new line
-            print(
-                f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n"
-            )
+            # print every element of this frozenset({'ALEX SOYKOVA PC', 'BOBY', 'DAMIANOV PC'}) in a new line
+            for element in group:
+                print(element)
+                f.write(element + " ")
+
+            # print(
+            #     f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n" 
+                    
+            # )
             print(f"********************")
 
             # write it in File
-            f.write(f" Group {number_of_group} -- together")
-            # print every element of the tuple in a new line
-            f.write(
-                f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n"
-            )
-            f.write(f"********************")
+            # f.write(f" Group {number_of_group} -- together")
+            # # print every element of the tuple in a new line
+            # f.write(
+            #     f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n"
+            # )
+            # f.write(f"********************")
             number_of_group -= 1
         print(f"==========================================================")
-        f.write(f"==========================================================")
+        # f.write(f"==========================================================")
 
         owners_group = len(unique_groups_owners)
         for group in unique_groups_owners:
-            print(f" Group {owners_group} of {len(unique_groups_owners)} -- owners")
+            print(f" Group {owners_group} of {len(unique_groups_owners)} -- {len(group)} owners")
             # print every element of the tuple in a new line
-            print(
-                f" *** {  group[0]} *** - {len(group[1:])} devices \n"
-                + f"{group[1:]}\n"
-            )
+            # print every element in a new line - {'TANIO XXX', 'JESSIKA', 'ALEX SOYKOVA LI4EN NOV XXX', 'ALEX XXX'}
+            # TANIO XXX
+            # JESSIKA
+            # ALEX SOYKOVA LI4EN NOV XXX
+            # if frozenset - print in one line
+            for element in group:
+                print(element)
+                f.write(element + " ")
             print(f"********************")
             # write it in File
-            f.write(f" Group { owners_group} -- owners")
-            # print every element of the tuple in a new line
-            f.write(
-                f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n"
-            )
-            f.write(f"********************")
+            # f.write(f" Group { owners_group} -- owners")
+            # # print every element of the tuple in a new line
+            # f.write(
+            #     f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n"
+            # )
+            # f.write(f"********************")
             owners_group -= 1
 
 
