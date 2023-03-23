@@ -206,7 +206,7 @@ def find_together(data):
         for device2 in devices:
             if device1 == device2:
                 continue
-            if abs((device1[1] - device2[1]).total_seconds()) <= 300:
+            if abs((device1[1] - device2[1]).total_seconds()) <= 600:
                 if len(together[device1[0]]) < 5 and len(together[device2[0]]) < 5:
                     together[device1[0]].add(device2[0]) # add the other device MAC address to the set
                     together[device2[0]].add(device1[0]) # add the other device MAC address to the set
@@ -222,8 +222,8 @@ def find_together(data):
                 continue
             if device["user"] == other_device["user"]:
                 continue
-            if abs((device["first"] - other_device["first"]).total_seconds()) <= 300:
-                if abs((device["last"] - other_device["last"]).total_seconds()) <= 300:
+            if abs((device["first"] - other_device["first"]).total_seconds()) <= 100:
+                if abs((device["last"] - other_device["last"]).total_seconds()) <= 100:
                     # owners[device["user"]].add(device["mac"])
                     owners[device["user"]].add(other_device["user"])
 
