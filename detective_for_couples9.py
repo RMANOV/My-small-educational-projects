@@ -256,11 +256,30 @@ def find_together(data):
                     <= 100
                 ):  # cheks if the difference between the first and last detection is less than 5 minutes
                     owners[device["user"]].append(other_device["user"])
+    
+    # count how many times the device was seen with another device
+    # Counter = lambda x: len(list(filter(lambda y: y == x, together[x])))
+    # together = {k: Counter(v) for k, v in together.items()}
+
+    # remove keys with empty lists
+    together = {k: v for k, v in together.items() if v}
+    owners = {k: v for k, v in owners.items() if v}
+
+    # # remove keys with same values
+    # together = {k: list(set(v)) for k, v in together.items() if v}
+    # owners = {k: list(set(v)) for k, v in owners.items() if v}
 
     # sort the dictionaries by the number of times the device was seen with another device
     owners = {
         k: sorted(v, key=lambda x: together[x], reverse=True) for k, v in owners.items()
     }
+    # try:
+    #     together = {
+    #         k: sorted(v, key=lambda x: together[x], reverse=True)
+    #         for k, v in together.items()
+    #     }
+    # except RuntimeError():
+    #     pass
     together = {
         k: sorted(v, key=lambda x: together[x], reverse=True)
         for k, v in together.items()
