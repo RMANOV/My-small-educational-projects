@@ -63,9 +63,10 @@
 
 
 import datetime
-from collections import defaultdict
 import logging
 from apyori import apriori
+import itertools
+from collections import defaultdict, Counter
 
 
 logging.basicConfig(filename="log.txt", level=logging.DEBUG)
@@ -193,181 +194,51 @@ def read_data(file_path):
         return data
 
 
+
 def find_together(data):
-    # create a dictionary where the key is the device and the value is a list of other devices that were seen together -
-    # connect and disconnect at least 3 times, in intersection of +/- X minutes
-    # the list should be sorted by the number of times the device was seen with another device
-    # 1.Iterate over the list of devices
-    # check if the device is not the same as the other device - by comparing mac addresses
-    # check if the devices date of first detection are the same
-    #   check if connecting is within the +/- X minutes - if so - set counter +=1 and add the device to the list of other devices
-    #   check if disconnecting is within the +/- X minutes - if so - set counter +=1 and add the device to the list of other devices
-    # check if the devices date of last detection are the same
-    #   check if connecting is within the +/- X minutes - if so - set counter +=1 and add the device to the list of other devices
-    #   check if disconnecting is within the +/- X minutes - if so - set counter +=1 and add the device to the list of other devices
-    # Add the device and the list of other devices to the dictionary and the counter for each other device
-    # 2. In the end - sort the dictionary by the number of times the device was seen with another device - by the counter
-    # 3. If two devices were seen together the same number of times, sort them by the user_text
+    # create a set where each element is a tuple of (device MAC address, device first detection time)
+    devices = {(device["mac"], device["first"]) for device in data}
 
-    together = defaultdict(list)
-
-    # If "first"  - minutes - is the same for more than 5 devices - ignore that 'first' - it is the start of scaning
-    # count how many devices have the same 'first' and 'last' - if more than 5 - ignore that 'first' and 'last' - it is the start of scaning and the end of scaning
-    # iterate over the list of devices and check if the 'first' and 'last' are the same for more than 5 devices - create a set of 'first' and 'last' and check the length of the set
-    # if so - ignore that 'first' and 'last' - it is the start of scaning and the end of scaning
-    first_set = set()
-    last_set = set()
-    for device in data:
-        devices_with_same_first = 0
-        devices_with_same_last = 0
-        for other_device in data:
-
-            if (
-                not device["first"]
-                or not other_device["first"]
-                or not device["last"]
-                or not other_device["last"]
-            ):
+    # create a dictionary where the key is the device MAC address and the value is a set of other device "user text"
+    # that were seen together at least 3 times within +/- 5 minutes
+    together = defaultdict(set)
+    for device1 in devices:
+        for device2 in devices:
+            if device1 == device2:
                 continue
-            try:
-                if device["first"] == other_device["first"]:
-                    devices_with_same_first += 1
-                if device["last"] == other_device["last"]:
-                    devices_with_same_last += 1
-            except KeyError:
-                continue
+            if abs((device1[1] - device2[1]).total_seconds()) <= 300:
+                if len(together[device1[0]]) < 5 and len(together[device2[0]]) < 5:
+                    together[device1[0]].add(device2[0]) # add the other device MAC address to the set
+                    together[device2[0]].add(device1[0]) # add the other device MAC address to the set
 
-        if devices_with_same_first > 5:
-            first_set.add(device["first"])
-            continue
-        if devices_with_same_last > 5:
-            last_set.add(device["last"])
-            continue
-
-    # if the 'first' and 'last' is same  - many times - the owner is one person - create a dictionary where the key is the user of the device and the value is a list of other devices that were seen together
-    owners = defaultdict(list)
-
+    # create a dictionary where the key is the owner name and the value is a set of device MAC addresses
+    # that the owner owns, based on the first and last detection times of each device
+    owners = defaultdict(set)
     for device in data:
-        if device["first"] in first_set:
-            continue
-        if device["last"] in last_set:
+        if not device["user"]:
             continue
         for other_device in data:
             if device["mac"] == other_device["mac"]:
                 continue
-            if device["first"] == other_device["first"]:
-                if (
-                    abs((device["first"] - other_device["first"]).total_seconds())
-                    <= 300
-                ):
-                    together[device["user"]].append(other_device["user"])
-            if device["last"] == other_device["last"]:
-                if (
-                    abs((device["last"] - other_device["last"]).total_seconds()) <= 300
-                ):  # cheks if the difference between the last detection is less than 5 minutes
-                    together[device["user"]].append(other_device["user"])
-                if (
-                    abs((device["first"] - other_device["first"]).total_seconds())
-                    <= 100
-                    and abs((device["last"] - other_device["last"]).total_seconds())
-                    <= 100
-                ):  # cheks if the difference between the first and last detection is less than 5 minutes
-                    owners[device["user"]].append(other_device["user"])
-    
-    # count how many times the device was seen with another device
-    # Counter = lambda x: len(list(filter(lambda y: y == x, together[x])))
-    # together = {k: Counter(v) for k, v in together.items()}
+            if device["user"] == other_device["user"]:
+                continue
+            if abs((device["first"] - other_device["first"]).total_seconds()) <= 300:
+                if abs((device["last"] - other_device["last"]).total_seconds()) <= 300:
+                    # owners[device["user"]].add(device["mac"]) # add the device MAC address to the owner
+                    # owners[other_device["user"]].add(other_device["user"]) # add the other device MAC address to the owner
+                    
 
-    # remove keys with empty lists
-    together = {k: v for k, v in together.items() if v}
-    owners = {k: v for k, v in owners.items() if v}
+    # count how many times each device was seen with other devices
+    device_counts = Counter(device for devices in together.values() for device in devices)
 
-    # # remove keys with same values
-    # together = {k: list(set(v)) for k, v in together.items() if v}
-    # owners = {k: list(set(v)) for k, v in owners.items() if v}
+    # sort the devices by the number of other devices they were seen with
+    sorted_devices = sorted(devices, key=lambda device: device_counts[device[0]], reverse=True)
 
-    # sort the dictionaries by the number of times the device was seen with another device
-    owners = {
-        k: sorted(v, key=lambda x: together[x], reverse=True) for k, v in owners.items()
-    }
-    # try:
-    #     together = {
-    #         k: sorted(v, key=lambda x: together[x], reverse=True)
-    #         for k, v in together.items()
-    #     }
-    # except RuntimeError():
-    #     pass
-    together = {
-        k: sorted(v, key=lambda x: together[x], reverse=True)
-        for k, v in together.items()
-    }
-
-    # remove devices without first and last detection
-    owners = {k: v for k, v in owners.items() if v}
-    together = {k: v for k, v in together.items() if v}
-
-    # # filter the dictionaries - to have only devices that were seen together at least 5 times
-    # owners = {k: v for k, v in owners.items() if len(v) >= 5}
-    # together = {k: v for k, v in together.items() if len(v) >= 5}
-
-    # remove devices that were seen together less than 5 times
-    # owners = {k: v for k, v in owners.items() if len(v) >= 5}
-
-    # for every value in the dictionary - create a counter for that value - remove the value from the list and add it to the dictionary with the counter
-    # ['qvserver.boni.local', 'qvserver.boni.local', 'qvserver.boni.local', 'era.boni.local', 'srv-santa-01.boni.local', 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'MARIAN DESK XXX', 'SERVER OFFICE', 'ROUTER BONIBACKUP']
-    # {'qvserver.boni.local': 3, 'era.boni.local': 1, 'srv-santa-01.boni.local': 1, 'MARIAN DESK XXX': 4, 'SERVER OFFICE': 1, 'ROUTER BONIBACKUP': 1}
-    Counter = {}
-    for k, v in owners.items():
-        for val in v:
-            if val in Counter:
-                # create a sublist
-                # with 2 elements - other devices name and the counter as integer
-                Counter[val] += 1
-            else:
-                Counter[val] = 1
-
-    Counter2 = {}
-    for k, v in together.items():
-        for val in v:
-            if val in Counter2:
-                Counter2[val] += 1
-            else:
-                Counter2[val] = 1
-
-    # remove the old values from the list and instead add a list with 2 elements -other devices name and - the counter as integer
-    owners = {
-        k: [val for val in v if val not in Counter]
-        + [[val, int(Counter[val])] for val in v if val in Counter]
-        for k, v in owners.items()
-    }
-    together = {
-        k: [val for val in v if val not in Counter2]
-        + [[val, int(Counter2[val])] for val in v if val in Counter2]
-        for k, v in together.items()
-    }
-
-    # owners = {k: [val for val in v if val not in Counter] + [Counter[val] for val in v if val in Counter] for k, v in owners.items()}
-    # owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
-    # owners = { k: [val for val in v if val not in Counter] + [f"{val} {Counter[val]}" for val in v if val in Counter] for k, v in owners.items()}
-    # owners = { k: [int(val) for val in v if val not in Counter] + [[{val},int(Counter[val])]]" for val in v if val in Counter] for k, v in owners.items()}
-    # owners = { k: [int(val) for val in v if val not in Counter] + [[{val},int(Counter[val])] for val in v if val in Counter] for k, v in owners.items() if len(v) >= 5}
-    # owners = { k: [int(val) for val in v if val not in Counter] + [[{val},int(Counter[val])] for val in v if val in Counter] for k, v in owners.items() if len(v) >= 5}
-
-    # remove duplicates in the values in the dictionary - but values are lists
-    owners = {k: list(set([tuple(val) for val in v])) for k, v in owners.items()}
-    together = {k: list(set([tuple(val) for val in v])) for k, v in together.items()}
-
-    # sort dictionary by the number of values and then by the second element of the tuple
-    owners = {
-        k: sorted(v, key=lambda x: (len(x), x[1]), reverse=True)
-        for k, v in owners.items()
-    }
-    together = {
-        k: sorted(v, key=lambda x: (len(x), x[1]), reverse=True)
-        for k, v in together.items()
-    }
+    # sort the owners by the number of devices they own that were seen with other devices
+    owners = sorted(owners.items(), key=lambda owner: sum(device_counts[device] for device in owner[1]), reverse=True)
 
     return together, owners
+
 
 
     # implementation of Apriori algorithm - values of the dictionaries treat like transactions to find frequent itemsets
@@ -443,12 +314,15 @@ def get_unique_groups_owners_apriory(owners):
 
     return unique_groups_owners2
 
-    # create a dictionary with the unique groups of devices seen together - old implementation
-def create_unique_groups_of_devices_seen_together(together):
-    counts = defaultdict(int)
+def create_unique_groups_of_devices_seen_together(together, data):
+    counts = {}
     for k, v in together.items():
-        pair = tuple(([k] + v))
-        counts[pair] += 1
+        # replace every "mac" with "user" - in the v and k
+        pair = frozenset([device["user"] for device in data if device["mac"] == k] + [device["user"] for device in data if device["mac"] in v])
+        # pair = frozenset([k] + list(v))
+        counts[pair] = counts.get(pair, 0) + 1
+        
+
 
     sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
 
@@ -457,17 +331,17 @@ def create_unique_groups_of_devices_seen_together(together):
     return unique_groups_together
 
 
-def create_unique_groups_of_devices_owned_by_same_person(owners):
-    counts = defaultdict(int)
-    for k, v in owners.items():
-        pair = tuple(([k] + v))
-        counts[pair] += 1
+def create_unique_groups_of_devices_owned_by_same_person(owners, data):
+    # create a list of tuples - each tuple is a group of devices owned by the same person
+    unique_groups_owners = []
 
-    sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
+    
 
-    unique_groups_owners = [x[0] for x in sorted_counts]
+    
+
 
     return unique_groups_owners
+
 
 
 def write_together(file_path, data, unique_groups_together, unique_groups_owners):
@@ -551,8 +425,8 @@ def write_together2(file_path, data, unique_groups_together2, unique_groups_owne
 def main():
     data = read_data("devices.txt")
     together, owners = find_together(data)
-    unique_groups_together = create_unique_groups_of_devices_seen_together(together)
-    unique_groups_owners = create_unique_groups_of_devices_owned_by_same_person(owners)
+    unique_groups_together = create_unique_groups_of_devices_seen_together(together, data)
+    unique_groups_owners = create_unique_groups_of_devices_owned_by_same_person(owners, data)
     write_together("together.txt", data, unique_groups_together, unique_groups_owners)
     # apriory algorithm
     unique_groups_together2 = get_unique_groups_together_apriory(together)
