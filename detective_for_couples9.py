@@ -207,9 +207,9 @@ def find_together(data):
             if device1 == device2:
                 continue
             if abs((device1[1] - device2[1]).total_seconds()) <= 200 or abs((device1[2] - device2[2]).total_seconds()) <= 200:
-                if len(together[device1[1]]) < 5 and len(together[device2[1]]) < 5:
-                    together[device1[0]].add(device2[0]) # add the other device MAC address to the set
-                    together[device2[0]].add(device1[0]) # add the other device MAC address to the set
+                # if len(together[device1[1]]) < 5 and len(together[device2[1]]) < 5: # limit the number of devices to 5
+                together[device1[0]].add(device2[0]) # add the other device MAC address to the set
+                together[device2[0]].add(device1[0]) # add the other device MAC address to the set
 
     # create a dictionary where the key is the owner name and the value is a set of device MAC addresses
     # that the owner owns, based on the first and last detection times of each device
@@ -222,11 +222,11 @@ def find_together(data):
                 continue
             if device["user"] == other_device["user"]:
                 continue
-            if abs((device["first"] - other_device["first"]).total_seconds()) <= 100:
-                if abs((device["last"] - other_device["last"]).total_seconds()) <= 100:
-                    if len(owners[device["first"]]) < 5 and len(owners[other_device["first"]]) < 5:
+            if abs((device["first"] - other_device["first"]).total_seconds()) <= 60:
+                if abs((device["last"] - other_device["last"]).total_seconds()) <= 60:
+                    # if len(owners[device["first"]]) < 5 and len(owners[other_device["first"]]) < 5: # limit the number of devices to 5
                         # owners[device["user"]].add(device["mac"])
-                        owners[device["user"]].add(other_device["user"])
+                    owners[device["user"]].add(other_device["user"])
 
 
 
@@ -418,6 +418,11 @@ def write_together(file_path, data, unique_groups_together, unique_groups_owners
             print(
                 f" Group {number_of_group} of {len(unique_groups_together)} --{len(group)} devices  together"
             )
+            if len(group) > 7 or len(group) < 2:
+                print('pass')
+                print('=================')
+                number_of_group -= 1
+                continue
             # print every element of this frozenset({'ALEX SOYKOVA PC', 'BOBY', 'DAMIANOV PC'}) in a new line
             for element in group:
                 print(element)
@@ -443,6 +448,11 @@ def write_together(file_path, data, unique_groups_together, unique_groups_owners
         owners_group = len(unique_groups_owners)
         for group in unique_groups_owners:
             print(f" Group {owners_group} of {len(unique_groups_owners)} -- {len(group)} owners")
+            if len(group) > 7 or len(group) < 2:
+                print('pass')
+                print('==================')
+                owners_group -= 1
+                continue
             # print every element of the tuple in a new line
             # print every element in a new line - {'TANIO XXX', 'JESSIKA', 'ALEX SOYKOVA LI4EN NOV XXX', 'ALEX XXX'}
             # TANIO XXX
