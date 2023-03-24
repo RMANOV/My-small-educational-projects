@@ -196,8 +196,8 @@ def read_data(file_path):
 
 
 def find_together(data):
-    # create a set where each element is a tuple of (device MAC address, device first detection time)
-    devices = {(device["mac"], device["first"]) for device in data}
+    # create a set where each element is a tuple of (device MAC address, device first detection time, device last detection time)
+    devices = { (device["mac"], device["first"], device["last"]) for device in data }
 
     # create a dictionary where the key is the device MAC address and the value is a set of other device "user text"
     # that were seen together at least 3 times within +/- 5 minutes
@@ -206,8 +206,8 @@ def find_together(data):
         for device2 in devices:
             if device1 == device2:
                 continue
-            if abs((device1[1] - device2[1]).total_seconds()) <= 600:
-                if len(together[device1[0]]) < 5 and len(together[device2[0]]) < 5:
+            if abs((device1[1] - device2[1]).total_seconds()) <= 200 or abs((device1[2] - device2[2]).total_seconds()) <= 200:
+                if len(together[device1[1]]) < 5 and len(together[device2[1]]) < 5:
                     together[device1[0]].add(device2[0]) # add the other device MAC address to the set
                     together[device2[0]].add(device1[0]) # add the other device MAC address to the set
 
@@ -224,8 +224,9 @@ def find_together(data):
                 continue
             if abs((device["first"] - other_device["first"]).total_seconds()) <= 100:
                 if abs((device["last"] - other_device["last"]).total_seconds()) <= 100:
-                    # owners[device["user"]].add(device["mac"])
-                    owners[device["user"]].add(other_device["user"])
+                    if len(owners[device["first"]]) < 5 and len(owners[other_device["first"]]) < 5:
+                        # owners[device["user"]].add(device["mac"])
+                        owners[device["user"]].add(other_device["user"])
 
 
 
@@ -415,7 +416,7 @@ def write_together(file_path, data, unique_groups_together, unique_groups_owners
         number_of_group = len(unique_groups_together)
         for group in unique_groups_together:
             print(
-                f" Group {number_of_group} of {len(unique_groups_together)} --{len(group)} devices  together\n"
+                f" Group {number_of_group} of {len(unique_groups_together)} --{len(group)} devices  together"
             )
             # print every element of this frozenset({'ALEX SOYKOVA PC', 'BOBY', 'DAMIANOV PC'}) in a new line
             for element in group:
@@ -450,7 +451,7 @@ def write_together(file_path, data, unique_groups_together, unique_groups_owners
             # if frozenset - print in one line
             for element in group:
                 print(element)
-                f.write(element + " ")
+                # f.write(element)
             print(f"********************")
             # write it in File
             # f.write(f" Group { owners_group} -- owners")
