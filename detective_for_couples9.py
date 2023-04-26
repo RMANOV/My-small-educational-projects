@@ -198,8 +198,6 @@ def read_data(file_path):
                 if device1["mac"] == device2["mac"] and device1["user"] == device2["user"] and device1["first"] == device2["first"] and device1["last"] == device2["last"]:
                     data.remove(device2)
 
-        
-
         return data
 
 
