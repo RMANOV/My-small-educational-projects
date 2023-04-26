@@ -183,6 +183,7 @@ def read_data(file_path):
                 device = {}  # reset the device dictionary
             else:
                 continue
+
         # if "first" or "last" is missing - remove the device from the list
         data = [device for device in data if "first" in device and "last" in device]
 
