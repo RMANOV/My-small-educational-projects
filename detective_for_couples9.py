@@ -51,15 +51,9 @@
 # The list should be sorted by the number of times the device was seen with another device
 # Every record in the list should be a treated as a transaction in aprirori algorithm
 # Aprirori algorithm should be used to find the most frequent itemsets of devices that were seen together
-# The result is 2 lists of itemsets - owners and seen together - 
-# difference is in the number of times they were seen together and shortest time interval between 
+# The result is 2 lists of itemsets - owners and seen together -
+# difference is in the number of times they were seen together and shortest time interval between
 # the first and last time they were seen together
- 
-
-
-
-
-
 
 
 import datetime
@@ -191,13 +185,27 @@ def read_data(file_path):
                 continue
         # if "first" or "last" is missing - remove the device from the list
         data = [device for device in data if "first" in device and "last" in device]
-        return data
 
+        # remove devices that do not have a device["user"]
+        data = [device for device in data if "user" in device]
+
+        # remove devices with same MAC address and same user text and same first and last detection time
+        for device1 in data:
+            for device2 in data:
+                if device1 == device2:
+                    continue
+                if device1["mac"] == device2["mac"] and device1["user"] == device2["user"] and device1["first"] == device2["first"] and device1["last"] == device2["last"]:
+                    data.remove(device2)
+
+        
+
+        return data
 
 
 def find_together(data):
     # create a set where each element is a tuple of (device MAC address, device first detection time, device last detection time)
-    devices = { (device["mac"], device["first"], device["last"]) for device in data }
+    devices = {(device["mac"], device["first"], device["last"])
+               for device in data}
 
     # create a dictionary where the key is the device MAC address and the value is a set of other device "user text"
     # that were seen together at least 3 times within +/- 5 minutes
@@ -208,12 +216,17 @@ def find_together(data):
                 continue
             if abs((device1[1] - device2[1]).total_seconds()) <= 200 or abs((device1[2] - device2[2]).total_seconds()) <= 200:
                 # if len(together[device1[1]]) < 5 and len(together[device2[1]]) < 5: # limit the number of devices to 5
-                together[device1[0]].add(device2[0]) # add the other device MAC address to the set
-                together[device2[0]].add(device1[0]) # add the other device MAC address to the set
+                # add the other device MAC address to the set
+                together[device1[0]].add(device2[0])
+                # add the other device MAC address to the set
+                together[device2[0]].add(device1[0])
 
     # create a dictionary where the key is the owner name and the value is a set of device MAC addresses
     # that the owner owns, based on the first and last detection times of each device
     owners = defaultdict(set)
+    # check if in data there is a duplicates rows
+    # if there is a duplicate row - continue to next iteration
+
     for device in data:
         if not device["user"]:
             continue
@@ -225,30 +238,26 @@ def find_together(data):
             if abs((device["first"] - other_device["first"]).total_seconds()) <= 60:
                 if abs((device["last"] - other_device["last"]).total_seconds()) <= 60:
                     # if len(owners[device["first"]]) < 5 and len(owners[other_device["first"]]) < 5: # limit the number of devices to 5
-                        # owners[device["user"]].add(device["mac"])
+                    # owners[device["user"]].add(device["mac"])
                     owners[device["user"]].add(other_device["user"])
 
-
-
-
-
-
-
-
     # count how many times each device was seen with other devices
-    device_counts = Counter(device for devices in together.values() for device in devices)
+    device_counts = Counter(device for devices in together.values()
+                            for device in devices)
 
     # sort the devices by the number of other devices they were seen with
-    sorted_devices = sorted(devices, key=lambda device: device_counts[device[0]], reverse=True)
+    sorted_devices = sorted(
+        devices, key=lambda device: device_counts[device[0]], reverse=True)
 
     # sort the owners by the number of devices they own that were seen with other devices
-    owners = sorted(owners.items(), key=lambda owner: sum(device_counts[device] for device in owner[1]), reverse=True)
+    owners = sorted(owners.items(), key=lambda owner: sum(
+        device_counts[device] for device in owner[1]), reverse=True)
 
     return together, owners
 
-
-
     # implementation of Apriori algorithm - values of the dictionaries treat like transactions to find frequent itemsets
+
+
 def get_unique_groups_together_apriory(together):
     transactions = list(together.values())
     results = list(apriori(transactions, min_support=0.02, min_confidence=0.9))
@@ -321,15 +330,15 @@ def get_unique_groups_owners_apriory(owners):
 
     return unique_groups_owners2
 
+
 def create_unique_groups_of_devices_seen_together(together, data):
     counts = {}
     for k, v in together.items():
         # replace every "mac" with "user" - in the v and k
-        pair = frozenset([device["user"] for device in data if device["mac"] == k] + [device["user"] for device in data if device["mac"] in v])
+        pair = frozenset([device["user"] for device in data if device["mac"]
+                         == k] + [device["user"] for device in data if device["mac"] in v])
         # pair = frozenset([k] + list(v))
         counts[pair] = counts.get(pair, 0) + 1
-        
-
 
     sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
 
@@ -373,9 +382,8 @@ def create_unique_groups_of_devices_owned_by_same_person(owners, data):
         # from  this ('ALEX XXX', {'JESSIKA', 'TANIO XXX', 'ALEX SOYKOVA LI4EN NOV XXX'})
         # create this frozenset ('ALEX XXX', 'JESSIKA', 'TANIO XXX', 'ALEX SOYKOVA LI4EN NOV XXX')
         # and add it to the list
-        unique_groups_owners.append( frozenset([owner[0]] + list(owner[1])) )
+        unique_groups_owners.append(frozenset([owner[0]] + list(owner[1])))
 
-   
     # check if the current set have 2/3  or more same elements with another set - if yes - join the sets, if not - continue
     # remove all empty sets
     # for i in range(len(unique_groups_owners)):
@@ -399,14 +407,7 @@ def create_unique_groups_of_devices_owned_by_same_person(owners, data):
     # remove all empty sets
     unique_groups_owners = [x for x in unique_groups_owners if x]
 
-
-    
-
-    
-
-
     return unique_groups_owners
-
 
 
 def write_together(file_path, data, unique_groups_together, unique_groups_owners):
@@ -429,8 +430,8 @@ def write_together(file_path, data, unique_groups_together, unique_groups_owners
                 f.write(element + " ")
 
             # print(
-            #     f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n" 
-                    
+            #     f" *** { group[0]} *** - {len(group[1:])} devices \n" + f"{group[1:]}\n"
+
             # )
             print(f"********************")
 
@@ -447,7 +448,8 @@ def write_together(file_path, data, unique_groups_together, unique_groups_owners
 
         owners_group = len(unique_groups_owners)
         for group in unique_groups_owners:
-            print(f" Group {owners_group} of {len(unique_groups_owners)} -- {len(group)} owners")
+            print(
+                f" Group {owners_group} of {len(unique_groups_owners)} -- {len(group)} owners")
             if len(group) > 7 or len(group) < 2:
                 print('pass')
                 print('==================')
@@ -509,9 +511,12 @@ def write_together2(file_path, data, unique_groups_together2, unique_groups_owne
 def main():
     data = read_data("devices.txt")
     together, owners = find_together(data)
-    unique_groups_together = create_unique_groups_of_devices_seen_together(together, data)
-    unique_groups_owners = create_unique_groups_of_devices_owned_by_same_person(owners, data)
-    write_together("together.txt", data, unique_groups_together, unique_groups_owners)
+    unique_groups_together = create_unique_groups_of_devices_seen_together(
+        together, data)
+    unique_groups_owners = create_unique_groups_of_devices_owned_by_same_person(
+        owners, data)
+    write_together("together.txt", data,
+                   unique_groups_together, unique_groups_owners)
     # apriory algorithm
     unique_groups_together2 = get_unique_groups_together_apriory(together)
     unique_groups_owners2 = get_unique_groups_owners_apriory(owners)
@@ -583,9 +588,9 @@ if __name__ == "__main__":
 #             # Check if it is the end node
 #             if current == end:
 #                 return True
-#             # Push its unvisited neighbors to the stack 
+#             # Push its unvisited neighbors to the stack
 #             for neighbor in self.get_neighbors(current):
 #                 if neighbor not in visited:
 #                     stack.append(neighbor)
-#         # Return False if no path found 
+#         # Return False if no path found
 #         return False
