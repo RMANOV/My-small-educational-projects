@@ -416,7 +416,7 @@ def write_together(file_path, data, unique_groups_together, unique_groups_owners
         number_of_group = len(unique_groups_together)
         for group in unique_groups_together:
             print(
-                f" Group {number_of_group} of {len(unique_groups_together)} --{len(group)} devices  together"
+                f" Group {number_of_group} of {len(unique_groups_together)} -- {len(group)} devices  together"
             )
             if len(group) > 7 or len(group) < 2:
                 print('pass')
