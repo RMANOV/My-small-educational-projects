@@ -1,4 +1,6 @@
 1. Class Forecaster - main class - manages the whole process of forecasting, checking and correcting
+    1.1 check if the sheet name is EVROPA or PICCADYLLY or CARREFOUR or PENNY or SUM - starting from METRO - if it is not then continue, but if it is then skip the sheet
+    1.2 check if the value in row 5, column 113 is not 0 - if it is 0 then skip the row, but if it is not 0 then continue
 2. Class ColorChecker - checks the color of the forecasted weeks and for the last 5 weeks
     2.1 check if the color of the forecasted weeks is not 36 or 39 - if it is not then continue to column 107, but if it is then stop before the colored cell
     2.2 check if the color of the last 5 weeks is not 36 or 39 - if it is not then continue, but if it is then stop before the colored cell
@@ -10,7 +12,7 @@
     3.3 check if the value in 3 weeks ago is 0 - if it is 0 then replace all forecasted values with 3, but if it is not 0 then continue
     3.4 if there is 3 weeks ago a 0 value then the value in 4 weeks ago is also 0, so replace all forecasted values with 0.
 4. Class Corrector - corrects the forecasted weeks
-    4.1 from values of result1 calculate the average value
+    4.1 from values of result1 calculate the weighted average value
     4.2 from values of result2 calculate the linear trend - the slope of the line
     4.3 calculate the value of the forecasted week 1
     4.4 calculate the weighted average of the old forecasts
@@ -29,3 +31,5 @@
     5.9 Multiply the values in the selection with the value in cell 125
     5.10 check if the value in cell 125 is between 0.9 and 1.001 - if not - copy again the new value of cell 125 and repeat the multiplication cycle
     5.11 value in cell 125 is decreased by every multiplication, so after every multiplication cycle the value in column 125 needs to be checked again and if it is not between 0.9 and 1.001 then the multiplication cycle is repeated
+6. Class FirstGreen - check in which column is currently the first green cell - and saves the number of columns
+7. Class ActiveCellPosition - check in which row and column is currently the active cell - and saves the number of rows and columns
