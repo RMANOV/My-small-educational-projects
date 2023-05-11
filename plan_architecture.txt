@@ -32,4 +32,4 @@
     5.10 check if the value in cell 125 is between 0.9 and 1.001 - if not - copy again the new value of cell 125 and repeat the multiplication cycle
     5.11 value in cell 125 is decreased by every multiplication, so after every multiplication cycle the value in column 125 needs to be checked again and if it is not between 0.9 and 1.001 then the multiplication cycle is repeated
 6. Class FirstGreen - check in which column is currently the first green cell - and saves the number of columns
-7. Class ActiveCellPosition - check in which row and column is currently the active cell - and saves the number of rows and columns
+7. Class ActiveCellPosition - check in which row and column is currently the active cell - and save the number of rows and columns
