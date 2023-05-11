@@ -1,0 +1,5 @@
+1. Class Forecaster - main class - manages the whole process of forecasting
+2. Class ColorChecker - checks the color of the forecasted weeks and for the last 5 weeks
+3. Class ZeroValueChecker - checks if there are any zero values in the past weeks
+4. Class Corrector - corrects the forecasted weeks
+5. Class CorrectorDecember - corrects the forecasted weeks for December

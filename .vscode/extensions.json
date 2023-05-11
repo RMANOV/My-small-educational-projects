@@ -2,6 +2,7 @@
     "recommendations": [
         "github.copilot-nightly",
         "github.copilot",
-        "tabnine.tabnine-vscode"
+        "tabnine.tabnine-vscode",
+        "znck.grammarly"
     ]
 }
