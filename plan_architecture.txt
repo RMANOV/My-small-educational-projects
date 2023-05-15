@@ -19,7 +19,7 @@
     4.5 compare the value of the forecasted week 1 with the weighted average of the old forecasts - if the difference is positive - adjust the value of the forecasted week 1, but if the difference is negative - continue
     4.6 calculate correcting index - the division between the value of the forecasted week 1 and the weighted average of the old forecasts - if the value of the forecasted week 1 is 0 then the correcting index is 1, if the index is not between 0.3 -1.3 then adjust it to 0.3 or 1.3 and color all range in yellow.
     4.7 correct the values of the forecasted weeks - multiply the values of the forecasted weeks with the correcting index
-5. Class CorrectorDecember - corrects the forecasted weeks for December
+5. Class CorrectorDecember - corrects the forecasted weeks for December - starting when every other week outside December is forecasted
     5.1 check if the sheet name is EVROPA or PICCADYLLY or CARREFOUR or PENNY or SUM - starting from METRO - if it is not then continue, but if it is then skip the sheet
     5.2 check if the value in column 113 is not 0 - if it is 0 then skip the row, but if it is not 0 then continue
     5.3 check if the value in column 125 is between 0.9 and 1.001 - if it is not then continue, but if it is then skip the row
