@@ -13,7 +13,7 @@
 # For this task a console application is choosen.
 # The program should persist data upon restart.
 # The export file format is of your choice.
-# For this task a text file is choosen.
+# For this task a csv file is choosen.
 # You are required to write your own unit tests to ensure the functionality of your program.
 
 # Check list for the task management app:
@@ -75,16 +75,35 @@ class TaskManager:
                 self.save_tasks()
                 break
 
+    
     def delete_task(self, title):
         for task in self.tasks:
             if task.title == title:
                 self.tasks.remove(task)
                 self.save_tasks()
+                self.export_tasks("exported_tasks.csv")
                 break
 
+    # def delete_task(self, title):
+    #     for task in self.tasks:
+    #         if task.title == title:
+    #             self.tasks.remove(task)
+    #             self.save_tasks()
+    #             break
+
     def list_tasks(self):
-        for task in self.tasks:
-            print(f"Title: {task.title}, Description: {task.description}")
+            tasks_to_list = self.tasks.copy()
+            exported_tasks_file = "exported_tasks.csv"
+            
+            if os.path.exists(exported_tasks_file):
+                with open(exported_tasks_file, 'r') as f:
+                    reader = csv.reader(f)
+                    next(reader)
+                    for row in reader:
+                        tasks_to_list.append(Task(row[0], row[1]))
+            
+            for task in tasks_to_list:
+                print(f"Title: {task.title}, Description: {task.description}")
 
     def export_tasks(self, export_filename):
         with open(export_filename, 'w') as f:
