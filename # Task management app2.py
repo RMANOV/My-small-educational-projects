@@ -16,18 +16,6 @@
 # For this task, a csv file is chosen.
 # You are required to write your own unit tests to ensure the functionality of your program.
 
-# Check list for the task management app:
-# 1. Check if the csv file exists - if not, create it; if it exists - read them.
-# 2. Check if the csv file is empty - if yes, create the header
-# 3. Check if the csv file is empty - if not, read the file and create a list of tasks
-# 4. Check if the user input is valid - if not, ask for a valid input
-# 5. Check if the user input is valid - if yes, create a new task
-# 6. Check if the user input is valid - if yes, edit an existing task
-# 7. Check if the user input is valid - if yes, delete an existing task
-# 8. Check if the user input is valid - if yes, list all unfinished tasks
-# 9. Check if the user input is valid - if yes, export the tasks in a file
-# 10. Check if the user input is valid - if yes, exit the program
-
 
 
 import csv
