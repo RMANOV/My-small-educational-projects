@@ -29,6 +29,7 @@
 # 10. Check if the user input is valid - if yes, exit the program
 
 
+
 import csv
 import os
 
@@ -45,29 +46,34 @@ class TaskManager:
         self.load_tasks()
 
     def load_tasks(self):
-        if not os.path.exists(self.filename):
-            with open(self.filename, 'w') as f:
-                writer = csv.writer(f)
-                writer.writerow(["Title", "Description"])
-        else:
+        # If the file exists, read the tasks from it and append them to the list
+        if os.path.exists(self.filename):
             with open(self.filename, 'r') as f:
                 reader = csv.reader(f)
                 next(reader)
                 for row in reader:
                     self.tasks.append(Task(row[0], row[1]))
+        # Otherwise, create a new file with the header row
+        else:
+            with open(self.filename, 'w') as f:
+                writer = csv.writer(f)
+                writer.writerow(["Title", "Description"])
 
     def save_tasks(self):
+        # Write the tasks to the file in reverse order, so that the newest ones are on top
         with open(self.filename, 'w') as f:
             writer = csv.writer(f)
             writer.writerow(["Title", "Description"])
-            for task in self.tasks:
+            for task in (self.tasks):
                 writer.writerow([task.title, task.description])
 
     def create_task(self, title, description):
+        # Add a new task to the list and save it to the file
         self.tasks.append(Task(title, description))
         self.save_tasks()
 
     def edit_task(self, title, new_title, new_description):
+        # Find the task by title and update its attributes
         for task in self.tasks:
             if task.title == title:
                 task.title = new_title
@@ -75,31 +81,21 @@ class TaskManager:
                 self.save_tasks()
                 break
 
-    
     def delete_task(self, title):
+        # Find the task by title and remove it from the list
         for task in self.tasks:
             if task.title == title:
                 self.tasks.remove(task)
                 self.save_tasks()
-                self.export_tasks("exported_tasks.csv")
                 break
 
-
     def list_tasks(self):
-            tasks_to_list = self.tasks.copy()
-            exported_tasks_file = "exported_tasks.csv"
-            
-            if os.path.exists(exported_tasks_file):
-                with open(exported_tasks_file, 'r') as f:
-                    reader = csv.reader(f)
-                    next(reader)
-                    for row in reader:
-                        tasks_to_list.append(Task(row[0], row[1]))
-            
-            for task in tasks_to_list:
-                print(f"Title: {task.title}, Description: {task.description}")
+        # Print the tasks in the order they appear in the list
+        for task in self.tasks:
+            print(f"Title: {task.title}, Description: {task.description}")
 
     def export_tasks(self, export_filename):
+        # Copy the tasks to another file
         with open(export_filename, 'w') as f:
             writer = csv.writer(f)
             writer.writerow(["Title", "Description"])
@@ -107,6 +103,13 @@ class TaskManager:
                 writer.writerow([task.title, task.description])
 
 def main():
+    if os.name == "nt": # Check if the operating system is Windows or Linux/Unix
+        os.system("cls") # Clear the terminal window
+    else:
+        os.system("clear") # Clear the terminal window
+
+    print("Welcome to the Task Manager!")
+
     task_manager = TaskManager("tasks.csv")
 
     while True:
