@@ -60,7 +60,7 @@ class TaskManager:
                 writer.writerow(["Title", "Description"])
 
     def save_tasks(self):
-        # Write the tasks to the file in reverse order, so that the newest ones are on top
+        # Write the tasks to the file, so that the newest ones are on bottom
         with open(self.filename, 'w') as f:
             writer = csv.writer(f)
             writer.writerow(["Title", "Description"])
