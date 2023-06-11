@@ -12,7 +12,7 @@ My schedule:
 ** презентация - понеделник - 23:59 часа
 
 Today: Sunday, 14:00 - 19:00
-- Sales forecast - 17:00 - 19:00
+- Sales forecast - 17:00 - 19:00, row
 
 Monday: 10:00 - 19:00
 - Sales forecast - 10:00 - 14:00
