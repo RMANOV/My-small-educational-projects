@@ -1,4 +1,4 @@
-# Task management app
+# Task management app - r.manov 
 # Every professional has a lot of responsibilities and tasks to complete during the day. 
 # Your app solves this problem by providing an easy way to organize tasks. 
 # Each task has a title and description. 
