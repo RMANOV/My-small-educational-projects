@@ -1,6 +1,6 @@
 My schedule:
 
-* Прогнози на продажбите - понеделник, 10:00 часа
+* Прогнози на продажбите - Sunday, 17:00 - 19:00 часа; Monday, 10:00 - 14:00 часа
 * Домашно Линукс 2 - вторник, сряда, четвъртък, 23:59 часа
 * Домашно Линукс 1 - вторник, сряда, четвъртък, 23:59 часа
 * Алгоритми задачи - вторник, сряда, четвъртък, 23:59 часа
@@ -12,9 +12,18 @@ My schedule:
 ** презентация - понеделник - 23:59 часа
 
 Today: Sunday, 14:00 - 19:00
-- algorithms problems - 16:00 - 18:00
-- Task management app - 18:00 - 19:00
+- Sales forecast - 17:00 - 19:00
 
 Monday: 10:00 - 19:00
 - Sales forecast - 10:00 - 14:00
 - Task management app - 15:00 - 19:00
+
+Tuesday: 10:00 - 19:00
+- Linux homework 1 - 10:00 - 14:00
+- Algorithms theory - 15:00 - 19:00
+- Algorithms problems - 15:00 - 19:00
+
+Wednesday: 10:00 - 19:00
+- Linux homework 2 - 10:00 - 14:00
+- Algorithms theory - 15:00 - 19:00
+- Algorithms problems - 15:00 - 19:00
