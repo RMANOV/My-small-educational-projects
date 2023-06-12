@@ -39,8 +39,9 @@ class TaskManager:
             with open(self.filename, 'r') as f:
                 reader = csv.reader(f)
                 next(reader)
-                for row in reader:
-                    self.tasks.append(Task(row[0], row[1]))
+                for row in reader:                    
+                    if len(row) == 2:
+                        self.tasks.append(Task(row[0], row[1])) # row[0] is the title, row[1] is the description
         # Otherwise, create a new file with the header row
         else:
             with open(self.filename, 'w') as f:
