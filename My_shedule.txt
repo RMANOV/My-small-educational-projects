@@ -1,29 +1,27 @@
 My schedule:
 
-* Прогнози на продажбите - Sunday, 17:00 - 19:00 часа; Monday, 10:00 - 14:00 часа
-* Домашно Линукс 2 - вторник, сряда, четвъртък, 23:59 часа
-* Домашно Линукс 1 - вторник, сряда, четвъртък, 23:59 часа
-* Алгоритми задачи - вторник, сряда, четвъртък, 23:59 часа
-* Алгоритми теория - вторник, сряда, четвъртък, 23:59 часа
-* Task management app - неделя, понеделник - 23:59 часа
-** дебъг и корекциии - неделя, понеделник - 23:59 часа
-** документация - неделя, понеделник - 23:59 часа
-** видео - неделя, понеделник - 23:59 часа
-** презентация - понеделник - 23:59 часа
+* Домашно Линукс 1 - Tuesday, 15:00 - 19:00 часа
+* Домашно Линукс 2 - Wednesday, 10:00 - 14:00 часа
+* Алгоритми задачи - Tuesday, Wednesday, Thursday, 15:00 - 19:00 часа
+* Алгоритми теория - Tuesday, Wednesday, Thursday, 15:00 - 19:00 часа
+* make macros with low restrictive rules - Tuesday - 10 - 14 часа
+* make the preview of the help program - Wednesday - 10 - 14 часа
+* Compare forecasts and actual sales - Wednesday - 15 - 19 часа
 
-Today: Sunday, 14:00 - 19:00
-- Sales forecast - 17:00 - 19:00, row
 
-Monday: 10:00 - 19:00
-- Sales forecast - 10:00 - 14:00
-- Task management app - 15:00 - 19:00
-
-Tuesday: 10:00 - 19:00
-- Linux homework 1 - 10:00 - 14:00
-- Algorithms theory - 15:00 - 19:00
+Today: Tuesday 13.06.2023, 10:00 - 19:00
+- Algorithms - 10:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
+- make macros with low restrictive rules - 15:00 - 19:00
 
-Wednesday: 10:00 - 19:00
-- Linux homework 2 - 10:00 - 14:00
-- Algorithms theory - 15:00 - 19:00
-- Algorithms problems - 15:00 - 19:00
+Tomorrow: Wednesday - 14.06.2023, 10:00 - 19:00
+- Algorithms problems - 10:00 - 14:00
+- Linux homework 1 - 15:00 - 19:00
+- make the preview of the help program - 15:00 - 19:00
+- Compare forecasts and actual sales - 15:00 - 19:00
+
+
+Next day: Thursday - 15.06.2023, 10:00 - 19:00
+- Algorithms problems - 10:00 - 14:00
+- Linux homework 2 - 15:00 - 19:00
+- make the preview of the help program - 15:00 - 19:00
