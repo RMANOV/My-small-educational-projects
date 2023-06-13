@@ -1,15 +1,15 @@
 My schedule:
 
-* Домашно Линукс 1 - Tuesday, 15:00 - 19:00 часа
-* Домашно Линукс 2 - Wednesday, 10:00 - 14:00 часа
-* Алгоритми задачи - Tuesday, Wednesday, Thursday, 15:00 - 19:00 часа
-* Алгоритми теория - Tuesday, Wednesday, Thursday, 15:00 - 19:00 часа
-* make macros with low restrictive rules - Tuesday - 10 - 14 часа
-* make the preview of the help program - Wednesday - 10 - 14 часа
-* Compare forecasts and actual sales - Wednesday - 15 - 19 часа
+* Домашно Линукс 1
+* Домашно Линукс 2
+* Алгоритми задачи
+* Алгоритми теория
+* make macros with low-restrictive rules
+* make the preview of the help program
+* Compare forecasts and actual sales
 
 
-Today: Tuesday 13.06.2023, 10:00 - 19:00
+Today: Tuesday - 13.06.2023, 10:00 - 19:00
 - Algorithms - 10:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
 - make macros with low restrictive rules - 15:00 - 19:00
