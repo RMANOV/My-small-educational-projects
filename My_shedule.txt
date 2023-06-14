@@ -4,7 +4,6 @@ My schedule:
 * Домашно Линукс 2
 * Алгоритми задачи
 * Алгоритми теория
-* make macros with low-restrictive rules
 * make the preview of the help program
 * Compare forecasts and actual sales
 * Sales forecast
@@ -14,7 +13,7 @@ Today: Wednesday - 14.06.2023, 10:00 - 19:00
 - Algorithms - 10:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
 - Compare forecasts and actual sales - 15:00 - 19:00
-- make macros with low restrictive rules - 15:00 - 19:00
+
 
 Tomorrow: Thursday - 15.06.2023, 10:00 - 19:00
 - Algorithms problems - 10:00 - 14:00
