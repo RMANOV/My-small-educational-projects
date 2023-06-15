@@ -12,7 +12,7 @@ My schedule:
 Today: Thursday - 15.06.2023, 10:00 - 19:00
 - Algorithms - 10:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
-- Compare forecasts and actual sales - 15:00 - 19:00
+
 
 
 
