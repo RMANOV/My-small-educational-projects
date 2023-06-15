@@ -10,15 +10,13 @@ My schedule:
 
 
 Today: Thursday - 15.06.2023, 10:00 - 19:00
-- Algorithms - 10:00 - 14:00
-- Algorithms problems - 15:00 - 19:00
-
-
+- Algorithms - 15:00 - 19:00
 
 
 Tomorrow: Friday - 16.06.2023, 10:00 - 19:00
-- Algorithms problems - 10:00 - 14:00
-- Linux homework 1 - 15:00 - 19:00
+- Algorithms problems - 10:00 - 19:00
+- Algorithms - 10:00 - 14:00
+- Linux - 15:00 - 19:00
 - make the preview of the help program - 15:00 - 19:00
 
 
