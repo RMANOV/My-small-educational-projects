@@ -27,3 +27,7 @@ Next day: Sunday - 18.06.2023, 10:00 - 19:00
 - Algorithms problems - 10:00 - 14:00
 - Linux Homework 1 - 14:00 - 19:00
 - Sales forecast - 14:00 - 19:00
+
+If I watch an Algorithms lecture that is 3 hours, at a speed of 1.5 - how much time will it take me to watch it?
+it will take me 2 hours to watch it. 
+I watch 0 minutes of 3 hours lecture - now is 17.05, to watch the full 3 hours I need 2 hours more, so it will be 19.05
