@@ -28,6 +28,6 @@ Next day: Tuesday - 20.06.2023, 10:00 - 19:00
 - Linux Homework 1 - 15:00 - 19:00
 
 
-If I watch an Algorithms lecture that is 2 hours, at a speed of 1.5 - how much time will it take me to watch it?
+If I watch a lecture that is 2 hours, at a speed of 1.5 - how much time will it take me to watch it?
 it will take me 1 hour and 20 minutes to watch it.
 I watch 0 minutes of 2 hours lecture - now is 12.25, to watch the full lecture I need 1 hour and 20 minutes, so I will finish at 13.45.
