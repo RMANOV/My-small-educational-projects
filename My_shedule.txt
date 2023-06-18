@@ -11,23 +11,25 @@ My schedule:
 * Sales forecast
 
 
-Today: Friday - 16.06.2023, 10:00 - 19:00
+Today: Sunday - 18.06.2023, 12:30 - 18:00
 - Algorithms - 10:00 - 14:00
-- make the preview of the help program - 15:00 - 19:00
 - Algorithms problems - 10:00 - 19:00
 
 
-Tomorrow: Saturday - 17.06.2023, 10:00 - 19:00
-- Algorithms problems - 10:00 - 14:00
-- Linux - 14:00 - 19:00
-- Sales forecast - 14:00 - 19:00
+Tomorrow: Monday - 19.06.2023, 10:00 - 19:00
+- Sales forecast - 10:00 - 14:00
+- Algorithms problems - 15:00 - 19:00
+- Linux - 15:00 - 19:00
+- make the preview of the help program - 15:00 - 19:00
 
 
-Next day: Sunday - 18.06.2023, 10:00 - 19:00
-- Algorithms problems - 10:00 - 14:00
-- Linux Homework 1 - 14:00 - 19:00
-- Sales forecast - 14:00 - 19:00
+Next day: Tuesday - 20.06.2023, 10:00 - 19:00
+- Sales forecast - 10:00 - 14:00
+- Algorithms - 10:00 - 14:00
+- Algorithms problems - 15:00 - 19:00
+- Linux Homework 1 - 15:00 - 19:00
 
-If I watch an Algorithms lecture that is 3 hours, at a speed of 1.5 - how much time will it take me to watch it?
-it will take me 2 hours to watch it. 
-I watch 0 minutes of 3 hours lecture - now is 17.05, to watch the full 3 hours I need 2 hours more, so it will be 19.05
+
+If I watch an Algorithms lecture that is 2 hours, at a speed of 1.5 - how much time will it take me to watch it?
+it will take me 1 hour and 20 minutes to watch it.
+I watch 0 minutes of 2 hours lecture - now is 12.25, to watch the full lecture I need 1 hour and 20 minutes, so I will finish at 13.45.
