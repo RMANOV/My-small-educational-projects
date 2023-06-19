@@ -1,5 +1,8 @@
 My schedule:
 
+# workday - 10-14, 15-19 (or 9-13, 14-18)
+# weekend - 12-18 (or 10-16)
+
 * Linux Homework 1
 * Linux Homework 2
 * Linux Homework 3
@@ -7,6 +10,7 @@ My schedule:
 * make the preview of the help program
 * Compare forecasts and actual sales
 * Sales forecast
+* Read the book about VBA
 
 
 Today: Monday - 19.06.2023, 10:00 - 19:00
