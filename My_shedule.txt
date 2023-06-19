@@ -1,6 +1,5 @@
 My schedule:
 
-
 * Linux Homework 1
 * Linux Homework 2
 * Linux Homework 3
@@ -11,13 +10,12 @@ My schedule:
 
 
 Today: Monday - 19.06.2023, 10:00 - 19:00
-- Sales forecast - 10:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
 - make the preview of the help program - 15:00 - 19:00
 
 
 Tomorrow: Tuesday - 20.06.2023, 10:00 - 19:00
-- Sales forecast - 10:00 - 14:00
+- Compare forecasts and actual sales - 10:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
 - Linux - 15:00 - 19:00
 
@@ -26,7 +24,7 @@ Tomorrow: Tuesday - 20.06.2023, 10:00 - 19:00
 Next day: Wednesday - 21.06.2023, 10:00 - 19:00
 - Algorithms problems - 10:00 - 14:00
 - Linux Homework 1 - 15:00 - 19:00
-- Compare forecasts and actual sales - 10:00 - 14:00
+
 
 
 If I watch a lecture that is 2 hours, at a speed of 1.5 - how much time will it take me to watch it?
