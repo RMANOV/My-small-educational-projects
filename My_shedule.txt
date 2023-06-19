@@ -10,6 +10,7 @@ My schedule:
 * Compare forecasts and actual sales
 * Sales forecast
 * Read the book about VBA
+* Call the vendor of the ERP system SoftOne and ask them about the API
 
 
 Today: Monday - 19.06.2023, 10:00 - 19:00
@@ -21,6 +22,8 @@ Tomorrow: Tuesday - 20.06.2023, 10:00 - 19:00
 - Compare forecasts and actual sales - 10:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
 - Linux - 15:00 - 19:00
+- Read the book about VBA - 15:00 - 19:00
+- Call the vendor of the ERP system SoftOne and ask them about the API - 15:00 - 19:00
 
 
 
