@@ -1,7 +1,14 @@
-# This is a help utility, not-yet-completed, output processing utility - coming from NirSoft's Wireless Network Watcher. 
-# The outgoing data is processed according to three different algorithms - naive (direct), 
-# a priori algorithm - devices and their connection to networks are treated as transactions. 
-# The third algorithm implements graph theory - each device is assumed to be a vertex, and each link is assumed to be a path.
+# This is a help utility, not-yet-completed, for the purpose of the project "Detective for couples".
+# The utility is used to process the output of the NirSoft's Wireless Network Watcher. 
+# Its purpose is to help - in a specific way - to identify the owners of the devices that connect to the networks. 
+#  - identify the owner of several specific devices, 
+#  - as well as to show which owners, with which of their devices, enter/exit the networks and 
+#  - to determine the formed groups of owners connecting to the networks simultaneously - in sync.
+
+# The outgoing data is processed according to three different algorithms - 
+# - naive (direct), 
+# - a priori algorithm - devices and their connection to networks are treated as transactions. 
+# - The third algorithm implements graph theory - each device is assumed to be a vertex, and each link is assumed to be a path.
 
 # Read lines from a file and parse them into a list of dictionaries
 # Each dictionary represents a device

@@ -1,7 +1,7 @@
 My schedule:
 
 # workday - 10-14, 15-19 (or 9-13, 14-18)
-# weekend - 12-18 (or 10-16)
+# weekend - 12-18 (or 11 - 17)
 
 * Linux Homework 1
 * Linux Homework 2
