@@ -1,3 +1,8 @@
+# This is a help utility, not-yet-completed, output processing utility - coming from NirSoft's Wireless Network Watcher. 
+# The outgoing data is processed according to three different algorithms - naive (direct), 
+# a priori algorithm - devices and their connection to networks are treated as transactions. 
+# The third algorithm implements graph theory - each device is assumed to be a vertex, and each link is assumed to be a path.
+
 # Read lines from a file and parse them into a list of dictionaries
 # Each dictionary represents a device
 # The list of dictionaries is returned
