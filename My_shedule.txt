@@ -8,18 +8,16 @@ My schedule:
 * Linux Homework 2
 * Linux Homework 3
 * Algorithms problems
-* Compare forecasts and actual sales
-* Sales forecast
+* Compare forecasts and actual sales - Tuesday, Wednesday or Thursday
+* Sales forecast - Saturday, Sunday or Monday
 * Read the book about VBA
 * Call the vendor of the ERP system SoftOne and ask them about the API
 
 
 Today: Tuesday - 20.06.2023, 10:00 - 19:00
-- Compare forecasts and actual sales - 10:00 - 14:00
-- Algorithms problems - 15:00 - 19:00
-- Linux - 15:00 - 19:00
-- Read the book about VBA - 15:00 - 19:00
-- Call the vendor of the ERP system SoftOne and ask them about the API - 15:00 - 19:00
+
+
+
 
 
 
