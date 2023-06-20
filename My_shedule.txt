@@ -13,12 +13,7 @@ My schedule:
 * Call the vendor of the ERP system SoftOne and ask them about the API
 
 
-Today: Monday - 19.06.2023, 10:00 - 19:00
-- Algorithms problems - 15:00 - 19:00
-
-
-
-Tomorrow: Tuesday - 20.06.2023, 10:00 - 19:00
+Today: Tuesday - 20.06.2023, 10:00 - 19:00
 - Compare forecasts and actual sales - 10:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
 - Linux - 15:00 - 19:00
@@ -26,10 +21,20 @@ Tomorrow: Tuesday - 20.06.2023, 10:00 - 19:00
 - Call the vendor of the ERP system SoftOne and ask them about the API - 15:00 - 19:00
 
 
-
-Next day: Wednesday - 21.06.2023, 10:00 - 19:00
+Tomorrow: Wednesday - 21.06.2023, 10:00 - 19:00
 - Algorithms problems - 10:00 - 14:00
 - Linux Homework 1 - 15:00 - 19:00
+- Read the book about VBA - 15:00 - 19:00
+- Call the vendor of the ERP system SoftOne and ask them about the API - 15:00 - 19:00
+
+
+
+Next day: Thursday - 22.06.2023, 10:00 - 19:00
+- Algorithms problems - 10:00 - 14:00
+- Linux Homework 2 - 15:00 - 19:00
+- Read the book about VBA - 15:00 - 19:00
+- Call the vendor of the ERP system SoftOne and ask them about the API - 15:00 - 19:00
+
 
 
 
