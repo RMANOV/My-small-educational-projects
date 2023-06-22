@@ -16,18 +16,14 @@ My schedule:
 
 
 Today: Thursday - 22.06.2023, 10:00 - 19:00
-- Algorithms lecture - 10:00 - 12:00
-- Call the vendor of the ERP system SoftOne and ask them about the API - 15:00 - 19:00
 - Algorithms problems - 10:00 - 14:00
 - Read the book about VBA - 15:00 - 19:00
 
 
 Tomorrow: Friday - 23.06.2023, 10:00 - 19:00
-- Research for a new robo-advisor platform
+- Algorithms lecture - 10:00 - 12:00
 - Call the vendor of the ERP system SoftOne and ask them about the API - 15:00 - 19:00
-- Linux Homework 1 - 15:00 - 19:00
 - Algorithms problems - 10:00 - 14:00
-- Linux Homework 2 - 15:00 - 19:00
 - Read the book about VBA - 15:00 - 19:00
 
 
