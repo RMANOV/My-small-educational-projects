@@ -12,19 +12,18 @@ My schedule:
 * Sales forecast - Saturday, Sunday or Monday
 * Read the book about VBA
 * Call the vendor of the ERP system SoftOne and ask them about the API
+* Algorithms lecture
 
 
-Today: Wednesday - 21.06.2023, 10:00 - 19:00
-
+Today: Thursday - 22.06.2023, 10:00 - 19:00
+- Algorithms lecture - 10:00 - 12:00
+- Call the vendor of the ERP system SoftOne and ask them about the API - 15:00 - 19:00
 - Algorithms problems - 10:00 - 14:00
 - Read the book about VBA - 15:00 - 19:00
 
 
-
-
-
-Tomorrow: Thursday - 22.06.2023, 10:00 - 19:00
-
+Tomorrow: Friday - 23.06.2023, 10:00 - 19:00
+- Research for a new robo-advisor platform
 - Call the vendor of the ERP system SoftOne and ask them about the API - 15:00 - 19:00
 - Linux Homework 1 - 15:00 - 19:00
 - Algorithms problems - 10:00 - 14:00
@@ -33,8 +32,8 @@ Tomorrow: Thursday - 22.06.2023, 10:00 - 19:00
 
 
 
-Next day: Friday - 23.06.2023, 10:00 - 19:00
-
+Next day: Saturday - 24.06.2023, 12:00 - 18:00
+- Research for a new robo-advisor platform
 - Algorithms problems - 10:00 - 14:00
 - Linux Homework 3 - 15:00 - 19:00
 - Read the book about VBA - 15:00 - 19:00
