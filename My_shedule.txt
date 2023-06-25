@@ -17,14 +17,15 @@ My schedule:
 
 Today: Sunday - 25.06.2023, 12:00 - 18:00
 - Algorithms problems - 12:00 - 14:00
-- Linux lecture - 14:00 - 16:00
-- Sales forecast - 16:00 - 18:00
+
+
 
 
 
 Tomorrow: Monday - 26.06.2023, 10:00 - 14:00, 15:00 - 19:00
 - Sales forecast - 10:00 - 12:00
 - Algorithms problems - 15:00 - 19:00
+- Linux lecture - 19:00 - 21:00
 - Call the computer service and ask them about the repair - 12:00 - 14:00
 
 
@@ -41,8 +42,8 @@ Next day: Tuesday - 27.06.2023, 10:00 - 14:00, 15:00 - 19:00
 
 
 
-If I watch a lecture that is 1 hours  and 13 min long, at a speed of 1.25 - how much time will it take me to watch it?
+If I watch a lecture that is 1 hour and 13 min long, at a speed of 1.25 - how much time will it take me to watch it?
 
-I watch 29 minutes of 1 hours and 13 minutes lecture - now is 17.37, to watch the full lecture I need 44 minutes, so I will finish at 18.21.
+I watch 29 minutes of 1 hour and 13 minutes of lecture - now is 17.37, to watch the full lecture I need 44 minutes, so I will finish at 18.21.
 I have to watch the last 27 minutes of 3 hours of a lecture at a speed of 1.6 - now is 13.19, to watch to the end I need 17 minutes, so I will finish at 13.36.
-I watch 28 minutes of 1 hours and 13 minutes lecture - now is 17.37, to watch the full lecture I need 45 minutes, so I will finish at 18.22.
+I watch 28 minutes of 1 hour and 13 minutes of lecture - now is 17.37, to watch the full lecture I need 45 minutes, so I will finish at 18.22.
