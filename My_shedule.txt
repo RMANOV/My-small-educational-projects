@@ -15,22 +15,25 @@ My schedule:
 * Call the computer service and ask them about the repair
 
 
-Today: Sunday - 25.06.2023, 12:00 - 18:00
-- Algorithms problems - 12:00 - 14:00
-
-
-
-
-
-Tomorrow: Monday - 26.06.2023, 10:00 - 14:00, 15:00 - 19:00
+Today: Monday - 26.06.2023, 10:00 - 14:00, 15:00 - 19:00
 - Sales forecast - 10:00 - 12:00
+- Algorithms problems - 12:00 - 14:00
+- Call the computer service and ask them about the repair - 15:00 - 19:00
+- Read the book about VBA - 15:00 - 19:00
+
+
+
+
+
+Tomorrow: Tuesday - 27.06.2023, 10:00 - 14:00, 15:00 - 19:00
+- Sales forecast - 10:00 - 12:00
+- Linux lecture - 12:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
-- Linux lecture - 19:00 - 21:00
-- Call the computer service and ask them about the repair - 12:00 - 14:00
+- Compare forecasts and actual sales - 15:00 - 19:00
 
 
 
-Next day: Tuesday - 27.06.2023, 10:00 - 14:00, 15:00 - 19:00
+Next day: Wednesday - 28.06.2023, 10:00 - 14:00, 15:00 - 19:00
 - Algorithms problems - 12:00 - 14:00
 - Linux Homework 1 - 14:00 - 16:00
 - Compare forecasts and actual sales - 16:00 - 19:00
