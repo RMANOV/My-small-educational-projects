@@ -15,31 +15,27 @@ My schedule:
 * Call the computer service and ask them about the repair
 
 
-Today: Wednesday - 28.06.2023, 10:00 - 14:00, 15:00 - 19:00
+Today: Thursday - 29.06.2023, 10:00 - 14:00, 15:00 - 19:00
 - Algorithms problems - 10:00 - 12:00
 - Linux lecture - 12:00 - 14:00
-- Linux Homework 1 - 15:00 - 19:00
+- Algorithms problems - 15:00 - 19:00
 - Read the book about VBA - 15:00 - 19:00
 
 
 
 
-
-Tomorrow: Thursday - 29.06.2023, 10:00 - 14:00, 15:00 - 19:00
-- Algorithms problems - 10:00 - 12:00
-- Linux Homework 1 - 12:00 - 14:00
-- Linux Homework 2 - 15:00 - 19:00
-- Read the book about VBA - 15:00 - 19:00
-- Linux lecture - 12:00 - 14:00
-
-
-Next day: Friday - 30.06.2023, 10:00 - 14:00, 15:00 - 19:00
+Tomorrow: Friday - 30.06.2023, 10:00 - 14:00, 15:00 - 19:00
 - Algorithms problems - 10:00 - 14:00
-- Linux Homework 2 - 15:00 - 19:00
+- Algorithms problems - 15:00 - 19:00
 - Read the book about VBA - 15:00 - 19:00
 
 
+Next day: Saturday - 01.07.2023, 12:00 - 18:00
+- Algorithms problems - 12:00 - 18:00
+- Sales forecast - 12:00 - 18:00
 
+
+Commit message: "Algorithms problems - in a focus mode, 10:00 - 14:00, 15:00 - 19:00, 30.06.2023 - again."
 
 
 
