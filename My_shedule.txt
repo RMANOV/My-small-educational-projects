@@ -13,9 +13,10 @@ My schedule:
 * Read the book about VBA
 * Call the vendor of the ERP system SoftOne and ask them about the API
 * Call the computer service and ask them about the repair
+* Algorithms Exam - 02.07.2023 - 09:00 - 13:00
 
 
-Today: Thursday - 29.06.2023, 10:00 - 14:00, 15:00 - 19:00
+Today: Friday - 30.06.2023, 10:00 - 14:00, 15:00 - 19:00
 - Algorithms problems - 10:00 - 12:00
 - Linux lecture - 12:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
@@ -24,18 +25,18 @@ Today: Thursday - 29.06.2023, 10:00 - 14:00, 15:00 - 19:00
 
 
 
-Tomorrow: Friday - 30.06.2023, 10:00 - 14:00, 15:00 - 19:00
-- Algorithms problems - 10:00 - 14:00
+Tomorrow: Saturday - 01.07.2023, 12:00 - 18:00
+- Linux lecture - 12:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
 - Read the book about VBA - 15:00 - 19:00
 
 
-Next day: Saturday - 01.07.2023, 12:00 - 18:00
-- Algorithms problems - 12:00 - 18:00
-- Sales forecast - 12:00 - 18:00
+Next day: Sunday - 02.07.2023, 09:00 - 17:00
+- Algorithms Exam - 09:00 - 13:00
+- Sales forecast - 14:00 - 17:00
 
 
-Commit message: "Algorithms problems - in a focus mode, 10:00 - 14:00, 15:00 - 19:00, 30.06.2023 - again."
+Commit message: Focus on Algorithms problems and Linux lecture
 
 
 
