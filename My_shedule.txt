@@ -40,4 +40,4 @@ Commit message: Focus on Algorithms problems and Linux lecture
 
 
 
-Now is 17:06 - I have to watch 3.42 hours of Linux lecture at a speed of 1.5 - at 1.5 speed it will take me 2.28 hours and will finish at 19:34.
+Now is 17:06 - I have to watch 3.42 hours of Linux lecture at a speed of 1.5 - it will take me 2.28 hours and will finish at 19:34.
