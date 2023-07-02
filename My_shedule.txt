@@ -27,6 +27,7 @@ Today: Sunday - 02.07.2023, 09:00 - 17:00
 
 
 Tomorrow: Monday - 03.07.2023, 09:00 - 17:00
+- Sales forecast - 09:00 - 13:00
 - Linux lecture - 12:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
 - Read the book about VBA - 15:00 - 19:00
@@ -48,3 +49,4 @@ Commit message: Focus on Algorithms problems and Linux lecture
 
 
 Now is 17:06 - I have to watch 3.42 hours of Linux lecture at a speed of 1.5 - it will take me 2.28 hours and will finish at 19:34.
+I have to walk 15 minutes before 14:30 - I have to leave at 14:15.
