@@ -12,26 +12,33 @@ My schedule:
 * Sales forecast - Saturday, Sunday or Monday
 * Read the book about VBA
 * Call the vendor of the ERP system SoftOne and ask them about the API
-* Call the computer service and ask them about the repair
-* Algorithms Exam - 02.07.2023 - 09:00 - 13:00
+* Develop detecve_couples.py solution - add a graph theory solution
 
 
-Today: Friday - 30.06.2023, 10:00 - 14:00, 15:00 - 19:00
+
+
+Today: Sunday - 02.07.2023, 09:00 - 17:00
+- Algorithms Exam - 09:00 - 13:00
+- Sales forecast - 14:00 - 17:00
 - Linux lecture - 12:00 - 14:00
 
 
 
 
 
-Tomorrow: Saturday - 01.07.2023, 12:00 - 18:00
+Tomorrow: Monday - 03.07.2023, 09:00 - 17:00
 - Linux lecture - 12:00 - 14:00
 - Algorithms problems - 15:00 - 19:00
 - Read the book about VBA - 15:00 - 19:00
 
 
-Next day: Sunday - 02.07.2023, 09:00 - 17:00
-- Algorithms Exam - 09:00 - 13:00
-- Sales forecast - 14:00 - 17:00
+Next day: Tuesday - 04.07.2023, 09:00 - 17:00
+- Linux lecture - 12:00 - 14:00
+- Compare forecasts and actual sales - 15:00 - 19:00
+- Read the book about VBA - 15:00 - 19:00
+- Develop detecve_couples.py solution - 15:00 - 19:00
+
+
 
 
 Commit message: Focus on Algorithms problems and Linux lecture
