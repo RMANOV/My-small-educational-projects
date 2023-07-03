@@ -16,33 +16,24 @@ My schedule:
 
 
 
-
-Today: Sunday - 02.07.2023, 09:00 - 17:00
-- Algorithms Exam - 09:00 - 13:00
-- Sales forecast - 14:00 - 17:00
-- Linux lecture - 12:00 - 14:00
-
+Today: Monday - 03.07.2023 - 10 - 14, 15 - 19
+- Linux lecture - 15 - 19
+- Algorithms problems - 15 - 19
+- Read the book about VBA - 15 - 19
 
 
+Tomorrow: Tuesday - 04.07.2023 - 10 - 14, 15 - 19
+- Linux lecture - 10 - 14
+- Compare forecasts and actual sales - 15 - 19
+- Read the book about VBA - 15 - 19
+- Develop detecve_couples.py solution - 15 - 19
 
 
-Tomorrow: Monday - 03.07.2023, 09:00 - 17:00
-- Sales forecast - 09:00 - 13:00
-- Linux lecture - 12:00 - 14:00
-- Algorithms problems - 15:00 - 19:00
-- Read the book about VBA - 15:00 - 19:00
-
-
-Next day: Tuesday - 04.07.2023, 09:00 - 17:00
-- Linux lecture - 12:00 - 14:00
-- Compare forecasts and actual sales - 15:00 - 19:00
-- Read the book about VBA - 15:00 - 19:00
-- Develop detecve_couples.py solution - 15:00 - 19:00
-
-
-
-
-Commit message: Focus on Algorithms problems and Linux lecture
+Next day: Wednesday - 05.07.2023 - 10 - 14, 15 - 19
+- Linux lecture - 10 - 14
+- Develop detecve_couples.py solution - 15 - 19
+- Read the book about VBA - 15 - 19
+- Algorithms problems - 15 - 19
 
 
 
