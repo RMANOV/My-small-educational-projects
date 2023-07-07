@@ -16,21 +16,21 @@ My schedule:
 
 
 
-Today: Thursday - 06.07.2023 - 10-14, 15-19
+Today: Friday - 07.07.2023, 10-14, 15-19
 - Linux lecture - 10 - 14
 - Algorithms problems - 15 - 19
 - Read the book about VBA - 15 - 19
 - Develop detecve_couples.py solution - 15 - 19
 
 
-Tomorrow: Friday - 07.07.2023, 10-14, 15-19
+Tomorrow: Saturday - 08.07.2023, 12-18
 - Linux lecture - 10 - 14
 - Algorithms problems - 15 - 19
-- Read the book about VBA - 15 - 19
+- Sales forecast - 12-18
 
 
 
-Next day: Saturday - 08.07.2023, 12-18
+Next day: Sunday - 09.07.2023, 12-18
 - Sales forecast - 12-18
 - Linux lecture
 
