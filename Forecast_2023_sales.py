@@ -61,6 +61,7 @@ sales_current = 44848580.94
 
 # Forecasted CPI for 2023 (10% ± 3%)
 cpi_forecast_min = 0.07  # 10% - 3%
+cpi_forecast_opt = 0.10  # 10%
 cpi_forecast_max = 0.13  # 10% + 3%
 
 # The current date is 07.07.2023, so more than half of the year has passed.
@@ -70,7 +71,9 @@ sales_forecast = sales_current / (7/12)
 
 # Adjust the forecasted sales for the expected change in CPI
 sales_forecast_min = sales_forecast * (1 + cpi_forecast_min)
+sales_forecast_opt = sales_forecast * (1 + cpi_forecast_opt)
 sales_forecast_max = sales_forecast * (1 + cpi_forecast_max)
 
 print('Forecast for 2023 (with 7% CPI increase):', sales_forecast_min)
+print('Forecast for 2023 (with 10% CPI increase):', sales_forecast_opt)
 print('Forecast for 2023 (with 13% CPI increase):', sales_forecast_max)
