@@ -104,7 +104,7 @@ def create_graph(devices):
         for other_device in devices:
             first_difference = abs(device["First Detected On"] - other_device["First Detected On"])
             last_difference = abs(device["Last Detected On"] - other_device["Last Detected On"])
-            if last_difference <= datetime.timedelta(minutes=2) or first_difference <= datetime.timedelta(minutes=10):
+            if last_difference <= datetime.timedelta(minutes=7) or first_difference <= datetime.timedelta(minutes=7):
                 if not G.has_node(other_device["MAC Address"]):
                     G.add_node(other_device["MAC Address"], attr_dict=other_device)
                 if G.has_edge(device["MAC Address"], other_device["MAC Address"]):
