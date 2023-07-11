@@ -13,30 +13,34 @@ My schedule:
 * Read the book about VBA
 * Call the vendor of the ERP system SoftOne and ask them about the API
 * Develop detecve_couples.py solution - add a graph theory solution
+* Algorithms problems
+* Algorithms lecture
 
 
 
-Today: Friday - 07.07.2023, 10-14, 15-19
+Today: Tuesday - 11.07.2023, 10-14, 15-19
 - Linux lecture - 10 - 14
 - Algorithms problems - 15 - 19
 - Read the book about VBA - 15 - 19
 - Develop detecve_couples.py solution - 15 - 19
+- Algorithms lecture - 15 - 19
+- Compare forecasts and actual sales - 15 - 19
 
 
-Tomorrow: Saturday - 08.07.2023, 12-18
-- Linux lecture - 10 - 14
+Tomorrow: Wednesday - 12.07.2023, 10-14, 15-19
+- Algorithms lecture - 10 - 14
 - Algorithms problems - 15 - 19
-- Sales forecast - 12-18
+- Algorithms lecture - 15 - 19
 
 
 
-Next day: Sunday - 09.07.2023, 12-18
-- Sales forecast - 12-18
-- Linux lecture
+Next day: Wednesday - 12.07.2023, 10-14, 15-19
+- Algorithms lecture - 10 - 14
+- Algorithms problems - 15 - 19
 
 
 
 
 
 
-Now is 16:40 - I have to watch 3.12 hours of lecture at a speed of 1.8 - it will take me 2 hours - I will finish at 18:40
+Now is 16:00 - I have to watch 3.20 hours of lecture at a speed of 1.8 - I will finish at 18:48
