@@ -26,18 +26,16 @@ def read_data(file_path):
 
 def create_graph(data):
     G = nx.Graph()
-    for device in data:
+    while data:
+        device = data.pop()
         G.add_node(device["User Text"])
         for other_device in data:
-            if device == other_device:
-                continue
-            first_difference = abs(device["First Detected On"] - other_device["First Detected On"])
-            last_difference = abs(device["Last Detected On"] - other_device["Last Detected On"])
-            if first_difference <= datetime.timedelta(minutes=5) and last_difference <= datetime.timedelta(minutes=5):
-                if G.has_edge(device["User Text"], other_device["User Text"]):
-                    G[device["User Text"]][other_device["User Text"]]["weight"] += 1
-                else:
-                    G.add_edge(device["User Text"], other_device["User Text"], weight=1)
+            if device["User Text"] != other_device["User Text"]:
+                if device["First Detected On"] <= other_device["Last Detected On"] and device["Last Detected On"] >= other_device["First Detected On"]:
+                    G.add_edge(device["User Text"], other_device["User Text"])
+
+
+
     return G
 
 data = read_data("C:/Users/r.manov/OneDrive/Работен плот/data.txt")
