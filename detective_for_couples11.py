@@ -1,6 +1,26 @@
+## This is a help utility for the purpose of the project "Detective for couples".
+# The utility is used to process the output of the NirSoft's Wireless Network Watcher. 
+# Its purpose is to help - in a specific way - to identify the owners of the devices that connect to the networks. 
+#  - identify the owner of several specific devices, 
+#  - as well as to show which owners, with which of their devices, enter/exit the networks and 
+#  - to determine the formed groups of owners connecting to the networks simultaneously - in sync.
+# 
+# This code reads in your data, creates a graph where nodes represent devices and edges represent relationships between devices, 
+# then it applies two community detection algorithms (Louvain and Girvan-Newman) to find communities (or clusters) of devices that are closely related. 
+# Finally, it prints out the results of the community detection for each algorithm.
+# Remember, the Louvain method is a fast and accurate method for community detection in large networks, 
+# but it's a heuristic method that might not find the globally optimal partition of your network. 
+# The Girvan-Newman method is a more classical approach based on the concept of edge betweenness, 
+# but it might be slower for large networks. It's good that you're using both and comparing their results.
+
+
+
+
+
 import datetime
 import networkx as nx
 import community as community_louvain
+from networkx.algorithms import community
 
 def read_data(file_path):
     devices = []
@@ -104,19 +124,32 @@ def create_graph(devices):
         for other_device in devices:
             first_difference = abs(device["First Detected On"] - other_device["First Detected On"])
             last_difference = abs(device["Last Detected On"] - other_device["Last Detected On"])
-            if last_difference <= datetime.timedelta(minutes=3) or first_difference <= datetime.timedelta(minutes=3):
+            if last_difference <= datetime.timedelta(minutes=5) or first_difference <= datetime.timedelta(minutes=5):
                 if not G.has_node(other_device["MAC Address"]):
                     G.add_node(other_device["MAC Address"], attr_dict=other_device)
                 if G.has_edge(device["MAC Address"], other_device["MAC Address"]):
                     G[device["MAC Address"]][other_device["MAC Address"]]["weight"] += 1
                 else:
                     G.add_edge(device["MAC Address"], other_device["MAC Address"], weight=1)
-    return G
+    
+    # use this code to find the best partition
+    communities_generator = community.girvan_newman(G)
+    top_level_communities = next(communities_generator)
+    next_level_communities = next(communities_generator)
+
+    # Convert communities into a partition
+    partition1 = {node: i for i, community in enumerate(next_level_communities) for node in community}
+
+    return G, partition1
+
+
+
 
 
 devices = read_data("C:/Users/r.manov/OneDrive/Работен плот/data.txt")
 devices_copy = devices.copy()
-G = create_graph(devices)
+G, partition1 = create_graph(devices)
+modularity = community_louvain.modularity(partition1, G)
 
 closeness_centrality = nx.closeness_centrality(G)
 betweenness_centrality = nx.betweenness_centrality(G)
@@ -132,7 +165,7 @@ def print_results(partition, closeness_centrality, betweenness_centrality, devic
         # print devices user text in community
         # use set to print only unique devices
         for community in set(partition.values()):
-            print("Community number: ", community + 1)
+            print("Louvain Community number: ", community + 1)
             device_set = set()
             for device in devices_copy:
                 if partition[device["MAC Address"]] == community:
@@ -142,8 +175,26 @@ def print_results(partition, closeness_centrality, betweenness_centrality, devic
                 print(device)
             print("==================================================")
 
-
-
-
-
 print_results(partition, closeness_centrality, betweenness_centrality, devices_copy)
+
+
+def print_results1(partition1, devices_copy):
+    communities = {}
+    for node in partition1:
+        if partition1[node] not in communities:
+            communities[partition1[node]] = [node]
+        else:
+            communities[partition1[node]].append(node)
+
+    for community in communities:
+        print("Girvan_newman Community number: ", community + 1)
+        device_set = set()
+        for device in devices_copy:
+            if device["MAC Address"] in communities[community]:
+                # use set to print only unique devices
+                device_set.add(device["User Text"])
+        for device in device_set:
+            print(device)
+        print("==================================================")
+
+print_results1(partition1, devices_copy)
