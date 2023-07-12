@@ -8,10 +8,10 @@
 # This code reads in your data, creates a graph where nodes represent devices and edges represent relationships between devices, 
 # then it applies two community detection algorithms (Louvain and Girvan-Newman) to find communities (or clusters) of devices that are closely related. 
 # Finally, it prints out the results of the community detection for each algorithm.
-# Remember, the Louvain method is a fast and accurate method for community detection in large networks, 
+# The Louvain method is a fast and accurate method for community detection in large networks, 
 # but it's a heuristic method that might not find the globally optimal partition of your network. 
 # The Girvan-Newman method is a more classical approach based on the concept of edge betweenness, 
-# but it might be slower for large networks. It's good that you're using both and comparing their results.
+# but it might be slower for large networks. For best results I am using both and comparing their results.
 
 
 
