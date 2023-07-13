@@ -15,29 +15,27 @@ My schedule:
 * Develop detecve_couples.py solution - add a graph theory solution
 * Algorithms problems
 * Algorithms lecture
+* Test for a junior developer position
 
 
 
-Today: Tuesday - 11.07.2023, 10-14, 15-19
-- Linux lecture - 10 - 14
-- Algorithms problems - 15 - 19
-- Read the book about VBA - 15 - 19
-- Develop detecve_couples.py solution - 15 - 19
-- Algorithms lecture - 15 - 19
-- Compare forecasts and actual sales - 15 - 19
+
+Today: Thursday - 13.07.2023, 10-14, 15-19
+- Compare forecasts and actual sales - 10 - 14
+- Linux lecture - 15 - 19
 
 
-Tomorrow: Wednesday - 12.07.2023, 10-14, 15-19
+Tomorrow: Friday - 14.07.2023, 10-14, 15-19
 - Algorithms lecture - 10 - 14
 - Algorithms problems - 15 - 19
 - Algorithms lecture - 15 - 19
 
 
 
-Next day: Wednesday - 12.07.2023, 10-14, 15-19
+Next day: Saturday - 15.07.2023, 12-18
 - Algorithms lecture - 10 - 14
 - Algorithms problems - 15 - 19
-
+- Test for a junior developer position - 12 - 18
 
 
 
