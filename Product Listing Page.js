@@ -23,20 +23,28 @@ const Product = ({ product }) => (
 class App extends Component {
     state = {
         products: products.slice(0, 20),  // Initially display the first 20 products
+        displayedProducts: [],
         sort: 'none',
-        filter: '',
+        colorFilter: '',
+        priceFilter: '',
     };
 
     componentDidMount() {
         this.updateDisplayedProducts();
     }
 
-    updateDisplayedProducts() {
+    updateDisplayedProducts = () => {
         let displayedProducts = [...this.state.products];
-        // Add your filtering logic here
-        // Add your sorting logic here
+        // Filtering logic
+        if (this.state.colorFilter) {
+            displayedProducts = displayedProducts.filter(product => product.color === this.state.colorFilter);
+        }
+        if (this.state.priceFilter) {
+            displayedProducts = displayedProducts.filter(product => product.price <= this.state.priceFilter);
+        }
+        // ... Add your sorting logic here
         this.setState({ displayedProducts });
-    }
+    };
 
     loadMore = () => {
         const moreProducts = products.slice(this.state.products.length, this.state.products.length + 20);
@@ -47,8 +55,12 @@ class App extends Component {
         this.setState({ sort: event.target.value }, this.updateDisplayedProducts);
     };
 
-    handleFilterChange = (event) => {
-        this.setState({ filter: event.target.value }, this.updateDisplayedProducts);
+    handleColorFilterChange = (event) => {
+        this.setState({ colorFilter: event.target.value }, this.updateDisplayedProducts);
+    };
+
+    handlePriceFilterChange = (event) => {
+        this.setState({ priceFilter: event.target.value }, this.updateDisplayedProducts);
     };
 
     render() {
@@ -59,15 +71,24 @@ class App extends Component {
                 </header>
                 <div>
                     {/* Add your product counter here */}
-                    <select value={this.state.sort} onChange={this.handleSortChange}>
-                        <option value="none">None</option>
-                        <option value="az">Alphabetical A-Z</option>
-                        <option value="za">Alphabetical Z-A</option>
-                        <option value="price-asc">Price Ascending</option>
-                        <option value="price-desc">Price Descending</option>
-                    </select>
-                    <input type="text" value={this.state.filter} onChange={this.handleFilterChange} placeholder="Filter" />
-                    {this.state.products.map(product => <Product key={product.id} product={product} />)}
+                    <div>
+                        <select value={this.state.sort} onChange={this.handleSortChange}>
+                            <option value="none">None</option>
+                            <option value="az">Alphabetical A-Z</option>
+                            <option value="za">Alphabetical Z-A</option>
+                            <option value="price-asc">Price Ascending</option>
+                            <option value="price-desc">Price Descending</option>
+                        </select>
+                        <select value={this.state.colorFilter} onChange={this.handleColorFilterChange}>
+                            <option value="">All Colors</option>
+                            {/* Add your color options here */}
+                        </select>
+                        <select value={this.state.priceFilter} onChange={this.handlePriceFilterChange}>
+                            <option value="">All Prices</option>
+                            {/* Add your price options here */}
+                        </select>
+                    </div>
+                    {this.state.displayedProducts.map(product => <Product key={product.id} product={product} />)}
                     <button onClick={this.loadMore}>Load More</button>
                 </div>
                 <footer>
@@ -79,4 +100,3 @@ class App extends Component {
 }
 
 export default App;
-
