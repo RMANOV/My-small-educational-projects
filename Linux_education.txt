@@ -1,0 +1,42 @@
+Linux Commands
+Almalinux 9
+
+how to display the last few commands in Linux
+cat /root/.bash_history | tail -n 10
+
+how to view the last 10 lines of a file in Linux
+tail -n 10 /root/.bash_history
+
+how to replace a string in a file in Linux
+sed -i 's/old-text/new-text/g' input.txt
+
+how to view the first 10 lines of a file in Linux
+head -n 10 /root/.bash_history
+
+how to view the last 10 lines of a file in Linux
+tail -n 10 /root/.bash_history
+
+how to check in wich group is a user in Linux
+groups username
+
+how to check the size of a directory in Linux
+du -sh /path/to/directory
+
+how to check the size of a file in Linux
+du -sh /path/to/file
+
+how to create a user and add it to a group in Linux
+createuser -U postgres -P -s -e username
+usermod -a -G groupname username
+
+how to check if a file exists in Linux
+if [ -f /path/to/file ]; then echo "File exists"; else echo "File does not exist"; fi
+
+how to check if a directory exists in Linux
+if [ -d /path/to/directory ]; then echo "Directory exists"; else echo "Directory does not exist"; fi
+
+how to check if a user exists in Linux
+if id "username" >/dev/null 2>&1; then echo "User exists"; else echo "User does not exist"; fi
+
+how to check if a group exists in Linux
+if grep -q "groupname" /etc/group; then echo "Group exists"; else echo "Group does not exist"; fi

@@ -11,32 +11,30 @@ My schedule:
 * Compare forecasts and actual sales - Tuesday, Wednesday or Thursday
 * Read the book about VBA
 * Make an order in small educational projects
-* Complete technical task for the interview - 10 days
-* Theoretical exam on Linux - 1.5 hours
+* Complete technical tasks for the interview - 10 days
+* Linux exercises
 
 
 
 
 Today: Friday - 28.07.2023 - 10 - 14, 15 - 19
-- Complete technical task for the interview - 10 - 14
+- Complete technical tasks for the interview - 10 - 14
 - Algorithms problems - 15 - 19
 
 
 
 
 Tomorrow: Saturday - 29.07.2023 - 12 - 18
-- Theoretical exam on Linux - 1.5 hours - 12 - 13:30
-- Sales forecast - 13:30 - 15:30
 - Algorithms problems - 15:30 - 18
-- Complete technical task for the interview - 18 - 19
+- Complete technical tasks for the interview - 18 - 19
 
 
 
 
 Next day: Sunday - 30.07.2023 - 12 - 18
 - Algorithms problems - 12 - 14
-- Complete technical task for the interview - 14 - 18
-- Sales forecast - 18 - 19
+- Complete technical tasks for the interview - 14 - 18
+
 
 
 
