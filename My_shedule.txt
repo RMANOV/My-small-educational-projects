@@ -17,23 +17,28 @@ My schedule:
 
 
 
-Today: Friday - 28.07.2023 - 10 - 14, 15 - 19
-- Complete technical tasks for the interview - 10 - 14
-- Algorithms problems - 15 - 19
-
-
-
-
-Tomorrow: Saturday - 29.07.2023 - 12 - 18
-- Algorithms problems - 15:30 - 18
-- Complete technical tasks for the interview - 18 - 19
-
-
-
-
-Next day: Sunday - 30.07.2023 - 12 - 18
+Today: Sunday - 30.07.2023 - 12 - 18
 - Algorithms problems - 12 - 14
 - Complete technical tasks for the interview - 14 - 18
+- Linux exercises - 14 - 18
+
+
+
+
+Tomorrow: Monday - 31.07.2023 - 10 - 14, 15 - 19
+- Algorithms problems - 15:30 - 18
+- Complete technical tasks for the interview - 10 - 14
+- Linux exercises - 18 - 19
+
+
+
+
+Next day: Tuesday - 01.08.2023 - 10 - 14, 15 - 19
+- Algorithms lecture - 10 - 12
+- Algorithms problems - 15:30 - 18
+- Complete technical tasks for the interview - 10 - 14
+- Linux exercises - 18 - 19
+
 
 
 
