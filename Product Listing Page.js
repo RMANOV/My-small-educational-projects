@@ -1,4 +1,5 @@
 // Product Listing Page
+// 
 
 import React, { Component } from 'react';
 
@@ -28,7 +29,7 @@ class App extends Component {
         colorFilter: '',
         priceFilter: '',
     };
-
+    
     componentDidMount() {
         this.updateDisplayedProducts();
     }
