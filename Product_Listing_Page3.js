@@ -1916,7 +1916,6 @@ class Product_Listing_Page3 extends Component {
 
 {/* I believe that the code is address all of the requirements. 
 The code includes the following features:
-
 Header with simple navigational menu
 Contains a logo and a navigational menu with a few categories.
 The header is sticky, so it remains visible when the user scrolls down the page.
