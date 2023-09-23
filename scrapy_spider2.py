@@ -7,7 +7,7 @@
 # The solution needs to include the navigation to the product page and extracting the data.
 # Output of the parsed data needs to be in a json file.
 
-# Provide the solution as a link to github/gitlab repository. Mail containing link should be send to anton.popov@edited.com and CC svetoslav.rankov@edited.com 
+# Provide the solution as a link to github/gitlab repository. Mail containing link should be send to * 
 
 # Following steps needs to be implemented:
 #   - request to load the page located at https://shop.mango.com/bg-en/men/t-shirts-plain/100-linen-slim-fit-t-shirt_47095923.html?c=07
