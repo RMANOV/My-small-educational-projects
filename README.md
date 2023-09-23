@@ -1,7 +1,7 @@
 - 👋 Hi, I’m @RMANOV
-- 👀 I’m interested in VisualBasic and Python
-- 🌱 I’m currently learning Python
-- 💞️ I’m looking to collaborate on GitHub Copilot
+- 👀 I’m interested in Programming
+- 🌱 I’m currently learning Python, Java, DB, Algorithms, and Visual Basic for Applications!
+- 💞️ I’m looking to collaborate on GitHub Copilot!
 - 📫 How to reach me - r.manov@gmail.com!
 
 <!---
