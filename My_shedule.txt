@@ -3,7 +3,7 @@ My schedule:
 # workday - 10-14, 15-19 (or 9-13, 14-18)
 # weekend - 12-18 (or 11 - 17)
 
-//plan every task to be no more than 2 hours at a time
+//Plan every task to be no more than 2 hours at a time
 
 * Algorithms lecture
 * Algorithms problems
@@ -11,7 +11,6 @@ My schedule:
 * Compare forecasts and actual sales - Tuesday, Wednesday or Thursday
 * Read the book about VBA
 * Make an order in small educational projects
-* Complete technical tasks for the interview - 10 days
 * Linux exercises
 
 
