@@ -2,7 +2,7 @@
 - 👀 I’m interested in Programming
 - 🌱 I’m currently learning Python, Java, DB, Algorithms, and Visual Basic for Applications!
 - 💞️ I want to collaborate on Python, Java, DB, Algorithms, and Visual Basic for Applications!
-- 📫 How to reach me - r.manov@gmail.com; Linkedin - linkedin.com/in/ruslan-m-a7a40266
+- 📫 How to reach me - r.manov@gmail.com; Linkedin - linkedin.com/in/ruslan-m-a7a40266; Tel - +359897526740.
 
 <!---
 RMANOV/RMANOV is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
