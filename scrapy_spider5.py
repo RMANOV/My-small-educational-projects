@@ -62,11 +62,12 @@ class MangoSpider(scrapy.Spider):
 
     @staticmethod
     def get_product_color(response):
-        color = response.css('span.color-name::text').get()
-        if color:
-            return color.strip()
+        colors = response.css('span.color-name::text').getall()
+        if colors:
+            return ", ".join(color.strip() for color in colors)
         else:
             raise ValueError("Missing color")
+
 
     @staticmethod
     def get_product_sizes(response):
