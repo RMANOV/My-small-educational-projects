@@ -2,7 +2,7 @@
 
 # As part of the EDITED team, you'll be responsible for keeping millions of products up-to-date.
 
-# Using python scrapy framework, you have to retrieve the information about the name, selected colour, price and size of a single product located at: https://shop.mango.com/gb/women/skirts-midi/midi-satin-skirt_17042020.html?c=99.
+# Using python scrapy framework, you have to retrieve the information about the name, selected color, price and size of a single product located at: https://shop.mango.com/gb/women/skirts-midi/midi-satin-skirt_17042020.html?c=99.
 
 # The solution needs to include the navigation to the product page and extracting the data.
 # Output of the parsed data needs to be in a json file.
@@ -12,12 +12,12 @@
 # Following steps needs to be implemented:
 #   - request to load the page located at https://shop.mango.com/bg-en/men/t-shirts-plain/100-linen-slim-fit-t-shirt_47095923.html?c=07
 #   - parse of the html
-#   - collect the data (name, price, selected default colour and size)
+#   - collect the data (name, price, selected default color and size)
 #   - output the data as json file, for example:
 # 	{
 #   	    "name": String
 #   	    "price": Double,
-#    	    "colour": String,
+#    	    "color": String,
 #   	    "size": Array
 #  }
 
@@ -45,8 +45,8 @@ class MangoSpider(scrapy.Spider):
         # get product price
         price = response.css('span.product-sale::text').get()
 
-        # get product colour
-        colour = response.css('span.color-name::text').get()
+        # get product color
+        color = response.css('span.color-name::text').get()
 
         # get product sizes
         sizes = response.css('div.size-selector-container > div > ul > li > a::text').getall()
@@ -61,7 +61,7 @@ class MangoSpider(scrapy.Spider):
         product = {
             'name': name,
             'price': price,
-            'colour': colour,
+            'color': color,
             'sizes': sizes
         }
 
