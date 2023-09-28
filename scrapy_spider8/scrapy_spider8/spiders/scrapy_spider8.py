@@ -45,7 +45,7 @@ class MangoSpider(scrapy.Spider):
                 url,
                 self.parse,
                 meta={
-                    'splash': {'args': {'wait': 0.5}},
+                    'splash': {'args': {'wait': 3}},
                     'user-agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
                 }
             )
