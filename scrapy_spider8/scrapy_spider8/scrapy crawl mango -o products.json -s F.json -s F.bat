@@ -1,0 +1,1 @@
+scrapy crawl mango -o products.json -s FEED_FORMAT=jsonlines
