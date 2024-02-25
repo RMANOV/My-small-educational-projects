@@ -9,7 +9,6 @@
 - opencv-python
 - screen-brightness-control
 
-Автор: <Твоето Име>
 """
 
 import cv2
