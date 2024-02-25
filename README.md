@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @RMANOV
 - 👀 I’m interested in Programming
-- 🌱 I’m currently learning Python, Java, DB, Algorithms, and Visual Basic for Applications!
+- 🌱 I’m currently learning and using Python, Java, DB, Algorithms, and Visual Basic for Applications, for fun and work!
 - 💞️ I want to collaborate on Python, Java, DB, Algorithms, and Visual Basic for Applications!
 - 📫 How to reach me - r.manov@gmail.com; Linkedin - linkedin.com/in/ruslan-m-a7a40266; Tel - +359897526740.
 
