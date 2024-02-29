@@ -13,6 +13,7 @@
 
 import cv2
 import screen_brightness_control as sbc
+from datetime import datetime
 
 
 def adjust_screen_brightness(camera_index=0):
@@ -50,7 +51,8 @@ def adjust_screen_brightness(camera_index=0):
 
         # Задаване на новата яркост на екрана
         sbc.set_brightness(new_brightness)
-        print(f"Яркостта на екрана е зададена на {new_brightness}%.")
+        # print(f"Яркостта на екрана е зададена на {new_brightness}% в {datetime.now()} hh:mm:ss часа.")
+        print(f"Яркостта на екрана е зададена на {new_brightness}% в {datetime.now().strftime('%H:%M:%S')} часа.")
 
         # Запазване на текущата яркост за следващата итерация
         previous_brightness = new_brightness
