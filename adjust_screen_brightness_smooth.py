@@ -2,12 +2,12 @@ import cv2
 import screen_brightness_control as sbc
 from datetime import datetime
 import time
-
+import pyautogui
 
 """
-Автоматичен контрол на яркостта на екрана на десктоп компютъра с помощта на камера
+Автоматичен контрол на яркостта на екрана на десктоп компютъра с помощта на камера или скрийншот
 
-Този скрипт анализира осветеността в стаята чрез камера и автоматично регулира яркостта на екрана на компютъра,
+Този скрипт анализира осветеността в стаята чрез камера или скрийншот на екрана и автоматично регулира яркостта на екрана на компютъра,
 за да осигури оптимално визуално изживяване и комфорт. Използват се библиотеките OpenCV за обработка на изображения
 и screen-brightness-control за контрол на яркостта на екрана.
 
@@ -16,8 +16,15 @@ import time
 - screen-brightness-control
 - time
 - datetime
+- pyautogui
 
 """
+
+def get_screen_brightness():
+    screenshot = pyautogui.screenshot()
+    gray = cv2.cvtColor(np.array(screenshot), cv2.COLOR_BGR2GRAY)
+    brightness = gray.mean()
+    return brightness
 
 def adjust_screen_brightness(camera_index=0, debounce_time=1, threshold=5, smoothing_factor=0.5, read_interval=5):
     previous_brightness = None
@@ -27,22 +34,29 @@ def adjust_screen_brightness(camera_index=0, debounce_time=1, threshold=5, smoot
     # Инициализация на камерата извън цикъла
     cap = cv2.VideoCapture(camera_index)
     if not cap.isOpened():
-        print("Не може да се отвори камерата.")
-        return
+        print("Не може да се отвори камерата. Използва се скрийншот на екрана.")
+        use_camera = False
+    else:
+        use_camera = True
 
     # Индикатор за първо прочитане
     first_read = True
 
     while True:
-        # Четене на едно изображение от камерата
-        ret, frame = cap.read()
-        if not ret:
-            print("Не може да се прочете изображението от камерата.")
-            return
+        if use_camera:
+            # Четене на едно изображение от камерата
+            ret, frame = cap.read()
+            if not ret:
+                print("Не може да се прочете изображението от камерата. Използва се скрийншот на екрана.")
+                use_camera = False
+                continue
 
-        # Преобразуване на изображението в сиви тонове и намиране на средната стойност на пикселите
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        brightness = gray.mean()
+            # Преобразуване на изображението в сиви тонове и намиране на средната стойност на пикселите
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            brightness = gray.mean()
+        else:
+            # Изчисляване на осветеността от скрийншот на екрана
+            brightness = get_screen_brightness()
 
         # Изглаждане на осветеността
         if smoothed_brightness is None:
