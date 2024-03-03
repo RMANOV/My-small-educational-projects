@@ -3,42 +3,22 @@ from datetime import datetime
 import time
 import numpy as np
 import screen_brightness_control as sbc
-import cv2
-from datetime import datetime
-import time
-import numpy as np
-import screen_brightness_control as sbc
 import math
 
-
-"""
-Автоматичен контрол на яркостта на екрана на десктоп компютъра с помощта на камера или скрийншот
-
-Този скрипт анализира осветеността в стаята чрез камера или скрийншот на екрана и автоматично регулира яркостта на екрана на компютъра,
-за да осигури оптимално визуално изживяване и комфорт. Използват се библиотеките OpenCV за обработка на изображения
-и screen-brightness-control за контрол на яркостта на екрана.
-
-Необходими библиотеки:
-- opencv-python
-- screen-brightness-control
-- time
-- datetime
-- pyautogui
-- numpy
-
-"""
 
 def get_screen_brightness():
     return sbc.get_brightness()
 
-def get_adaptive_threshold(current_brightness):
-    return current_brightness * 0.1
+
+def get_adaptive_threshold(smoothed_brightness):
+    # Адаптивен праг, който може да варира в зависимост от нивото на яркост
+    return max(5, min(20, smoothed_brightness * 0.1))
 
 
-def adjust_screen_brightness(camera_index=0, debounce_time=1, threshold=15, smoothing_factor=0.05, read_interval=5):
-    previous_brightness = None  # Инициализиране с None за първоначална проверка
+def adjust_screen_brightness(camera_index=0, initial_debounce_time=1, initial_threshold=15, initial_smoothing_factor=0.05, read_interval=5):
+    previous_brightness = None
     previous_time = None
-    smoothed_brightness = 0  # Започнете с предполагаема начална стойност
+    smoothed_brightness = 50  # Предполагаема начална стойност за яркостта
     use_camera = True
 
     try:
@@ -54,20 +34,24 @@ def adjust_screen_brightness(camera_index=0, debounce_time=1, threshold=15, smoo
                 ret, frame = cap.read()
                 if not ret:
                     print("Не може да се прочете изображението от камерата.")
-                    continue  # Продължава да опитва да чете от камерата
+                    continue
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 brightness = gray.mean()
             else:
                 brightness = get_screen_brightness()
 
             if previous_brightness is not None:
-                smoothing_factor = 0.05 if abs(
-                    brightness - previous_brightness) > 5 else smoothing_factor
+                smoothing_factor = initial_smoothing_factor if abs(
+                    brightness - previous_brightness) > 5 else initial_smoothing_factor
                 smoothed_brightness = smoothing_factor * brightness + \
                     (1 - smoothing_factor) * previous_brightness
 
             rounded_brightness = math.ceil(
-                max(0, min(95, smoothed_brightness)))
+                max(0, min(100, smoothed_brightness)))
+
+            threshold = get_adaptive_threshold(smoothed_brightness)
+            # Може да добавите адаптивно изчисление тук
+            debounce_time = initial_debounce_time
 
             if previous_brightness is None or abs(rounded_brightness - previous_brightness) >= threshold:
                 if previous_time is None or (current_time - previous_time) >= debounce_time:
