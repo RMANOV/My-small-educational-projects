@@ -3,6 +3,7 @@ import screen_brightness_control as sbc
 from datetime import datetime
 import time
 
+
 """
 Автоматичен контрол на яркостта на екрана на десктоп компютъра с помощта на камера
 
@@ -13,6 +14,8 @@ import time
 Необходими библиотеки:
 - opencv-python
 - screen-brightness-control
+- time
+- datetime
 
 """
 
@@ -26,6 +29,9 @@ def adjust_screen_brightness(camera_index=0, debounce_time=1, threshold=5, smoot
     if not cap.isOpened():
         print("Не може да се отвори камерата.")
         return
+
+    # Индикатор за първо прочитане
+    first_read = True
 
     while True:
         # Четене на едно изображение от камерата
@@ -64,6 +70,11 @@ def adjust_screen_brightness(camera_index=0, debounce_time=1, threshold=5, smoot
 
         # Изчакване на определен интервал преди следващото прочитане
         time.sleep(read_interval)
+
+        # Изключване на индикатора след първото прочитане
+        if first_read:
+            sbc.set_brightness(0)
+            first_read = False
 
 
 if __name__ == "__main__":
