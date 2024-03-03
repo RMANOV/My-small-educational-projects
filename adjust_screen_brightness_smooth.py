@@ -3,6 +3,7 @@ import screen_brightness_control as sbc
 from datetime import datetime
 import time
 import pyautogui
+import numpy as np
 
 """
 Автоматичен контрол на яркостта на екрана на десктоп компютъра с помощта на камера или скрийншот
