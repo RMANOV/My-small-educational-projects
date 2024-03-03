@@ -21,14 +21,13 @@ def adjust_screen_brightness(camera_index=0, debounce_time=1, threshold=5, smoot
     previous_time = None
     smoothed_brightness = None
 
+    # Инициализация на камерата извън цикъла
+    cap = cv2.VideoCapture(camera_index)
+    if not cap.isOpened():
+        print("Не може да се отвори камерата.")
+        return
+
     while True:
-        # Инициализация на камерата
-        cap = cv2.VideoCapture(camera_index)
-
-        if not cap.isOpened():
-            print("Не може да се отвори камерата.")
-            return
-
         # Четене на едно изображение от камерата
         ret, frame = cap.read()
         if not ret:
@@ -38,9 +37,6 @@ def adjust_screen_brightness(camera_index=0, debounce_time=1, threshold=5, smoot
         # Преобразуване на изображението в сиви тонове и намиране на средната стойност на пикселите
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         brightness = gray.mean()
-
-        # Освобождаване на камерата
-        cap.release()
 
         # Изглаждане на осветеността
         if smoothed_brightness is None:
