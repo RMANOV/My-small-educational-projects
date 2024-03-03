@@ -1,9 +1,14 @@
 import cv2
-import screen_brightness_control as sbc
 from datetime import datetime
 import time
-import pyautogui
 import numpy as np
+import screen_brightness_control as sbc
+import cv2
+from datetime import datetime
+import time
+import numpy as np
+import screen_brightness_control as sbc
+
 
 """
 Автоматичен контрол на яркостта на екрана на десктоп компютъра с помощта на камера или скрийншот
@@ -18,78 +23,68 @@ import numpy as np
 - time
 - datetime
 - pyautogui
+- numpy
 
 """
 
 def get_screen_brightness():
-    screenshot = pyautogui.screenshot()
-    gray = cv2.cvtColor(np.array(screenshot), cv2.COLOR_BGR2GRAY)
-    brightness = gray.mean()
-    return brightness
+    return sbc.get_brightness()
+
+def get_adaptive_threshold(current_brightness):
+    return current_brightness * 0.2
+
 
 def adjust_screen_brightness(camera_index=0, debounce_time=1, threshold=5, smoothing_factor=0.5, read_interval=5):
-    previous_brightness = None
+    previous_brightness = 0  # Инициализиране с начална стойност
     previous_time = None
     smoothed_brightness = None
+    use_camera = True
 
-    # Инициализация на камерата извън цикъла
-    cap = cv2.VideoCapture(camera_index)
-    if not cap.isOpened():
-        print("Не може да се отвори камерата. Използва се скрийншот на екрана.")
-        use_camera = False
-    else:
-        use_camera = True
+    try:
+        cap = cv2.VideoCapture(camera_index)
+        if not cap.isOpened():
+            print("Не може да се отвори камерата. Използва се скрийншот на екрана.")
+            use_camera = False
 
-    # Индикатор за първо прочитане
-    first_read = True
+        while True:
+            current_time = time.time()
 
-    while True:
-        if use_camera:
-            # Четене на едно изображение от камерата
-            ret, frame = cap.read()
-            if not ret:
-                print("Не може да се прочете изображението от камерата. Използва се скрийншот на екрана.")
-                use_camera = False
-                continue
+            if use_camera:
+                ret, frame = cap.read()
+                if not ret:
+                    print("Не може да се прочете изображението от камерата.")
+                    use_camera = False
+                    continue
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                brightness = gray.mean()
+            else:
+                brightness = get_screen_brightness()
 
-            # Преобразуване на изображението в сиви тонове и намиране на средната стойност на пикселите
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            brightness = gray.mean()
-        else:
-            # Изчисляване на осветеността от скрийншот на екрана
-            brightness = get_screen_brightness()
+            if smoothed_brightness is None:
+                smoothed_brightness = brightness
+            else:
+                smoothing_factor = 0.5 if abs(
+                    brightness - previous_brightness) > 5 else smoothing_factor
+                smoothed_brightness = smoothing_factor * brightness + \
+                    (1 - smoothing_factor) * smoothed_brightness
 
-        # Изглаждане на осветеността
-        if smoothed_brightness is None:
-            smoothed_brightness = brightness
-        else:
-            smoothed_brightness = smoothing_factor * brightness + (1 - smoothing_factor) * smoothed_brightness
+            # Ограничаване на стойността на smoothed_brightness в диапазона 0-100
+            smoothed_brightness = max(0, min(100, smoothed_brightness))
 
-        # Проверка дали има значима промяна в осветеността
-        if previous_brightness is not None and abs(smoothed_brightness - previous_brightness) < threshold:
-            continue
+            threshold = get_adaptive_threshold(smoothed_brightness)
 
-        # Проверка дали е минал достатъчно време от последната корекция
-        current_time = time.time()
-        if previous_time is not None and current_time - previous_time < debounce_time:
-            continue
+            if previous_brightness is not None and abs(smoothed_brightness - previous_brightness) >= threshold:
+                if previous_time is None or (current_time - previous_time) >= debounce_time:
+                    print(f"Яркостта на екрана е зададена на {smoothed_brightness}% в {
+                          datetime.now().strftime('%H:%M:%S')} часа.")
+                    previous_time = current_time
 
-        # Задаване на новата яркост на екрана
-        new_brightness = int((smoothed_brightness / 255) * 100)
-        sbc.set_brightness(new_brightness)
-        print(f"Яркостта на екрана е зададена на {new_brightness}% в {datetime.now().strftime('%H:%M:%S')} часа.")
+            previous_brightness = smoothed_brightness
+            time.sleep(read_interval)
 
-        # Запазване на текущата яркост и време за следващата итерация
-        previous_brightness = smoothed_brightness
-        previous_time = current_time
-
-        # Изчакване на определен интервал преди следващото прочитане
-        time.sleep(read_interval)
-
-        # Изключване на индикатора след първото прочитане
-        if first_read:
-            sbc.set_brightness(0)
-            first_read = False
+    finally:
+        if use_camera and cap is not None:
+            cap.release()
 
 
 if __name__ == "__main__":
