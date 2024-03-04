@@ -9,6 +9,11 @@ import numpy as np
 LOG_FILE = 'brightness_log.csv'
 
 
+def turn_on_keyboard_backlight():
+    # Тази функция трябва да бъде имплементирана в зависимост от операционната система
+    pass
+
+
 def calculate_smoothing_factor(brightness_diff):
     return max(0.05, min(0.3, 1 / (1 + brightness_diff)))
 
@@ -30,9 +35,11 @@ def analyze_image(frame):
 
 
 def adjust_screen_brightness(camera_index=0):
-    prev_brightness = 50
+    # Използване на текущата яркост на екрана като начална стойност
+    # Взимане на първата стойност, ако има повече от един монитор
+    prev_brightness = sbc.get_brightness()[0]
     prev_time = None
-    smoothed_brightness = 50
+    smoothed_brightness = prev_brightness
 
     try:
         cap = cv2.VideoCapture(camera_index)
@@ -63,11 +70,12 @@ def adjust_screen_brightness(camera_index=0):
 
                     if prev_time is None or (current_time - prev_time).total_seconds() >= debounce_time:
                         sbc.set_brightness(math.ceil(smoothed_brightness))
-                        # print(f'New brightness: {math.ceil(smoothed_brightness)}% at {current_time.strftime(
-                        #     "%H:%M:%S")}, delta: {debounce_time} s, smoothing factor: {smoothing_factor}')
-                        # print all - with rounded values
-                        print(f'New brightness: {math.ceil(smoothed_brightness)}% at {current_time.strftime("%H:%M:%S")}, delta: {round(debounce_time, 2)} s, smoothing factor: {round(smoothing_factor, 2)}')
+                        print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
+                              current_time.strftime("%H:%M:%S")}, debounce time: {debounce_time:.2f}, smoothing factor: {smoothing_factor:.2f}')
                         prev_time = current_time
+
+                        if smoothed_brightness < 20:
+                            turn_on_keyboard_backlight()
 
                         log_data = [current_time.strftime('%Y-%m-%d %H:%M:%S'), brightness, smoothed_brightness,
                                     smoothing_factor, debounce_time, calculate_adaptive_threshold(smoothed_brightness)]
