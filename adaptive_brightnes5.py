@@ -76,7 +76,7 @@ def adjust_screen_brightness(camera_index=0):
                 screenshot_brightness = get_screenshot_brightness()
 
                 # Комбиниране на двете стойности за яркост
-                brightness = (camera_brightness + screenshot_brightness) / 2
+                brightness = (camera_brightness + 1/screenshot_brightness) / 2
                 brightness_diff = abs(brightness - prev_brightness)
 
                 if brightness_diff >= calculate_adaptive_threshold(smoothed_brightness):
