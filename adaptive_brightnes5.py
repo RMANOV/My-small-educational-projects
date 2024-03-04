@@ -44,6 +44,9 @@ def get_screenshot_brightness():
     hist = cv2.calcHist([screenshot], [0], None, [256], [0, 256])
     brightness = sum(i * hist[i][0] for i in range(256)
                      ) / sum(hist[i][0] for i in range(256))
+    # return brightness / 256 * 100
+    if not brightness:
+        return 0
     return brightness / 256 * 100
 
 
