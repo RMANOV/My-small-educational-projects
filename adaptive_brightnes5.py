@@ -53,6 +53,8 @@ def adjust_screen_brightness(camera_index=0):
     prev_time = None
     smoothed_brightness = prev_brightness
 
+    print(f'Initial brightness: {prev_brightness}% at {datetime.now().strftime("%H:%M:%S")}')
+
     try:
         cap = cv2.VideoCapture(camera_index)
         if not cap.isOpened():
