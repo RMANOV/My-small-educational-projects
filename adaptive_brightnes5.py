@@ -59,10 +59,10 @@ def adjust_screen_brightness(camera_index=0):
             print("Cannot open camera. Exiting...")
             return
 
-        with open(LOG_FILE, 'w', newline='') as logfile:
-            logwriter = csv.writer(logfile)
-            logwriter.writerow(['timestamp', 'raw_brightness', 'smoothed_brightness',
-                               'smoothing_factor', 'debounce_time', 'threshold'])
+        # with open(LOG_FILE, 'w', newline='') as logfile:
+        #     logwriter = csv.writer(logfile)
+        #     logwriter.writerow(['timestamp', 'raw_brightness', 'smoothed_brightness',
+        #                        'smoothing_factor', 'debounce_time', 'threshold'])
 
             while True:
                 # Анализ на яркостта от камерата
