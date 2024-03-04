@@ -75,8 +75,26 @@ def adjust_screen_brightness(camera_index=0):
                 # Анализ на яркостта от скрийншот
                 screenshot_brightness = get_screenshot_brightness()
 
-                # Комбиниране на двете стойности за яркост
-                brightness = (camera_brightness + 1/screenshot_brightness) / 2
+                # if camera_brightness == 0 or screenshot_brightness == 0:
+                #     print('Error: camera or screenshot brightness is 0')
+                #     time.sleep(1)
+                #     continue
+                if screenshot_brightness == 0:
+                    brightness = camera_brightness  # Ако скрийншота е черен, използваме само камерата
+                
+                elif camera_brightness == 0:
+                    brightness = screenshot_brightness  # Ако камерата е черна, използваме само скрийншота
+
+                elif camera_brightness == 0 and screenshot_brightness == 0:
+                    print('Error: camera and screenshot brightness is 0')
+                    time.sleep(1)
+                    continue
+
+                else:
+                    # Комбиниране на двете стойности за яркост
+                    brightness = (camera_brightness + 1/screenshot_brightness) / 2
+
+                
                 brightness_diff = abs(brightness - prev_brightness)
 
                 if brightness_diff >= calculate_adaptive_threshold(smoothed_brightness):
