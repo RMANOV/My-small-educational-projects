@@ -94,10 +94,6 @@ def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
         weight_camera = 0.5
         weight_screenshot = 0.5
 
-    # brightness = weight_camera * camera_brightness + weight_screenshot * screenshot_brightness
-        
-
-
     return weight_camera, weight_screenshot
 
 
