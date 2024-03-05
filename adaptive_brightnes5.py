@@ -74,6 +74,8 @@ def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
 
     min_weight = 0.3
     max_weight = 0.7
+    min_ratio = 0.8
+
 
     if ratio > 1:
         weight_camera = min_weight + (1 - min_weight) * (ratio - 1) / (max_ratio - 1)
@@ -158,12 +160,13 @@ def adjust_screen_brightness(camera_index=0):
                 else:
                     # Комбиниране на двете стойности за яркост
                     # brightness = (camera_brightness + 1/screenshot_brightness) / 2
+                    # brightness = combine_brightness(
+                    #     camera_brightness, screenshot_brightness,adjust_weights_based_on_content(camera_brightness, screenshot_brightness))
+                    adjust_weights_based_on_content(camera_brightness, screenshot_brightness)
                     brightness = combine_brightness(
                         camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
-                    
+                        
 
-
-                
                 brightness_diff = abs(brightness - prev_brightness)
 
                 if brightness_diff >= calculate_adaptive_threshold(smoothed_brightness):
