@@ -76,7 +76,12 @@ def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
     max_weight = 0.7
     min_ratio = 0.8
     max_ratio = 1.2
+    # Динамично коригиране на max_ratio и min_ratio в зависимост от околната осветеност
     
+    if ratio < min_ratio:
+        min_ratio = ratio
+    if ratio > max_ratio:
+        max_ratio = ratio
 
 
     if ratio > 1:
@@ -91,6 +96,7 @@ def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
 
     # brightness = weight_camera * camera_brightness + weight_screenshot * screenshot_brightness
         
+
 
     return weight_camera, weight_screenshot
 
