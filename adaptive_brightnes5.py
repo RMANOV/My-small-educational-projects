@@ -75,6 +75,8 @@ def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
     min_weight = 0.3
     max_weight = 0.7
     min_ratio = 0.8
+    max_ratio = 1.2
+    
 
 
     if ratio > 1:
