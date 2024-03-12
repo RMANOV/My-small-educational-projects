@@ -127,7 +127,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
     else:
         prev_brightness, smoothed_brightness, integral_term, prev_error = state
 
-    print(f'Initial brightness: {prev_brightness}% at {
+    print(f'Initial brightness: {math.ceil(prev_brightness)}% at {
           datetime.now().strftime("%H:%M:%S")}')
 
     frame_queue = Queue(maxsize=frame_queue_size)
