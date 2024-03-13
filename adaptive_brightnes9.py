@@ -9,6 +9,7 @@ from PIL import Image
 from threading import Thread
 from queue import Queue
 import pickle
+import random
 
 
 def turn_on_keyboard_backlight():
@@ -38,7 +39,6 @@ def get_screenshot_brightness():
 
 def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
     ratio = screenshot_brightness / camera_brightness if camera_brightness != 0 else 1
-
     min_weight = 0.3
     max_weight = 0.7
     min_ratio = 0.8
@@ -61,12 +61,16 @@ def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
         weight_camera = 0.5
         weight_screenshot = 0.5
 
+    # Ensure weights are not zero
+    weight_camera = max(0.1, weight_camera)
+    weight_screenshot = max(0.1, weight_screenshot)
+
     return weight_camera, weight_screenshot
 
 
 def combine_brightness(camera_brightness, screenshot_brightness, weight_camera, weight_screenshot):
-    combined_brightness = (weight_camera * camera_brightness + weight_screenshot * (
-        100 / screenshot_brightness)) / (weight_camera + weight_screenshot)
+    combined_brightness = weight_camera * camera_brightness + \
+        weight_screenshot * screenshot_brightness
     return combined_brightness
 
 
@@ -78,16 +82,18 @@ def process_frames(frame_queue, brightness_queue, batch_size):
             break
         frames.append(frame)
         if len(frames) == batch_size:
-            brightness = analyze_image(np.mean(frames, axis=0))
+            avg_frame = np.mean(frames, axis=0).astype(np.uint8)
+            brightness = analyze_image(avg_frame)
             brightness_queue.put(brightness)
             frames = []
 
 
 def pid_controller(setpoint, current_value, kp, ki, kd, dt, integral_term, prev_error):
     error = setpoint - current_value
-    integral_term += error * dt
+    integral_term = max(-50, min(50, integral_term + error * dt))
     derivative_term = (error - prev_error) / dt
     output = kp * error + ki * integral_term + kd * derivative_term
+    output = max(-10, min(10, output))
     prev_error = error
     return output, integral_term, prev_error
 
@@ -100,21 +106,23 @@ def save_state(state):
 def load_state():
     try:
         with open('brightness_controller_state.pkl', 'rb') as f:
-            return pickle.load(f)
-    except FileNotFoundError:
+            state = pickle.load(f)
+            prev_brightness, smoothed_brightness, integral_term, prev_error, kp, ki, kd = state
+            return prev_brightness, smoothed_brightness, integral_term, prev_error, kp, ki, kd
+    except (FileNotFoundError, ValueError):
         return None
 
 
 def adjust_pid_parameters(setpoint, current_value, kp, ki, kd):
     error = abs(setpoint - current_value)
     if error > 20:
-        kp *= 1.1
-        ki *= 1.05
-        kd *= 1.05
+        kp *= 1.2
+        ki *= 1.1
+        kd *= 1.1
     elif error < 5:
-        kp *= 0.9
-        ki *= 0.95
-        kd *= 0.95
+        kp *= 0.8
+        ki *= 0.9
+        kd *= 0.9
     return kp, ki, kd
 
 
@@ -141,7 +149,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
         smoothed_brightness = prev_brightness
         integral_term = 0
         prev_error = 0
-        kp, ki, kd = 0.5, 0.1, 0.05
+        kp, ki, kd = 0.8, 0.2, 0.1
     else:
         prev_brightness, smoothed_brightness, integral_term, prev_error, kp, ki, kd = state
 
@@ -170,8 +178,8 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             else:
                 frame_queue.put(frame)
                 try:
-                    camera_brightness = brightness_queue.get(timeout=1)
-                except:
+                    camera_brightness = brightness_queue.get(block=True)
+                except queue.Empty:
                     camera_brightness = prev_brightness
 
             try:
@@ -194,7 +202,13 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 brightness = combine_brightness(
                     camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
 
-            setpoint = brightness
+            if brightness > 80:
+                setpoint = 70
+            elif brightness < 20:
+                setpoint = 30
+            else:
+                setpoint = brightness
+
             output, integral_term, prev_error = pid_controller(
                 setpoint, smoothed_brightness, kp, ki, kd, dt=1, integral_term=integral_term, prev_error=prev_error)
             smoothed_brightness += output
@@ -206,11 +220,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 brightness_queue.qsize(), batch_size)
 
             try:
-                if smoothed_brightness < 0:
-                    smoothed_brightness = 0
-                elif smoothed_brightness > 100:
-                    smoothed_brightness = 100
-
+                smoothed_brightness = max(1, min(100, smoothed_brightness))
                 sbc.set_brightness(math.ceil(smoothed_brightness))
                 print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
                       datetime.now().strftime("%H:%M:%S")}')
