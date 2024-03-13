@@ -10,6 +10,7 @@ from threading import Thread
 from queue import Queue
 import pickle
 
+
 def turn_on_keyboard_backlight():
     # Тази функция трябва да бъде имплементирана в зависимост от операционната система
     pass
@@ -144,13 +145,15 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
     else:
         prev_brightness, smoothed_brightness, integral_term, prev_error, kp, ki, kd = state
 
-    print(f'Initial brightness: {prev_brightness:.1f}% at {datetime.now().strftime("%H:%M:%S")}')
+    print(f'Initial brightness: {prev_brightness:.1f}% at {
+          datetime.now().strftime("%H:%M:%S")}')
 
     frame_queue = Queue(maxsize=frame_queue_size)
     brightness_queue = Queue(maxsize=brightness_queue_size)
 
     for _ in range(num_threads):
-        t = Thread(target=process_frames, args=(frame_queue, brightness_queue, batch_size))
+        t = Thread(target=process_frames, args=(
+            frame_queue, brightness_queue, batch_size))
         t.start()
 
     try:
@@ -186,16 +189,21 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 time.sleep(1)
                 continue
             else:
-                weight_camera, weight_screenshot = adjust_weights_based_on_content(camera_brightness, screenshot_brightness)
-                brightness = combine_brightness(camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
+                weight_camera, weight_screenshot = adjust_weights_based_on_content(
+                    camera_brightness, screenshot_brightness)
+                brightness = combine_brightness(
+                    camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
 
             setpoint = brightness
-            output, integral_term, prev_error = pid_controller(setpoint, smoothed_brightness, kp, ki, kd, dt=1, integral_term=integral_term, prev_error=prev_error)
+            output, integral_term, prev_error = pid_controller(
+                setpoint, smoothed_brightness, kp, ki, kd, dt=1, integral_term=integral_term, prev_error=prev_error)
             smoothed_brightness += output
 
-            kp, ki, kd = adjust_pid_parameters(setpoint, smoothed_brightness, kp, ki, kd)
+            kp, ki, kd = adjust_pid_parameters(
+                setpoint, smoothed_brightness, kp, ki, kd)
             num_threads = adjust_num_threads(frame_queue.qsize(), num_threads)
-            batch_size = adjust_batch_size(brightness_queue.qsize(), batch_size)
+            batch_size = adjust_batch_size(
+                brightness_queue.qsize(), batch_size)
 
             try:
                 if smoothed_brightness < 0:
@@ -204,12 +212,14 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                     smoothed_brightness = 100
 
                 sbc.set_brightness(math.ceil(smoothed_brightness))
-                print(f'New brightness: {math.ceil(smoothed_brightness)}% at {datetime.now().strftime("%H:%M:%S")}')
+                print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
+                      datetime.now().strftime("%H:%M:%S")}')
 
                 if smoothed_brightness < 20:
                     turn_on_keyboard_backlight()
 
-                save_state((prev_brightness, smoothed_brightness, integral_term, prev_error, kp, ki, kd))
+                save_state((prev_brightness, smoothed_brightness,
+                           integral_term, prev_error, kp, ki, kd))
             except:
                 print("Error setting brightness.")
 
