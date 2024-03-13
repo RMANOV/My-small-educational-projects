@@ -24,7 +24,7 @@ def analyze_image(frame):
     brightness = sum(i * hist[i][0] for i in range(256)
                      ) / sum(hist[i][0] for i in range(256))
     brightness = brightness / 256 * 100
-    print(f"Camera brightness: {brightness:.2f}%")
+    # print(f"Camera brightness: {brightness:.2f}%")
     return brightness
 
 
@@ -36,7 +36,7 @@ def get_screenshot_brightness():
     brightness = sum(i * hist[i][0] for i in range(256)
                      ) / sum(hist[i][0] for i in range(256))
     brightness = brightness / 256 * 100
-    print(f"Screenshot brightness: {brightness:.2f}%")
+    # print(f"Screenshot brightness: {brightness:.2f}%")
     return brightness
 
 
@@ -68,15 +68,15 @@ def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
     weight_camera = max(0.1, weight_camera)
     weight_screenshot = max(0.1, weight_screenshot)
 
-    print(f"Camera weight: {weight_camera:.2f}, Screenshot weight: {
-          weight_screenshot:.2f}")
+    # print(f"Camera weight: {weight_camera:.2f}, Screenshot weight: {
+    #         weight_screenshot:.2f}")
     return weight_camera, weight_screenshot
 
 
 def combine_brightness(camera_brightness, screenshot_brightness, weight_camera, weight_screenshot):
     combined_brightness = weight_camera * camera_brightness + \
         weight_screenshot * screenshot_brightness
-    print(f"Combined brightness: {combined_brightness:.2f}%")
+    # print(f"Combined brightness: {combined_brightness:.2f}%")
     return combined_brightness
 
 
@@ -101,7 +101,7 @@ def pid_controller(setpoint, current_value, kp, ki, kd, dt, integral_term, prev_
     output = kp * error + ki * integral_term + kd * derivative_term
     output = max(-10, min(10, output))
     prev_error = error
-    print(f"PID output: {output:.2f}")
+    # print(f"PID output: {output:.2f}")
     return output, integral_term, prev_error
 
 
@@ -120,36 +120,78 @@ def load_state():
         return None
 
 
-def adjust_pid_parameters(setpoint, current_value, kp, ki, kd, error_history, adjustment_factor=0.1):
-    error = setpoint - current_value
-    error_history.append(error)
+# def adjust_pid_parameters(setpoint, current_value, kp, ki, kd, error_history, adjustment_factor=0.1):
+#     error = setpoint - current_value
+#     error_history.append(error)
 
-    if len(error_history) > 10:
+#     if len(error_history) > 10:
+#         error_history.pop(0)
+
+#     error_avg = sum(error_history) / len(error_history)
+#     error_std = math.sqrt(
+#         sum((x - error_avg) ** 2 for x in error_history) / len(error_history))
+
+#     if error_std > 10:
+#         # Голямо отклонение в грешката, увеличете коефициентите
+#         kp *= (1 + adjustment_factor)
+#         ki *= (1 + adjustment_factor / 2)
+#         kd *= (1 + adjustment_factor / 2)
+#     elif error_std < 5:
+#         # Малко отклонение в грешката, намалете коефициентите
+#         kp *= (1 - adjustment_factor)
+#         ki *= (1 - adjustment_factor / 2)
+#         kd *= (1 - adjustment_factor / 2)
+
+#     # Ограничете коефициентите в разумни граници
+#     kp = max(0.1, min(10, kp))
+#     ki = max(0.01, min(1, ki))
+#     kd = max(0.01, min(1, kd))
+
+#     print(f"Adjusted PID parameters: KP={kp:.2f}, KI={
+#           ki:.2f}, KD={kd:.2f}, Error STD={error_std:.2f}")
+#     return kp, ki, kd
+
+def adjust_pid_parameters(setpoint, current_value, kp, ki, kd, error_history):
+    """
+    Adaptively adjust PID parameters based on error trends and performance.
+    
+    Args:
+    - setpoint: Desired target value for the control system.
+    - current_value: Current value from the control system.
+    - kp, ki, kd: Current PID parameters.
+    - error_history: History of recent errors to analyze trends.
+    
+    Returns:
+    - kp, ki, kd: Adjusted PID parameters.
+    """
+    # Calculate current error and update history
+    current_error = setpoint - current_value
+    error_history.append(current_error)
+    if len(error_history) > 5:  # Keep a fixed window of recent errors
         error_history.pop(0)
 
-    error_avg = sum(error_history) / len(error_history)
-    error_std = math.sqrt(
-        sum((x - error_avg) ** 2 for x in error_history) / len(error_history))
+    # Calculate error trend (simple moving average)
+    trend = sum(error_history) / len(error_history)
 
-    if error_std > 10:
-        # Голямо отклонение в грешката, увеличете коефициентите
-        kp *= (1 + adjustment_factor)
-        ki *= (1 + adjustment_factor / 2)
-        kd *= (1 + adjustment_factor / 2)
-    elif error_std < 5:
-        # Малко отклонение в грешката, намалете коефициентите
-        kp *= (1 - adjustment_factor)
-        ki *= (1 - adjustment_factor / 2)
-        kd *= (1 - adjustment_factor / 2)
+    # Adjust PID parameters based on error trend
+    learning_rate = 0.05  # Smaller values for gradual adjustments
+    if abs(trend) > 5:  # Significant trend detected
+        kp += learning_rate * abs(trend) / kp
+        ki += learning_rate * abs(trend) / 2 / ki  # Adjust less aggressively
+        kd += learning_rate * abs(trend) / kd
+    else:  # Minimal trend, focus on stability
+        kp -= learning_rate * kp
+        ki -= learning_rate * ki
+        kd -= learning_rate * kd
 
-    # Ограничете коефициентите в разумни граници
-    kp = max(0.1, min(10, kp))
-    ki = max(0.01, min(1, ki))
-    kd = max(0.01, min(1, kd))
+    # Ensure PID parameters remain within sensible bounds
+    kp = max(0.01, min(5.0, kp))
+    ki = max(0.001, min(1.0, ki))
+    kd = max(0.001, min(1.0, kd))
 
-    print(f"Adjusted PID parameters: KP={kp:.2f}, KI={
-          ki:.2f}, KD={kd:.2f}, Error STD={error_std:.2f}")
+    # print(f"Adjusted PID parameters: KP={kp:.3f}, KI={ki:.3f}, KD={kd:.3f}")
     return kp, ki, kd
+
 
 
 def adjust_num_threads(frame_queue_size, num_threads):
@@ -157,7 +199,7 @@ def adjust_num_threads(frame_queue_size, num_threads):
         num_threads += 1
     elif frame_queue_size < num_threads * 5 and num_threads > 1:
         num_threads -= 1
-    print(f"Adjusted number of threads: {num_threads}")
+    # print(f"Adjusted number of threads: {num_threads}")
     return num_threads
 
 
@@ -166,7 +208,7 @@ def adjust_batch_size(brightness_queue_size, batch_size):
         batch_size += 1
     elif brightness_queue_size < batch_size and batch_size > 1:
         batch_size -= 1
-    print(f"Adjusted batch size: {batch_size}")
+    # print(f"Adjusted batch size: {batch_size}")
     return batch_size
 
 
@@ -236,7 +278,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                     screenshot_brightness - prev_screenshot_brightness)
 
                 if camera_diff < 5 and screenshot_diff < 5:
-                    print("No significant change in brightness. Skipping adjustment.")
+                    # print("No significant change in brightness. Skipping adjustment.")
                     continue
 
             prev_camera_brightness = camera_brightness
