@@ -120,17 +120,35 @@ def load_state():
         return None
 
 
-def adjust_pid_parameters(setpoint, current_value, kp, ki, kd):
-    error = abs(setpoint - current_value)
-    if error > 20:
-        kp *= 1.2
-        ki *= 1.1
-        kd *= 1.1
-    elif error < 5:
-        kp *= 0.8
-        ki *= 0.9
-        kd *= 0.9
-    print(f"Adjusted PID parameters: KP={kp:.2f}, KI={ki:.2f}, KD={kd:.2f}")
+def adjust_pid_parameters(setpoint, current_value, kp, ki, kd, error_history, adjustment_factor=0.1):
+    error = setpoint - current_value
+    error_history.append(error)
+
+    if len(error_history) > 10:
+        error_history.pop(0)
+
+    error_avg = sum(error_history) / len(error_history)
+    error_std = math.sqrt(
+        sum((x - error_avg) ** 2 for x in error_history) / len(error_history))
+
+    if error_std > 10:
+        # Голямо отклонение в грешката, увеличете коефициентите
+        kp *= (1 + adjustment_factor)
+        ki *= (1 + adjustment_factor / 2)
+        kd *= (1 + adjustment_factor / 2)
+    elif error_std < 5:
+        # Малко отклонение в грешката, намалете коефициентите
+        kp *= (1 - adjustment_factor)
+        ki *= (1 - adjustment_factor / 2)
+        kd *= (1 - adjustment_factor / 2)
+
+    # Ограничете коефициентите в разумни граници
+    kp = max(0.1, min(10, kp))
+    ki = max(0.01, min(1, ki))
+    kd = max(0.01, min(1, kd))
+
+    print(f"Adjusted PID parameters: KP={kp:.2f}, KI={
+          ki:.2f}, KD={kd:.2f}, Error STD={error_std:.2f}")
     return kp, ki, kd
 
 
@@ -173,6 +191,8 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
         t = Thread(target=process_frames, args=(
             frame_queue, brightness_queue, batch_size))
         t.start()
+
+    error_history = []
 
     try:
         cap = cv2.VideoCapture(camera_index)
@@ -248,7 +268,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             smoothed_brightness += output
 
             kp, ki, kd = adjust_pid_parameters(
-                setpoint, smoothed_brightness, kp, ki, kd)
+                setpoint, smoothed_brightness, kp, ki, kd, error_history)
             num_threads = adjust_num_threads(frame_queue.qsize(), num_threads)
             batch_size = adjust_batch_size(
                 brightness_queue.qsize(), batch_size)
