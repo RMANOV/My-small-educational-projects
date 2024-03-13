@@ -210,6 +210,14 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
         prev_screenshot_brightness = None
 
         while True:
+            current_brightness = sbc.get_brightness()[0]
+            if current_brightness != prev_brightness:
+                print(f'Brightness changed manually to {current_brightness}%')
+                smoothed_brightness = current_brightness
+                integral_term = 0
+                prev_error = 0
+                prev_brightness = current_brightness
+
             ret, frame = cap.read()
             if not ret:
                 print("Error reading frame from camera.")
@@ -257,21 +265,19 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                     brightness = combine_brightness(
                         camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
 
+                setpoint = brightness
                 if brightness > 90:
                     setpoint = 50
                     kp, ki, kd = 1.5, 0.5, 0.1
-                elif brightness > 80:
-                    setpoint = 70
-                elif brightness < 20:
+                elif brightness < 10:
                     setpoint = 30
-                else:
-                    setpoint = brightness
+                    kp, ki, kd = 1.5, 0.5, 0.1
 
                 output, integral_term, prev_error = pid_controller(
                     setpoint, smoothed_brightness, kp, ki, kd, dt=update_interval, integral_term=integral_term, prev_error=prev_error)
                 smoothed_brightness += output
 
-                if brightness <= 90:
+                if 10 <= brightness <= 90:
                     kp, ki, kd, stability_count = adjust_pid_parameters(
                         setpoint, smoothed_brightness, kp, ki, kd, error_history, brightness_history, stability_count=stability_count)
 
