@@ -171,6 +171,15 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             return
 
         while True:
+            current_brightness = sbc.get_brightness()[0]
+            if current_brightness != prev_brightness:
+                print(f'Brightness changed manually to {current_brightness}%')
+                smoothed_brightness = current_brightness
+                integral_term = 0
+                prev_error = 0
+                prev_brightness = current_brightness
+                
+
             ret, frame = cap.read()
             if not ret:
                 print("Error reading frame from camera.")
@@ -221,9 +230,14 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
 
             try:
                 smoothed_brightness = max(1, min(100, smoothed_brightness))
-                sbc.set_brightness(math.ceil(smoothed_brightness))
-                print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
-                      datetime.now().strftime("%H:%M:%S")}')
+                if abs(smoothed_brightness - current_brightness) > 5:
+                    sbc.set_brightness(math.ceil(smoothed_brightness))
+                    print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
+                          datetime.now().strftime("%H:%M:%S")}')
+                    prev_brightness = smoothed_brightness
+                else:
+                    print(f'Brightness remains at {math.ceil(current_brightness)}% at {
+                          datetime.now().strftime("%H:%M:%S")}')
 
                 if smoothed_brightness < 20:
                     turn_on_keyboard_backlight()
@@ -232,8 +246,6 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                            integral_term, prev_error, kp, ki, kd))
             except:
                 print("Error setting brightness.")
-
-            prev_brightness = smoothed_brightness
 
     except KeyboardInterrupt:
         print("Keyboard interrupt received. Exiting...")
