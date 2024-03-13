@@ -23,7 +23,9 @@ def analyze_image(frame):
     hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
     brightness = sum(i * hist[i][0] for i in range(256)
                      ) / sum(hist[i][0] for i in range(256))
-    return brightness / 256 * 100
+    brightness = brightness / 256 * 100
+    print(f"Camera brightness: {brightness:.2f}%")
+    return brightness
 
 
 def get_screenshot_brightness():
@@ -33,9 +35,9 @@ def get_screenshot_brightness():
     hist = cv2.calcHist([screenshot], [0], None, [256], [0, 256])
     brightness = sum(i * hist[i][0] for i in range(256)
                      ) / sum(hist[i][0] for i in range(256))
-    if not brightness:
-        return 0
-    return brightness / 256 * 100
+    brightness = brightness / 256 * 100
+    print(f"Screenshot brightness: {brightness:.2f}%")
+    return brightness
 
 
 def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
@@ -66,12 +68,15 @@ def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
     weight_camera = max(0.1, weight_camera)
     weight_screenshot = max(0.1, weight_screenshot)
 
+    print(f"Camera weight: {weight_camera:.2f}, Screenshot weight: {
+          weight_screenshot:.2f}")
     return weight_camera, weight_screenshot
 
 
 def combine_brightness(camera_brightness, screenshot_brightness, weight_camera, weight_screenshot):
     combined_brightness = weight_camera * camera_brightness + \
         weight_screenshot * screenshot_brightness
+    print(f"Combined brightness: {combined_brightness:.2f}%")
     return combined_brightness
 
 
@@ -96,6 +101,7 @@ def pid_controller(setpoint, current_value, kp, ki, kd, dt, integral_term, prev_
     output = kp * error + ki * integral_term + kd * derivative_term
     output = max(-10, min(10, output))
     prev_error = error
+    print(f"PID output: {output:.2f}")
     return output, integral_term, prev_error
 
 
@@ -124,6 +130,7 @@ def adjust_pid_parameters(setpoint, current_value, kp, ki, kd):
         kp *= 0.8
         ki *= 0.9
         kd *= 0.9
+    print(f"Adjusted PID parameters: KP={kp:.2f}, KI={ki:.2f}, KD={kd:.2f}")
     return kp, ki, kd
 
 
@@ -132,6 +139,7 @@ def adjust_num_threads(frame_queue_size, num_threads):
         num_threads += 1
     elif frame_queue_size < num_threads * 5 and num_threads > 1:
         num_threads -= 1
+    print(f"Adjusted number of threads: {num_threads}")
     return num_threads
 
 
@@ -140,6 +148,7 @@ def adjust_batch_size(brightness_queue_size, batch_size):
         batch_size += 1
     elif brightness_queue_size < batch_size and batch_size > 1:
         batch_size -= 1
+    print(f"Adjusted batch size: {batch_size}")
     return batch_size
 
 
@@ -171,6 +180,9 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             print("Cannot open camera. Exiting...")
             return
 
+        prev_camera_brightness = None
+        prev_screenshot_brightness = None
+
         while True:
             current_brightness = sbc.get_brightness()[0]
             if current_brightness != prev_brightness:
@@ -197,6 +209,18 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             except:
                 print("Error getting screenshot brightness.")
                 screenshot_brightness = prev_brightness
+
+            if prev_camera_brightness is not None and prev_screenshot_brightness is not None:
+                camera_diff = abs(camera_brightness - prev_camera_brightness)
+                screenshot_diff = abs(
+                    screenshot_brightness - prev_screenshot_brightness)
+
+                if camera_diff < 5 and screenshot_diff < 5:
+                    print("No significant change in brightness. Skipping adjustment.")
+                    continue
+
+            prev_camera_brightness = camera_brightness
+            prev_screenshot_brightness = screenshot_brightness
 
             if screenshot_brightness == 0:
                 brightness = camera_brightness
