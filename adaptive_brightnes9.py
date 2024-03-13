@@ -24,7 +24,6 @@ def analyze_image(frame):
     brightness = sum(i * hist[i][0] for i in range(256)
                      ) / sum(hist[i][0] for i in range(256))
     brightness = brightness / 256 * 100
-    # print(f"Camera brightness: {brightness:.2f}%")
     return brightness
 
 
@@ -36,7 +35,6 @@ def get_screenshot_brightness():
     brightness = sum(i * hist[i][0] for i in range(256)
                      ) / sum(hist[i][0] for i in range(256))
     brightness = brightness / 256 * 100
-    # print(f"Screenshot brightness: {brightness:.2f}%")
     return brightness
 
 
@@ -64,18 +62,15 @@ def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
         weight_camera = 0.5
         weight_screenshot = 0.5
 
-    # Ensure weights are not zero
     weight_camera = max(0.1, weight_camera)
     weight_screenshot = max(0.1, weight_screenshot)
 
-    # print(f"Camera weight: {weight_camera:.2f}, Screenshot weight: {weight_screenshot:.2f}")
     return weight_camera, weight_screenshot
 
 
 def combine_brightness(camera_brightness, screenshot_brightness, weight_camera, weight_screenshot):
     combined_brightness = weight_camera * camera_brightness + \
         weight_screenshot * screenshot_brightness
-    # print(f"Combined brightness: {combined_brightness:.2f}%")
     return combined_brightness
 
 
@@ -100,7 +95,6 @@ def pid_controller(setpoint, current_value, kp, ki, kd, dt, integral_term, prev_
     output = kp * error + ki * integral_term + kd * derivative_term
     output = max(-10, min(10, output))
     prev_error = error
-    # print(f"PID output: {output:.2f}")
     return output, integral_term, prev_error
 
 
@@ -120,59 +114,40 @@ def load_state():
 
 
 def adjust_pid_parameters(setpoint, current_value, kp, ki, kd, error_history, adjustment_factor=0.1, stability_threshold=5, stability_count=3):
-    """
-    Adaptively adjust PID parameters based on error trends and performance, while maintaining stability.
-
-    Args:
-    - setpoint: Desired target value for the control system.
-    - current_value: Current value from the control system.
-    - kp, ki, kd: Current PID parameters.
-    - error_history: History of recent errors to analyze trends.
-    - adjustment_factor: Factor controlling the magnitude of PID parameter adjustments.
-    - stability_threshold: Threshold for considering the system as "stable" (in error units).
-    - stability_count: Number of consecutive stable iterations required before making aggressive adjustments.
-
-    Returns:
-    - kp, ki, kd: Adjusted PID parameters.
-    - stability_count: Updated stability count.
-    """
-    # Calculate current error and update history
     current_error = setpoint - current_value
     error_history.append(current_error)
-    if len(error_history) > 10:  # Keep a fixed window of recent errors
+    if len(error_history) > 10:
         error_history.pop(0)
 
-    # Calculate error trend (simple moving average)
     trend = sum(error_history) / len(error_history)
 
-    # Check system stability
     if abs(trend) <= stability_threshold:
         stability_count -= 1
     else:
         stability_count = 3
 
-    # Adjust learning rate based on system stability
-    if stability_count <= 0:  # System is stable, allow more aggressive adjustments
+    if stability_count <= 0:
         learning_rate = adjustment_factor
-    else:  # System is not yet stable, use a smaller learning rate
+    else:
         learning_rate = adjustment_factor / 2
 
-    # Adjust PID parameters based on error trend and stability
-    if abs(trend) > 5:  # Significant trend detected
-        kp += learning_rate * abs(trend) / kp
-        ki += learning_rate * abs(trend) / 2 / ki  # Adjust less aggressively
-        kd += learning_rate * abs(trend) / kd
-    else:  # Minimal trend, focus on stability
+    if trend > 10:
+        kp -= 2 * learning_rate * abs(trend) / kp
+        ki -= 2 * learning_rate * abs(trend) / 2 / ki
+        kd -= 2 * learning_rate * abs(trend) / kd
+    elif trend < -10:
+        kp += 2 * learning_rate * abs(trend) / kp
+        ki += 2 * learning_rate * abs(trend) / 2 / ki
+        kd += 2 * learning_rate * abs(trend) / kd
+    else:
         kp -= learning_rate * kp
         ki -= learning_rate * ki
         kd -= learning_rate * kd
 
-    # Ensure PID parameters remain within sensible bounds
     kp = max(0.01, min(5.0, kp))
     ki = max(0.001, min(1.0, ki))
     kd = max(0.001, min(1.0, kd))
 
-    # print(f"Adjusted PID parameters: KP={kp:.3f}, KI={ki:.3f}, KD={kd:.3f}")
     return kp, ki, kd, stability_count
 
 
@@ -181,7 +156,6 @@ def adjust_num_threads(frame_queue_size, num_threads):
         num_threads += 1
     elif frame_queue_size < num_threads * 5 and num_threads > 1:
         num_threads -= 1
-    # print(f"Adjusted number of threads: {num_threads}")
     return num_threads
 
 
@@ -190,7 +164,6 @@ def adjust_batch_size(brightness_queue_size, batch_size):
         batch_size += 1
     elif brightness_queue_size < batch_size and batch_size > 1:
         batch_size -= 1
-    # print(f"Adjusted batch size: {batch_size}")
     return batch_size
 
 
@@ -217,7 +190,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
         t.start()
 
     error_history = []
-    stability_count = 3  # Initialize stability count
+    stability_count = 3
 
     try:
         cap = cv2.VideoCapture(camera_index)
@@ -261,7 +234,6 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                     screenshot_brightness - prev_screenshot_brightness)
 
                 if camera_diff < 5 and screenshot_diff < 5:
-                    # print("No significant change in brightness. Skipping adjustment.")
                     print("-", end="")
                     continue
 
@@ -282,7 +254,10 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 brightness = combine_brightness(
                     camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
 
-            if brightness > 80:
+            if brightness > 90:
+                setpoint = 50
+                kp, ki, kd = 1.5, 0.5, 0.1
+            elif brightness > 80:
                 setpoint = 70
             elif brightness < 20:
                 setpoint = 30
@@ -293,8 +268,10 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 setpoint, smoothed_brightness, kp, ki, kd, dt=1, integral_term=integral_term, prev_error=prev_error)
             smoothed_brightness += output
 
-            kp, ki, kd, stability_count = adjust_pid_parameters(
-                setpoint, smoothed_brightness, kp, ki, kd, error_history, stability_count=stability_count)
+            if brightness <= 90:
+                kp, ki, kd, stability_count = adjust_pid_parameters(
+                    setpoint, smoothed_brightness, kp, ki, kd, error_history, stability_count=stability_count)
+
             num_threads = adjust_num_threads(frame_queue.qsize(), num_threads)
             batch_size = adjust_batch_size(
                 brightness_queue.qsize(), batch_size)
@@ -308,8 +285,10 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                     prev_brightness = smoothed_brightness
                 else:
                     print("-", end="")
+
                 if smoothed_brightness < 20:
                     turn_on_keyboard_backlight()
+
                 save_state((prev_brightness, smoothed_brightness,
                            integral_term, prev_error, kp, ki, kd))
             except Exception as e:
