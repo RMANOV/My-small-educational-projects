@@ -323,8 +323,12 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                           datetime.now().strftime("%H:%M:%S")}')
                     prev_brightness = smoothed_brightness
                 else:
-                    print(f'Brightness remains at {math.ceil(current_brightness)}% at {
-                          datetime.now().strftime("%H:%M:%S")}')
+                    # print(f'Brightness remains at {math.ceil(current_brightness)}% at {
+                    #       datetime.now().strftime("%H:%M:%S")}')
+                    # индикатор, че яркостта не се е променила и програмата работи
+                    # принт на тирета, за да се вижда, че програмата работи
+                    print("-", end="")
+                    pass
 
                 if smoothed_brightness < 20:
                     turn_on_keyboard_backlight()
