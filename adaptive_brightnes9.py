@@ -10,6 +10,7 @@ from threading import Thread
 from queue import Queue
 import pickle
 import random
+import queue
 
 
 def turn_on_keyboard_backlight():
@@ -178,7 +179,6 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 integral_term = 0
                 prev_error = 0
                 prev_brightness = current_brightness
-                
 
             ret, frame = cap.read()
             if not ret:
@@ -187,7 +187,8 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             else:
                 frame_queue.put(frame)
                 try:
-                    camera_brightness = brightness_queue.get(block=True)
+                    camera_brightness = brightness_queue.get(
+                        block=True, timeout=1)
                 except queue.Empty:
                     camera_brightness = prev_brightness
 
@@ -244,8 +245,8 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
 
                 save_state((prev_brightness, smoothed_brightness,
                            integral_term, prev_error, kp, ki, kd))
-            except:
-                print("Error setting brightness.")
+            except Exception as e:
+                print(f"Error setting brightness: {str(e)}")
 
     except KeyboardInterrupt:
         print("Keyboard interrupt received. Exiting...")
