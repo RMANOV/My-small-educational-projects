@@ -239,7 +239,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 brightness = combine_brightness(
                     camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
 
-                target_brightness = max(10, min(90, brightness))
+                target_brightness = max(3, min(95, brightness))
                 max_adjustment = max(
                     5, abs(target_brightness - prev_brightness) // 2)
 
