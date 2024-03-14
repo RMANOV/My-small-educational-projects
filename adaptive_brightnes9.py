@@ -245,8 +245,10 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                     setpoint = max(40, prev_brightness - 30)
                 elif screenshot_brightness > 80:
                     setpoint = max(50, prev_brightness - 20)
+                elif screenshot_brightness < 10:
+                    setpoint = min(50, prev_brightness + 10)
                 elif screenshot_brightness < 20:
-                    setpoint = min(80, prev_brightness + 20)
+                    setpoint = min(60, prev_brightness + 15)
                 else:
                     setpoint = brightness
 
