@@ -175,145 +175,65 @@ def adjust_batch_size(brightness_queue_size, batch_size):
 
 def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100, brightness_queue_size=100, batch_size=5, frame_interval=0.1, update_interval=1):
     state = load_state()
-    if state is None:
+    if state:
+        prev_brightness, smoothed_brightness, integral_term, prev_error, kp, ki, kd = state
+    else:
+        # Assuming single or primary display
         prev_brightness = sbc.get_brightness()[0]
         smoothed_brightness = prev_brightness
-        integral_term = 0
-        prev_error = 0
-        kp, ki, kd = 0.8, 0.2, 0.1
-    else:
-        prev_brightness, smoothed_brightness, integral_term, prev_error, kp, ki, kd = state
-
-    print(f'Initial brightness: {prev_brightness:.1f}% at {
-          datetime.now().strftime("%H:%M:%S")}')
+        integral_term = prev_error = 0
+        kp, ki, kd = 0.1, 0.01, 0.01  # Initial PID coefficients
 
     frame_queue = Queue(maxsize=frame_queue_size)
     brightness_queue = Queue(maxsize=brightness_queue_size)
 
     for _ in range(num_threads):
-        t = Thread(target=process_frames, args=(
-            frame_queue, brightness_queue, batch_size, frame_interval))
-        t.start()
+        Thread(target=process_frames, args=(frame_queue,
+               brightness_queue, batch_size, frame_interval)).start()
 
     error_history = []
     brightness_history = []
-    stability_count = 3
+
+    cap = cv2.VideoCapture(camera_index)
     last_update_time = time.time()
+    while True:
+        _, frame = cap.read()
+        if frame is not None:
+            frame_queue.put(frame)
 
-    try:
-        cap = cv2.VideoCapture(camera_index)
-        if not cap.isOpened():
-            print("Cannot open camera. Exiting...")
-            return
+        current_time = time.time()
+        if current_time - last_update_time > update_interval:
+            if not brightness_queue.empty():
+                camera_brightness = brightness_queue.get()
+                screenshot_brightness = get_screenshot_brightness()
+                weight_camera, weight_screenshot = adjust_weights_based_on_content(
+                    camera_brightness, screenshot_brightness)
+                combined_brightness = combine_brightness(
+                    camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
 
-        prev_camera_brightness = None
-        prev_screenshot_brightness = None
-
-        while True:
-            current_brightness = sbc.get_brightness()[0]
-            if current_brightness != prev_brightness:
-                print(f'Brightness changed manually to {current_brightness}%')
-                smoothed_brightness = current_brightness
-                integral_term = 0
-                prev_error = 0
-                prev_brightness = current_brightness
-
-            ret, frame = cap.read()
-            if not ret:
-                print("Error reading frame from camera.")
-                camera_brightness = prev_brightness
-            else:
-                frame_queue.put(frame)
-                try:
-                    camera_brightness = brightness_queue.get(
-                        block=True, timeout=1)
-                except queue.Empty:
-                    camera_brightness = prev_brightness
-
-            if time.time() - last_update_time >= update_interval:
-                try:
-                    screenshot_brightness = get_screenshot_brightness()
-                except:
-                    print("Error getting screenshot brightness.")
-                    screenshot_brightness = prev_brightness
-
-                if prev_camera_brightness is not None and prev_screenshot_brightness is not None:
-                    camera_diff = abs(camera_brightness -
-                                      prev_camera_brightness)
-                    screenshot_diff = abs(
-                        screenshot_brightness - prev_screenshot_brightness)
-
-                    if camera_diff < 5 and screenshot_diff < 5:
-                        print("-", end="")
-                        last_update_time = time.time()
-                        continue
-
-                prev_camera_brightness = camera_brightness
-                prev_screenshot_brightness = screenshot_brightness
-
-                if screenshot_brightness == 0:
-                    brightness = camera_brightness
-                elif camera_brightness == 0:
-                    brightness = screenshot_brightness
-                elif camera_brightness == 0 and screenshot_brightness == 0:
-                    print('Error: camera and screenshot brightness is 0')
-                    time.sleep(1)
-                    continue
+                if screenshot_brightness > 80:  # If screen is very bright, reduce brightness more aggressively
+                    setpoint = max(30, prev_brightness - 20)
                 else:
-                    weight_camera, weight_screenshot = adjust_weights_based_on_content(
-                        camera_brightness, screenshot_brightness)
-                    brightness = combine_brightness(
-                        camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
+                    setpoint = 50  # Default setpoint adjustment
 
-                setpoint = brightness
-                if brightness > 90:
-                    setpoint = 50
-                    kp, ki, kd = 1.5, 0.5, 0.1
-                elif brightness < 10:
-                    setpoint = 30
-                    kp, ki, kd = 1.5, 0.5, 0.1
+                # Ensure the brightness_history list is updated before calling adjust_pid_parameters
+                brightness_history.append(combined_brightness)
+                if len(brightness_history) > 10:
+                    brightness_history.pop(0)
+
+                kp, ki, kd, _ = adjust_pid_parameters(setpoint, combined_brightness, kp, ki, kd, error_history,
+                                                      brightness_history, adjustment_factor=0.1, stability_threshold=5, stability_count=3)
 
                 output, integral_term, prev_error = pid_controller(
-                    setpoint, smoothed_brightness, kp, ki, kd, dt=update_interval, integral_term=integral_term, prev_error=prev_error)
+                    setpoint, smoothed_brightness, kp, ki, kd, 1, integral_term, prev_error)
                 smoothed_brightness += output
+                sbc.set_brightness(smoothed_brightness)
+                save_state((smoothed_brightness, integral_term,
+                           prev_error, kp, ki, kd))
+                last_update_time = current_time
 
-                if 10 <= brightness <= 90:
-                    kp, ki, kd, stability_count = adjust_pid_parameters(
-                        setpoint, smoothed_brightness, kp, ki, kd, error_history, brightness_history, stability_count=stability_count)
+    cap.release()
 
-                num_threads = adjust_num_threads(
-                    frame_queue.qsize(), num_threads)
-                batch_size = adjust_batch_size(
-                    brightness_queue.qsize(), batch_size)
-
-                try:
-                    smoothed_brightness = max(1, min(100, smoothed_brightness))
-                    if abs(smoothed_brightness - prev_brightness) > 5:
-                        sbc.set_brightness(math.ceil(smoothed_brightness))
-                        print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
-                              datetime.now().strftime("%H:%M:%S")}')
-                        prev_brightness = smoothed_brightness
-                    else:
-                        print("-", end="")
-
-                    if smoothed_brightness < 20:
-                        turn_on_keyboard_backlight()
-
-                    save_state((prev_brightness, smoothed_brightness,
-                               integral_term, prev_error, kp, ki, kd))
-                except Exception as e:
-                    print(f"Error setting brightness: {str(e)}")
-
-                last_update_time = time.time()
-
-    except KeyboardInterrupt:
-        print("Keyboard interrupt received. Exiting...")
-    finally:
-        for _ in range(num_threads):
-            frame_queue.put(None)
-        if cap is not None:
-            cap.release()
-        cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
