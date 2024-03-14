@@ -201,6 +201,13 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
         prev_screenshot_brightness = None
 
         while True:
+            current_brightness = sbc.get_brightness()[0]
+            if current_brightness != prev_brightness:
+                print(f'Brightness changed manually to {current_brightness}%')
+                smoothed_brightness = current_brightness
+                integral_term = 0
+                prev_error = 0
+
             ret, frame = cap.read()
             if not ret:
                 print("Error reading frame from camera.")
@@ -213,87 +220,84 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 except queue.Empty:
                     camera_brightness = prev_brightness
 
-            if time.time() - last_update_time >= update_interval:
-                try:
-                    screenshot_brightness = get_screenshot_brightness()
-                except:
-                    print("Error getting screenshot brightness.")
-                    screenshot_brightness = prev_brightness
+            try:
+                screenshot_brightness = get_screenshot_brightness()
+            except:
+                print("Error getting screenshot brightness.")
+                screenshot_brightness = prev_brightness
 
-                if prev_camera_brightness is not None and prev_screenshot_brightness is not None:
-                    camera_diff = abs(camera_brightness -
-                                      prev_camera_brightness)
-                    screenshot_diff = abs(
-                        screenshot_brightness - prev_screenshot_brightness)
+            if prev_screenshot_brightness is not None:
+                screenshot_diff = abs(
+                    screenshot_brightness - prev_screenshot_brightness)
+                if screenshot_diff > 20:
+                    print(f'Significant change in screenshot brightness detected: {
+                          screenshot_diff}%')
+                    smoothed_brightness = screenshot_brightness
+                    integral_term = 0
+                    prev_error = 0
 
-                    if camera_diff < 5 and screenshot_diff < 5:
-                        print("-", end="")
-                        last_update_time = time.time()
-                        continue
+            prev_camera_brightness = camera_brightness
+            prev_screenshot_brightness = screenshot_brightness
 
-                prev_camera_brightness = camera_brightness
-                prev_screenshot_brightness = screenshot_brightness
+            weight_camera, weight_screenshot = adjust_weights_based_on_content(
+                camera_brightness, screenshot_brightness)
+            brightness = combine_brightness(
+                camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
 
-                weight_camera, weight_screenshot = adjust_weights_based_on_content(
-                    camera_brightness, screenshot_brightness)
-                brightness = combine_brightness(
-                    camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
+            target_brightness = max(3, min(93, brightness))
+            max_adjustment = max(
+                5, abs(target_brightness - prev_brightness) // 2)
 
-                target_brightness = max(3, min(95, brightness))
-                max_adjustment = max(
-                    5, abs(target_brightness - prev_brightness) // 2)
+            if screenshot_brightness > 95:
+                setpoint = max(target_brightness - max_adjustment, 10)
+            elif screenshot_brightness > 90:
+                setpoint = max(target_brightness - max_adjustment // 2, 20)
+            elif screenshot_brightness > 80:
+                setpoint = max(target_brightness - max_adjustment // 3, 30)
+            elif screenshot_brightness < 10:
+                setpoint = min(target_brightness + max_adjustment // 3, 20)
+            elif screenshot_brightness < 20:
+                setpoint = min(target_brightness + max_adjustment // 2, 30)
+            else:
+                setpoint = target_brightness
 
-                if screenshot_brightness > 95:
-                    setpoint = max(target_brightness - max_adjustment, 10)
-                elif screenshot_brightness > 90:
-                    setpoint = max(target_brightness - max_adjustment // 2, 20)
-                elif screenshot_brightness > 80:
-                    setpoint = max(target_brightness - max_adjustment // 3, 30)
-                elif screenshot_brightness < 10:
-                    setpoint = min(target_brightness + max_adjustment // 3, 20)
-                elif screenshot_brightness < 20:
-                    setpoint = min(target_brightness + max_adjustment // 2, 30)
+            output, integral_term, prev_error = pid_controller(
+                setpoint, smoothed_brightness, kp, ki, kd, dt=update_interval, integral_term=integral_term, prev_error=prev_error)
+            smoothed_brightness += output
+
+            if 7 <= screenshot_brightness <= 95:
+                kp, ki, kd, stability_count = adjust_pid_parameters(
+                    setpoint, smoothed_brightness, kp, ki, kd, error_history, brightness_history, stability_count=stability_count)
+
+            num_threads = adjust_num_threads(frame_queue.qsize(), num_threads)
+            batch_size = adjust_batch_size(
+                brightness_queue.qsize(), batch_size)
+
+            try:
+                smoothed_brightness = max(1, min(100, smoothed_brightness))
+                if abs(smoothed_brightness - prev_brightness) > 5:
+                    sbc.set_brightness(math.ceil(smoothed_brightness))
+                    print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
+                          datetime.now().strftime("%H:%M:%S")}')
+                    prev_brightness = smoothed_brightness
+                    last_brightness_change_time = time.time()
                 else:
-                    setpoint = target_brightness
+                    print("-", end="")
 
-                output, integral_term, prev_error = pid_controller(
-                    setpoint, smoothed_brightness, kp, ki, kd, dt=update_interval, integral_term=integral_term, prev_error=prev_error)
-                smoothed_brightness += output
+                if smoothed_brightness < 20:
+                    turn_on_keyboard_backlight()
 
-                if 10 <= screenshot_brightness <= 90:
-                    kp, ki, kd, stability_count = adjust_pid_parameters(
-                        setpoint, smoothed_brightness, kp, ki, kd, error_history, brightness_history, stability_count=stability_count)
+                save_state((prev_brightness, smoothed_brightness,
+                           integral_term, prev_error, kp, ki, kd))
+            except Exception as e:
+                print(f"Error setting brightness: {str(e)}")
 
-                num_threads = adjust_num_threads(
-                    frame_queue.qsize(), num_threads)
-                batch_size = adjust_batch_size(
-                    brightness_queue.qsize(), batch_size)
+            if time.time() - last_brightness_change_time > 5:
+                update_interval = min(update_interval * 1.5, 5)
+            else:
+                update_interval = max(update_interval / 1.5, 1)
 
-                try:
-                    smoothed_brightness = max(1, min(100, smoothed_brightness))
-                    if abs(smoothed_brightness - prev_brightness) > 5:
-                        sbc.set_brightness(math.ceil(smoothed_brightness))
-                        print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
-                              datetime.now().strftime("%H:%M:%S")}')
-                        prev_brightness = smoothed_brightness
-                        last_brightness_change_time = time.time()
-                    else:
-                        print("-", end="")
-
-                    if smoothed_brightness < 20:
-                        turn_on_keyboard_backlight()
-
-                    save_state((prev_brightness, smoothed_brightness,
-                               integral_term, prev_error, kp, ki, kd))
-                except Exception as e:
-                    print(f"Error setting brightness: {str(e)}")
-
-                if time.time() - last_brightness_change_time > 5:
-                    update_interval = min(update_interval * 1.5, 5)
-                else:
-                    update_interval = max(update_interval / 1.5, 1)
-
-                last_update_time = time.time()
+            time.sleep(update_interval)
 
     except KeyboardInterrupt:
         print("Keyboard interrupt received. Exiting...")
