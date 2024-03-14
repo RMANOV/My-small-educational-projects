@@ -191,6 +191,9 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
     last_update_time = time.time()
     last_brightness_change_time = time.time()
 
+    aggressive_brightness_threshold = 90
+    aggressive_brightness_factor = 0.33
+
     try:
         cap = cv2.VideoCapture(camera_index)
         if not cap.isOpened():
@@ -232,7 +235,12 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 if screenshot_diff > 30:
                     print(f'Significant change in screenshot brightness detected: {
                           screenshot_diff}%')
-                    smoothed_brightness = screenshot_brightness
+                    if screenshot_brightness > aggressive_brightness_threshold:
+                        smoothed_brightness = prev_brightness + \
+                            (screenshot_brightness - prev_brightness) * \
+                            aggressive_brightness_factor
+                    else:
+                        smoothed_brightness = screenshot_brightness
                     integral_term = 0
                     prev_error = 0
 
@@ -248,17 +256,16 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             max_adjustment = max(
                 5, abs(target_brightness - prev_brightness) // 2)
 
-            if screenshot_brightness > 95:
-                setpoint = max(target_brightness - max_adjustment, 5)
+            if screenshot_brightness > aggressive_brightness_threshold:
+                setpoint = max(prev_brightness + (target_brightness -
+                               prev_brightness) * aggressive_brightness_factor, 5)
             elif screenshot_brightness > 90:
                 setpoint = max(target_brightness - max_adjustment // 2, 10)
             elif screenshot_brightness > 80:
                 setpoint = max(target_brightness - max_adjustment // 3, 20)
             elif screenshot_brightness < 10:
-                # Ограничаване на увеличението при много тъмни екрани
                 setpoint = min(prev_brightness + 5, 30)
             elif screenshot_brightness < 20:
-                # Ограничаване на увеличението при тъмни екрани
                 setpoint = min(prev_brightness + 10, 40)
             else:
                 setpoint = target_brightness
