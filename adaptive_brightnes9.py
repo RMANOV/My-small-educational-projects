@@ -255,9 +255,11 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             elif screenshot_brightness > 80:
                 setpoint = max(target_brightness - max_adjustment // 3, 20)
             elif screenshot_brightness < 10:
-                setpoint = min(target_brightness + max_adjustment // 3, 30)
+                # Ограничаване на увеличението при много тъмни екрани
+                setpoint = min(prev_brightness + 5, 30)
             elif screenshot_brightness < 20:
-                setpoint = min(target_brightness + max_adjustment // 2, 40)
+                # Ограничаване на увеличението при тъмни екрани
+                setpoint = min(prev_brightness + 10, 40)
             else:
                 setpoint = target_brightness
 
