@@ -170,7 +170,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
         smoothed_brightness = prev_brightness
         integral_term = 0
         prev_error = 0
-        kp, ki, kd = 0.8, 0.2, 0.1
+        kp, ki, kd = 0.6, 0.15, 0.08
     else:
         prev_brightness, smoothed_brightness, integral_term, prev_error, kp, ki, kd = state
 
@@ -202,7 +202,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
 
         while True:
             current_brightness = sbc.get_brightness()[0]
-            if current_brightness != prev_brightness:
+            if abs(current_brightness - prev_brightness) > 10:
                 print(f'Brightness changed manually to {current_brightness}%')
                 smoothed_brightness = current_brightness
                 integral_term = 0
@@ -229,7 +229,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             if prev_screenshot_brightness is not None:
                 screenshot_diff = abs(
                     screenshot_brightness - prev_screenshot_brightness)
-                if screenshot_diff > 20:
+                if screenshot_diff > 30:
                     print(f'Significant change in screenshot brightness detected: {
                           screenshot_diff}%')
                     smoothed_brightness = screenshot_brightness
@@ -244,20 +244,20 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             brightness = combine_brightness(
                 camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
 
-            target_brightness = max(3, min(93, brightness))
+            target_brightness = max(5, min(90, brightness))
             max_adjustment = max(
                 5, abs(target_brightness - prev_brightness) // 2)
 
             if screenshot_brightness > 95:
-                setpoint = max(target_brightness - max_adjustment, 10)
+                setpoint = max(target_brightness - max_adjustment, 5)
             elif screenshot_brightness > 90:
-                setpoint = max(target_brightness - max_adjustment // 2, 20)
+                setpoint = max(target_brightness - max_adjustment // 2, 10)
             elif screenshot_brightness > 80:
-                setpoint = max(target_brightness - max_adjustment // 3, 30)
+                setpoint = max(target_brightness - max_adjustment // 3, 20)
             elif screenshot_brightness < 10:
-                setpoint = min(target_brightness + max_adjustment // 3, 20)
+                setpoint = min(target_brightness + max_adjustment // 3, 30)
             elif screenshot_brightness < 20:
-                setpoint = min(target_brightness + max_adjustment // 2, 30)
+                setpoint = min(target_brightness + max_adjustment // 2, 40)
             else:
                 setpoint = target_brightness
 
@@ -265,7 +265,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 setpoint, smoothed_brightness, kp, ki, kd, dt=update_interval, integral_term=integral_term, prev_error=prev_error)
             smoothed_brightness += output
 
-            if 7 <= screenshot_brightness <= 95:
+            if 10 <= screenshot_brightness <= 90:
                 kp, ki, kd, stability_count = adjust_pid_parameters(
                     setpoint, smoothed_brightness, kp, ki, kd, error_history, brightness_history, stability_count=stability_count)
 
