@@ -39,18 +39,22 @@ def get_screenshot_brightness():
 
 
 def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
-    if screenshot_brightness > 90:
-        weight_camera = 0.8
-        weight_screenshot = 0.2
-    elif screenshot_brightness > 80:
-        weight_camera = 0.7
-        weight_screenshot = 0.3
-    elif screenshot_brightness < 20:
-        weight_camera = 0.3
-        weight_screenshot = 0.7
-    else:
-        weight_camera = 0.6
-        weight_screenshot = 0.4
+    # if screenshot_brightness > 90:
+    #     weight_camera = 0.8
+    #     weight_screenshot = 0.2
+    # elif screenshot_brightness > 80:
+    #     weight_camera = 0.7
+    #     weight_screenshot = 0.3
+    # elif screenshot_brightness < 20:
+    #     weight_camera = 0.3
+    #     weight_screenshot = 0.7
+    # else:
+    #     weight_camera = 0.6
+    #     weight_screenshot = 0.4
+    # return weight_camera, weight_screenshot
+
+    weight_camera = camera_brightness / 100
+    weight_screenshot = 1/(screenshot_brightness / 100)
     return weight_camera, weight_screenshot
 
 
