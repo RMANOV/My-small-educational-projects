@@ -54,7 +54,6 @@ def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
     else:
         weight_camera = 0.5
         weight_screenshot = 0.5
-
     return weight_camera, weight_screenshot
 
 
@@ -174,8 +173,8 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
     else:
         prev_brightness, smoothed_brightness, integral_term, prev_error, kp, ki, kd = state
 
-    print(f'Initial brightness: {prev_brightness:.1f}% at {
-          datetime.now().strftime("%H:%M:%S")}')
+    print(f'Initial brightness: {math.ceil(prev_brightness)}% at {datetime.now().strftime("%H:%M:%S")}')
+
 
     frame_queue = Queue(maxsize=frame_queue_size)
     brightness_queue = Queue(maxsize=brightness_queue_size)
@@ -233,8 +232,8 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                 screenshot_diff = abs(
                     screenshot_brightness - prev_screenshot_brightness)
                 if screenshot_diff > 30:
-                    print(f'Significant change in screenshot brightness detected: {
-                          screenshot_diff}%')
+                    # print(f'Significant change in screenshot brightness detected: {
+                    #       screenshot_diff}%')
                     if screenshot_brightness > aggressive_brightness_threshold:
                         smoothed_brightness = max(
                             5, min(95, 100 - screenshot_brightness))
@@ -268,8 +267,8 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
 
             try:
                 smoothed_brightness = max(5, min(95, smoothed_brightness))
+                sbc.set_brightness(math.ceil(smoothed_brightness))
                 if abs(smoothed_brightness - prev_brightness) > 5:
-                    sbc.set_brightness(math.ceil(smoothed_brightness))
                     print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
                           datetime.now().strftime("%H:%M:%S")}')
                     prev_brightness = smoothed_brightness
