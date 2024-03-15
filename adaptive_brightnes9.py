@@ -192,7 +192,6 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
     last_brightness_change_time = time.time()
 
     aggressive_brightness_threshold = 90
-    aggressive_brightness_factor = 0.33
 
     try:
         cap = cv2.VideoCapture(camera_index)
@@ -236,9 +235,8 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                     print(f'Significant change in screenshot brightness detected: {
                           screenshot_diff}%')
                     if screenshot_brightness > aggressive_brightness_threshold:
-                        smoothed_brightness = prev_brightness + \
-                            (screenshot_brightness - prev_brightness) * \
-                            aggressive_brightness_factor
+                        # Моментално намаляване на яркостта при агресивни промени
+                        smoothed_brightness = 100 - screenshot_brightness
                     else:
                         smoothed_brightness = screenshot_brightness
                     integral_term = 0
@@ -247,43 +245,23 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             prev_camera_brightness = camera_brightness
             prev_screenshot_brightness = screenshot_brightness
 
-            weight_camera, weight_screenshot = adjust_weights_based_on_content(
-                camera_brightness, screenshot_brightness)
-            brightness = combine_brightness(
-                camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
-
-            target_brightness = max(5, min(90, brightness))
-            max_adjustment = max(
-                5, abs(target_brightness - prev_brightness) // 2)
-
-            if screenshot_brightness > aggressive_brightness_threshold:
-                setpoint = max(prev_brightness + (target_brightness -
-                               prev_brightness) * aggressive_brightness_factor, 5)
-            elif screenshot_brightness > 90:
-                setpoint = max(target_brightness - max_adjustment // 2, 10)
-            elif screenshot_brightness > 80:
-                setpoint = max(target_brightness - max_adjustment // 3, 20)
-            elif screenshot_brightness < 10:
-                setpoint = min(prev_brightness + 5, 30)
-            elif screenshot_brightness < 20:
-                setpoint = min(prev_brightness + 10, 40)
-            else:
-                setpoint = target_brightness
+            # Изчисляване на яркостта на екрана като обратно пропорционална на яркостта на скрийншота
+            target_brightness = max(5, min(95, 100 - screenshot_brightness))
 
             output, integral_term, prev_error = pid_controller(
-                setpoint, smoothed_brightness, kp, ki, kd, dt=update_interval, integral_term=integral_term, prev_error=prev_error)
+                target_brightness, smoothed_brightness, kp, ki, kd, dt=update_interval, integral_term=integral_term, prev_error=prev_error)
             smoothed_brightness += output
 
             if 10 <= screenshot_brightness <= 90:
                 kp, ki, kd, stability_count = adjust_pid_parameters(
-                    setpoint, smoothed_brightness, kp, ki, kd, error_history, brightness_history, stability_count=stability_count)
+                    target_brightness, smoothed_brightness, kp, ki, kd, error_history, brightness_history, stability_count=stability_count)
 
             num_threads = adjust_num_threads(frame_queue.qsize(), num_threads)
             batch_size = adjust_batch_size(
                 brightness_queue.qsize(), batch_size)
 
             try:
-                smoothed_brightness = max(1, min(100, smoothed_brightness))
+                smoothed_brightness = max(5, min(95, smoothed_brightness))
                 if abs(smoothed_brightness - prev_brightness) > 5:
                     sbc.set_brightness(math.ceil(smoothed_brightness))
                     print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
