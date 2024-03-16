@@ -17,9 +17,11 @@ def turn_on_keyboard_backlight():
     # Тази функция трябва да бъде имплементирана в зависимост от операционната система
     pass
 
+
 def turn_off_keyboard_backlight():
     # Тази функция трябва да бъде имплементирана в зависимост от операционната система
     pass
+
 
 def turn_on_sleep_mode():
     # only check if the program can take screenshots - if not, the program should wait for the get_screenshot_brightness() to be available again, if so, the program should continue from the point where it stopped
@@ -59,24 +61,7 @@ def get_screenshot_brightness():
 
 
 def adjust_weights_based_on_content(camera_brightness, screenshot_brightness):
-    # if screenshot_brightness > 90:
-    #     weight_camera = 0.8
-    #     weight_screenshot = 0.2
-    # elif screenshot_brightness > 80:
-    #     weight_camera = 0.7
-    #     weight_screenshot = 0.3
-    # elif screenshot_brightness < 20:
-    #     weight_camera = 0.3
-    #     weight_screenshot = 0.7
-    # else:
-    #     weight_camera = 0.6
-    #     weight_screenshot = 0.4
-    # return weight_camera, weight_screenshot
-
     weight_camera = camera_brightness / 100
-    # weight_screenshot = 1/2 * (1 - weight_camera)
-    # weight_screenshot - need to be unverse proportional to screenshot_brightness and more adaptive
-    # weight_screenshot = 1/2 * (1 - weight_camera) * min(0.5, 1/2 * (1 - weight_camera))
     weight_screenshot = 1/2 * (1 - weight_camera) * (1 - weight_camera)
     return weight_camera, weight_screenshot
 
@@ -186,6 +171,37 @@ def adjust_batch_size(brightness_queue_size, batch_size):
     return batch_size
 
 
+def check_screenshot_brightness(prev_screenshot_brightness, last_update_time, last_brightness_change_time):
+    try:
+        screenshot_brightness = get_screenshot_brightness()
+    except Exception as e:
+        print(f'Error getting screenshot brightness: {
+              str(e)} at {datetime.now().strftime("%H:%M:%S")}')
+        screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
+
+        if time.time() - last_update_time > 300 or time.time() - last_brightness_change_time > 300:
+            print("Screenshot brightness isn't available for 5 minutes or no brightness change for 5 minutes. Exiting...")
+            turn_on_sleep_mode()
+            return False
+
+        if pyautogui.getActiveWindowTitle() == "full screen application":
+            print("Exiting due to full screen application running...")
+            turn_on_sleep_mode()
+            return False
+
+        # check for the user playing a game
+        # check for the video playing
+        # check for the video call in progress
+        # check for the system in sleep mode
+        # check for the user not active
+        # check for the system is unstable
+        print("Exiting due to other scenarios...")
+        turn_on_sleep_mode()
+        return False
+
+    return screenshot_brightness
+
+
 def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100, brightness_queue_size=100, batch_size=5, frame_interval=0.1, update_interval=1):
     state = load_state()
     if state is None:
@@ -234,7 +250,6 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             ret, frame = cap.read()
             if not ret:
                 print("Error reading frame from camera.")
-                # Default value if no previous brightness
                 camera_brightness = prev_camera_brightness if prev_camera_brightness is not None else 50
             else:
                 frame_queue.put(frame)
@@ -242,38 +257,11 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
                     camera_brightness = brightness_queue.get(
                         block=True, timeout=1)
                 except queue.Empty:
-                    # Default value if no previous brightness
                     camera_brightness = prev_camera_brightness if prev_camera_brightness is not None else 50
 
-            try:
-                screenshot_brightness = get_screenshot_brightness()
-            except Exception as e:
-                print(f'Error getting screenshot brightness: {str(e)} at {
-                      datetime.now().strftime("%H:%M:%S")}')
-                # Default value if no previous brightness
-                screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
-
-                # if screenshot_brightness isn't available for 5 minutes - exit the loop, free the resources and the program should wait for the get_screenshot_brightness() to be available again, if so, the program should continue from the point where it stopped
-                # or there is full screen application running or the user is playing a game or there is a video playing or there is a video call in progress or system is in sleep mode or the user is not active or system is unstable
-                if time.time() - last_update_time > 300 or time.time() - last_brightness_change_time > 300:
-                    print("Screenshot brightness isn't available for 5 minutes. Exiting...")
-                    turn_on_sleep_mode()
-                    break
-                # Add conditions for other scenarios
-                if pyautogui.getActiveWindowTitle() == "full screen application":
-                    print("Exiting due to full screen application running...")
-                    turn_on_sleep_mode()
-                    break
-
-                # check for the user playing a game
-                # check for the video playing
-                # check for the video call in progress
-                # check for the system in sleep mode
-                # check for the user not active
-                # check for the system is unstable
-
-                print("Exiting due to other scenarios...")
-                turn_on_sleep_mode()
+            screenshot_brightness = check_screenshot_brightness(
+                prev_screenshot_brightness, last_update_time, last_brightness_change_time)
+            if screenshot_brightness is False:
                 break
 
             if prev_camera_brightness is None:
@@ -288,8 +276,6 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
 
             brightness_diff = abs(combined_brightness - smoothed_brightness)
             if brightness_diff > 10:
-                # print(f'Significant change in brightness detected: {
-                #       brightness_diff:.2f}%')
                 setpoint = combined_brightness
                 integral_term = 0
                 prev_error = 0
