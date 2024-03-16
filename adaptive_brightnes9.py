@@ -17,6 +17,26 @@ def turn_on_keyboard_backlight():
     # Тази функция трябва да бъде имплементирана в зависимост от операционната система
     pass
 
+def turn_off_keyboard_backlight():
+    # Тази функция трябва да бъде имплементирана в зависимост от операционната система
+    pass
+
+def turn_on_sleep_mode():
+    # only check if the program can take screenshots - if not, the program should wait for the get_screenshot_brightness() to be available again, if so, the program should continue from the point where it stopped
+    wait_count = 0
+    while True:
+        try:
+            screenshot_brightness = get_screenshot_brightness()
+            break
+        except:
+            # wait for increseang time interval calculated in the main loop
+            wait_time = 5 * wait_count
+            time.sleep(wait_time)
+            wait_count = +1
+            continue
+    # if the program is in sleep mode, the program should continue from the point where it stopped
+    return screenshot_brightness
+
 
 def analyze_image(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -228,9 +248,17 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
             try:
                 screenshot_brightness = get_screenshot_brightness()
             except:
-                print("Error getting screenshot brightness.")
+                print(f'Error getting screenshot brightness: {str(e)} at {
+                      datetime.now().strftime("%H:%M:%S")}')
                 # Default value if no previous brightness
                 screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
+
+                # if screenshot_brightness isn't available for 5 minutes - exit the loop, free the resources and the program should wait for the get_screenshot_brightness() to be available again, if so, the program should continue from the point where it stopped
+                if time.time() - last_update_time > 300:
+                    print("Screenshot brightness isn't available for 5 minutes. Exiting...")
+                    turn_on_sleep_mode()
+                    break
+
 
             if prev_camera_brightness is None:
                 prev_camera_brightness = camera_brightness
