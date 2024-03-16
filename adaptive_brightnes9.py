@@ -30,7 +30,8 @@ def turn_on_sleep_mode():
         try:
             screenshot_brightness = get_screenshot_brightness()
             if screenshot_brightness is not None:
-                print(f"Inital screenshot brightness: {screenshot_brightness}% at' {datetime.now().strftime('%H:%M:%S')}")
+                # print(f"Inital screenshot brightness: {screenshot_brightness}% at' {datetime.now().strftime('%H:%M:%S')}")
+                continue
             else:
                 print(f'Checking screenshot brightness: {screenshot_brightness}%' +
                   f' at {datetime.now().strftime("%H:%M:%S")}', end=" ")
