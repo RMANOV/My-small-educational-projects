@@ -178,13 +178,15 @@ def adjust_batch_size(brightness_queue_size, batch_size):
     return batch_size
 
 
-def check_screenshot_brightness(prev_screenshot_brightness, last_update_time, last_brightness_change_time, stability_count):
+def check_screenshot_brightness(prev_screenshot_brightness, last_update_time, last_brightness_change_time):
     try:
         screenshot_brightness = get_screenshot_brightness()
     except Exception as e:
         print(f'Error getting screenshot brightness: {
               str(e)} at {datetime.now().strftime("%H:%M:%S")}')
         screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
+        adjust_pid_parameters(50, screenshot_brightness, 0.6, 0.15, 0.08, [], [], stability_count=stability_count)
+
 
         if time.time() - last_update_time > 300 or time.time() - last_brightness_change_time > 300 or stability_count <= 0:
             print(f"Screenshot brightness isn't available for 5 minutes or no brightness change for 5 minutes or System is busy. Exiting at {datetime.now().strftime('%H:%M:%S')}")
