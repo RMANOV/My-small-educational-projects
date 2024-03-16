@@ -185,10 +185,10 @@ def check_screenshot_brightness(prev_screenshot_brightness, last_update_time, la
         print(f'Error getting screenshot brightness: {
               str(e)} at {datetime.now().strftime("%H:%M:%S")}')
         screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
-        adjust_pid_parameters(50, screenshot_brightness, 0.6, 0.15, 0.08, [], [], stability_count=stability_count)
+        
 
 
-        if time.time() - last_update_time > 300 or time.time() - last_brightness_change_time > 300 or stability_count <= 0:
+        if time.time() - last_update_time > 300 or time.time() - last_brightness_change_time > 300:
             print(f"Screenshot brightness isn't available for 5 minutes or no brightness change for 5 minutes or System is busy. Exiting at {datetime.now().strftime('%H:%M:%S')}")
             turn_on_sleep_mode()
             return False
