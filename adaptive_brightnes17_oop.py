@@ -50,7 +50,7 @@ class BrightnessController:
                 brightness = cv2.meanStdDev(screenshot)[0][0][0] / 255 * 100
                 return brightness
             except Exception as e:
-                print(f"Error getting screenshot brightness: {str(e)}")
+                print(f"Error getting screenshot brightness: {str(e)} at {datetime.now().strftime('%H:%M:%S')}")
                 time.sleep(self.update_interval*10)
                 self.update_interval = max(self.update_interval * 1.5, 5)
                 self.save_state((self.prev_brightness, self.smoothed_brightness,
@@ -101,7 +101,7 @@ class BrightnessController:
         try:
             cap = cv2.VideoCapture(self.camera_index)
             if not cap.isOpened():
-                print("Cannot open camera. Exiting...")
+                print(f'Cannot open camera. Exiting...at {datetime.now().strftime("%H:%M:%S")}')
                 return
 
             prev_camera_brightness = None
@@ -110,14 +110,15 @@ class BrightnessController:
             while not self.stop_event.is_set():
                 current_brightness = sbc.get_brightness()[0]
                 if abs(current_brightness - self.prev_brightness) > 10:
-                    print(f'Brightness changed to {current_brightness}%')
+                    print(f'Brightness changed to {current_brightness}% at {
+                          datetime.now().strftime("%H:%M:%S")}')
                     self.smoothed_brightness = current_brightness
                     self.integral_term = 0
                     self.prev_error = 0
 
                 ret, frame = cap.read()
                 if not ret:
-                    print("Error reading frame from camera.")
+                    print(f"Error reading frame from camera. Exiting...at {datetime.now().strftime('%H:%M:%S')}")
                     camera_brightness = prev_camera_brightness if prev_camera_brightness is not None else 50
                 else:
                     frame_queue.put(frame)
@@ -183,7 +184,7 @@ class BrightnessController:
                     self.save_state((self.prev_brightness, self.smoothed_brightness,
                                      self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
                 except Exception as e:
-                    print(f"Error setting brightness: {str(e)}")
+                    print(f"Error setting brightness: {str(e)} at {datetime.now().strftime('%H:%M:%S')}")
 
                 if time.time() - last_brightness_change_time > 5:
                     self.update_interval = min(self.update_interval * 1.5, 5)
@@ -196,7 +197,7 @@ class BrightnessController:
                 time.sleep(self.update_interval)
 
         except KeyboardInterrupt:
-            print("Keyboard interrupt received. Exiting...")
+            print(f'KeyboardInterrupt at {datetime.now().strftime("%H:%M:%S")}')
         finally:
             self.stop_event.set()
             for _ in range(self.num_threads):
