@@ -47,7 +47,22 @@ class BrightnessController:
             brightness = cv2.meanStdDev(screenshot)[0][0][0] / 255 * 100
             return brightness
         except OSError:
-            print("Error capturing screenshot. Returning default brightness.")
+            print("Error capturing screenshot. Returning default brightness of 50 at " +
+                  f"{datetime.now().strftime('%H:%M:%S')}")
+            while True:
+                time.sleep(5*self.update_interval)
+                try:
+                    screenshot = pyautogui.screenshot()
+                    screenshot = cv2.cvtColor(np.array(screenshot), cv2.COLOR_BGR2GRAY)
+                    brightness = cv2.meanStdDev(screenshot)[0][0][0] / 255 * 100
+                    return brightness
+                except OSError:
+                    print("Error capturing screenshot. Retrying...")
+                    # free up memory and processing power and camera resources
+                    time.sleep(5*self.update_interval)
+                    cv2.destroyAllWindows()
+                    continue
+
             return 50
 
     def get_screenshot_brightness_thread(self, screenshot_brightness_queue):
