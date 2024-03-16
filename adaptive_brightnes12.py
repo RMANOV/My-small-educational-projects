@@ -19,8 +19,7 @@ def turn_off_keyboard_backlight():
 
 
 def analyze_image(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    brightness = cv2.meanStdDev(gray)[0][0][0] / 255 * 100
+    brightness = cv2.meanStdDev(frame)[0][0][0] / 255 * 100
     return brightness
 
 
