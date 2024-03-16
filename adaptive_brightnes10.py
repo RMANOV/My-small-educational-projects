@@ -117,7 +117,7 @@ class BrightnessController:
 
     def adjust_weights_based_on_content(self, camera_brightness, screenshot_brightness):
         weight_camera = camera_brightness / 100
-        weight_screenshot = 1 - weight_camera
+        weight_screenshot = 1/2*(1 - weight_camera) + 1/2
         return weight_camera, weight_screenshot
 
     def combine_brightness(self, camera_brightness, screenshot_brightness, weight_camera, weight_screenshot):
