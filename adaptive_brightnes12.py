@@ -101,7 +101,7 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
         while True:
             current_brightness = sbc.get_brightness()[0]
             if abs(current_brightness - prev_brightness) > 10:
-                print(f'Brightness changed manually to {current_brightness}%')
+                print(f'Brightness changed to {current_brightness}%')
                 smoothed_brightness = current_brightness
                 integral_term = 0
                 prev_error = 0
