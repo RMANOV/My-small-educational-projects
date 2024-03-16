@@ -29,6 +29,12 @@ def turn_on_sleep_mode():
     while True:
         try:
             screenshot_brightness = get_screenshot_brightness()
+            if screenshot_brightness is not None:
+                print(f"Inital screenshot brightness: {screenshot_brightness}% at' {datetime.now().strftime('%H:%M:%S')}")
+            else:
+                print(f'Checking screenshot brightness: {screenshot_brightness}%' +
+                  f' at {datetime.now().strftime("%H:%M:%S")}', end=" ")
+                continue
             break
         except:
             # wait for increseang time interval calculated in the main loop
@@ -180,12 +186,12 @@ def check_screenshot_brightness(prev_screenshot_brightness, last_update_time, la
         screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
 
         if time.time() - last_update_time > 300 or time.time() - last_brightness_change_time > 300:
-            print("Screenshot brightness isn't available for 5 minutes or no brightness change for 5 minutes. Exiting...")
+            print(f"Screenshot brightness isn't available for 5 minutes or no brightness change for 5 minutes. Exiting at {datetime.now().strftime('%H:%M:%S')}")
             turn_on_sleep_mode()
             return False
 
         if pyautogui.getActiveWindowTitle() == "full screen application":
-            print("Exiting due to full screen application running...")
+            print(f'Exiting due to full screen application at {datetime.now().strftime("%H:%M:%S")}')
             turn_on_sleep_mode()
             return False
 
