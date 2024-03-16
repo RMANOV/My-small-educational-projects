@@ -247,18 +247,34 @@ def adjust_screen_brightness(camera_index=0, num_threads=4, frame_queue_size=100
 
             try:
                 screenshot_brightness = get_screenshot_brightness()
-            except:
+            except Exception as e:
                 print(f'Error getting screenshot brightness: {str(e)} at {
                       datetime.now().strftime("%H:%M:%S")}')
                 # Default value if no previous brightness
                 screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
 
                 # if screenshot_brightness isn't available for 5 minutes - exit the loop, free the resources and the program should wait for the get_screenshot_brightness() to be available again, if so, the program should continue from the point where it stopped
-                if time.time() - last_update_time > 300:
+                # or there is full screen application running or the user is playing a game or there is a video playing or there is a video call in progress or system is in sleep mode or the user is not active or system is unstable
+                if time.time() - last_update_time > 300 or time.time() - last_brightness_change_time > 300:
                     print("Screenshot brightness isn't available for 5 minutes. Exiting...")
                     turn_on_sleep_mode()
                     break
+                # Add conditions for other scenarios
+                if pyautogui.getActiveWindowTitle() == "full screen application":
+                    print("Exiting due to full screen application running...")
+                    turn_on_sleep_mode()
+                    break
 
+                # check for the user playing a game
+                # check for the video playing
+                # check for the video call in progress
+                # check for the system in sleep mode
+                # check for the user not active
+                # check for the system is unstable
+
+                print("Exiting due to other scenarios...")
+                turn_on_sleep_mode()
+                break
 
             if prev_camera_brightness is None:
                 prev_camera_brightness = camera_brightness
