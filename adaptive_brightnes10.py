@@ -12,7 +12,6 @@ import pickle
 import random
 import queue
 
-
 class BrightnessController:
     def __init__(self, camera_index=0, num_threads=4, frame_queue_size=100, brightness_queue_size=100, batch_size=5, frame_interval=0.1, update_interval=1):
         self.camera_index = camera_index
@@ -29,6 +28,7 @@ class BrightnessController:
         self.stability_count = 3
         self.last_update_time = time.time()
         self.last_brightness_change_time = time.time()
+        self.last_screenshot_brightness = None
 
     def turn_on_keyboard_backlight(self):
         # Тази функция трябва да бъде имплементирана в зависимост от операционната система
@@ -39,34 +39,58 @@ class BrightnessController:
         pass
 
     def turn_on_sleep_mode(self):
-        # only check if the program can take screenshots - if not, the program should wait for the get_screenshot_brightness() to be available again, if so, the program should continue from the point where it stopped
         wait_count = 0
+        screenshot_wait_count = 0
+        last_brightness_change_time = time.time()
+        last_screenshot_time = time.time()
+        
         while True:
             try:
                 screenshot_brightness = self.get_screenshot_brightness()
+                screenshot_wait_count = 0
+                last_screenshot_time = time.time()
+                
                 if screenshot_brightness is not None:
-                    # print(f"Inital screenshot brightness: {screenshot_brightness}% at' {datetime.now().strftime('%H:%M:%S')}")
-                    continue
+                    if abs(screenshot_brightness - self.last_screenshot_brightness) > 5:
+                        last_brightness_change_time = time.time()
+                    self.last_screenshot_brightness = screenshot_brightness
+                    
+                    if self.is_system_stable() and not self.is_system_sleeping() and not self.is_fullscreen_mode():
+                        return screenshot_brightness
                 else:
-                    print(f'Checking screenshot brightness: {screenshot_brightness}%' +
-                          f' at {datetime.now().strftime("%H:%M:%S")}', end=" ")
-                    continue
-                break
-            except:
-                # wait for increasing time interval calculated in the main loop
-                wait_time = 5 * wait_count
-                time.sleep(wait_time)
-                wait_count += 1
-                continue
-
-        # Check system stability using stability_count
-        if self.stability_count <= 0:
-            print(f"System is unstable. Exiting at {
-                  datetime.now().strftime('%H:%M:%S')}")
-            return False
-
-        # if the program is in sleep mode, the program should continue from the point where it stopped
-        return screenshot_brightness
+                    screenshot_wait_count += 1
+                    print(f'Checking screenshot brightness: {screenshot_brightness}% at {datetime.now().strftime("%H:%M:%S")}', end=" ")
+                    
+            except Exception as e:
+                print(f'Error getting screenshot brightness: {str(e)} at {datetime.now().strftime("%H:%M:%S")}')
+                screenshot_wait_count += 1
+                
+            if time.time() - last_brightness_change_time > 300 or not self.is_system_stable() or self.is_system_sleeping() or self.is_fullscreen_mode() or screenshot_wait_count > 300:
+                print(f"Exiting main loop due to inactivity or system instability at {datetime.now().strftime('%H:%M:%S')}")
+                self.release_resources()
+                
+                while True:
+                    try:
+                        wait_time = self.calculate_wait_time(wait_count)
+                        time.sleep(wait_time)
+                        
+                        if self.is_user_active():
+                            print(f"User activity detected. Resuming brightness control at {datetime.now().strftime('%H:%M:%S')}")
+                            return self.get_screenshot_brightness()
+                        
+                        screenshot_brightness = self.get_screenshot_brightness()
+                        
+                        if screenshot_brightness is not None:
+                            print(f"Screenshot brightness available. Resuming brightness control at {datetime.now().strftime('%H:%M:%S')}")
+                            return screenshot_brightness
+                        
+                        wait_count += 1
+                        
+                    except Exception as e:
+                        print(f'Error during sleep mode: {str(e)} at {datetime.now().strftime("%H:%M:%S")}')
+                        wait_count += 1
+                        
+        return self.last_screenshot_brightness
 
     def analyze_image(self, frame):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -142,8 +166,7 @@ class BrightnessController:
             self.error_history.pop(0)
             self.brightness_history.pop(0)
         trend = sum(self.error_history) / len(self.error_history)
-        brightness_avg = sum(self.brightness_history) / \
-            len(self.brightness_history)
+        brightness_avg = sum(self.brightness_history) / len(self.brightness_history)
         if abs(trend) <= stability_threshold:
             self.stability_count -= 1
         else:
@@ -188,16 +211,13 @@ class BrightnessController:
             print(f'Error getting screenshot brightness: {
                   str(e)} at {datetime.now().strftime("%H:%M:%S")}')
             screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
-            self.adjust_pid_parameters(
-                50, screenshot_brightness, 0.6, 0.15, 0.08)
+            self.adjust_pid_parameters(50, screenshot_brightness, 0.6, 0.15, 0.08)
             if time.time() - self.last_update_time > 300 or time.time() - self.last_brightness_change_time > 300 or self.stability_count <= 0:
-                print(f"Screenshot brightness isn't available for 5 minutes or no brightness change for 5 minutes or System is busy. Exiting at {
-                      datetime.now().strftime('%H:%M:%S')}")
+                print(f"Screenshot brightness isn't available for 5 minutes or no brightness change for 5 minutes or System is busy. Exiting at {datetime.now().strftime('%H:%M:%S')}")
                 self.turn_on_sleep_mode()
                 return False
             if pyautogui.getActiveWindowTitle() == "full screen application":
-                print(f'Exiting due to full screen application at {
-                      datetime.now().strftime("%H:%M:%S")}')
+                print(f'Exiting due to full screen application at {datetime.now().strftime("%H:%M:%S")}')
                 self.turn_on_sleep_mode()
                 return False
             # check for the user playing a game
@@ -210,6 +230,62 @@ class BrightnessController:
             self.turn_on_sleep_mode()
             return False
         return screenshot_brightness
+
+    def is_system_stable(self):
+        # Implement your logic to check if the system is stable
+        if len(self.error_history) < 10:
+            return False
+        trend = sum(self.error_history) / len(self.error_history)
+        if abs(trend) > 5:
+            return False
+        # Return True if the system is stable, False otherwise
+        return True
+
+    def is_system_sleeping(self):
+        # Implement your logic to check if the system is in sleep mode
+        # Return True if the system is sleeping, False otherwise
+        if time.time() - self.last_update_time > 300:
+            return True
+        return False
+
+    def is_fullscreen_mode(self):
+        # Implement your logic to check if the system is in fullscreen mode
+        # Return True if the system is in fullscreen mode, False otherwise
+        if pyautogui.getActiveWindowTitle() == "full screen application":
+            return True
+        return False
+
+    def release_resources(self):
+        # Implement your logic to release camera and other resources
+        if not self.frame_queue.empty():
+            for _ in range(self.num_threads):
+                self.frame_queue.put(None)
+        if not self.brightness_queue.empty():
+            for _ in range(self.brightness_queue.qsize()):
+                self.brightness_queue.get()
+        self.turn_off_keyboard_backlight()
+        if self.num_threads > 1:
+            self.num_threads -= 1
+        if self.batch_size > 1:
+            self.batch_size -= 1
+        # Release camera and other resources
+        camera.release()
+        cv2.destroyAllWindows()
+
+
+    def calculate_wait_time(self, wait_count):
+        # Implement your logic to calculate the wait time based on wait_count
+        return wait_count * 5
+
+    def is_user_active(self):
+        # Implement your logic to check if the user is active (e.g., mouse movement, key press)
+        # Return True if the user is active, False otherwise
+        if pyautogui.onScreen(0, 0):
+            return True
+        if pyautogui.onScreen(100, 100):
+            return True
+        
+        return False
 
     def run(self):
         state = self.load_state()
@@ -236,8 +312,7 @@ class BrightnessController:
             while True:
                 current_brightness = sbc.get_brightness()[0]
                 if abs(current_brightness - prev_brightness) > 10:
-                    print(f'Brightness changed manually to {
-                          current_brightness}%')
+                    print(f'Brightness changed manually to {current_brightness}%')
                     smoothed_brightness = current_brightness
                     integral_term = 0
                     prev_error = 0
@@ -264,8 +339,7 @@ class BrightnessController:
                     camera_brightness, screenshot_brightness)
                 combined_brightness = self.combine_brightness(
                     camera_brightness, screenshot_brightness, weight_camera, weight_screenshot)
-                brightness_diff = abs(
-                    combined_brightness - smoothed_brightness)
+                brightness_diff = abs(combined_brightness - smoothed_brightness)
                 if brightness_diff > 10:
                     setpoint = combined_brightness
                     integral_term = 0
@@ -273,45 +347,28 @@ class BrightnessController:
                 else:
                     setpoint = smoothed_brightness
                 output, integral_term, prev_error = self.pid_controller(
-                    setpoint, smoothed_brightness, kp, ki, kd, dt=self.update_interval, integral_term=integral_term, prev_error=prev_error)
-                smoothed_brightness += output
-                kp, ki, kd = self.adjust_pid_parameters(
-                    setpoint, smoothed_brightness, kp, ki, kd)
-                self.adjust_num_threads()
-                self.adjust_batch_size()
-                try:
-                    smoothed_brightness = max(5, min(95, smoothed_brightness))
-                    sbc.set_brightness(math.ceil(smoothed_brightness))
-                    if abs(smoothed_brightness - prev_brightness) > 5:
-                        print(f'New brightness: {math.ceil(smoothed_brightness)}% at {
-                              datetime.now().strftime("%H:%M:%S")}')
-                        prev_brightness = smoothed_brightness
-                        self.last_brightness_change_time = time.time()
-                    else:
-                        print("-", end="")
-                    if smoothed_brightness < 20:
-                        self.turn_on_keyboard_backlight()
-                    self.save_state((prev_brightness, smoothed_brightness,
-                                     integral_term, prev_error, kp, ki, kd))
-                except Exception as e:
-                    print(f"Error setting brightness: {str(e)}")
-                if time.time() - self.last_brightness_change_time > 5:
-                    self.update_interval = min(self.update_interval * 1.5, 5)
-                else:
-                    self.update_interval = max(self.update_interval / 1.5, 1)
+                    setpoint, smoothed_brightness, kp, ki, kd, dt=self.update_interval, integral_term=integral_term, prev_error=prev_error) # PID controller
                 prev_camera_brightness = camera_brightness
                 prev_screenshot_brightness = screenshot_brightness
+                prev_brightness = smoothed_brightness
+                smoothed_brightness = max(
+                    0, min(100, smoothed_brightness + output))
+                sbc.set_brightness(smoothed_brightness)
+                self.save_state(
+                    (prev_brightness, smoothed_brightness, integral_term, prev_error, kp, ki, kd))
+                self.last_update_time = time.time()
+                if abs(smoothed_brightness - prev_brightness) > 1:
+                    self.last_brightness_change_time = time.time()
+                self.adjust_num_threads()
+                self.adjust_batch_size()
+                kp, ki, kd = self.adjust_pid_parameters(
+                    setpoint, smoothed_brightness, kp, ki, kd)
                 time.sleep(self.update_interval)
-        except KeyboardInterrupt:
-            print("Keyboard interrupt received. Exiting...")
+        except Exception as e:
+            print(f'Error: {str(e)} at {datetime.now().strftime("%H:%M:%S")}')
         finally:
-            for _ in range(self.num_threads):
-                self.frame_queue.put(None)
-            if cap is not None:
-                cap.release()
-            cv2.destroyAllWindows()
-
-
-if __name__ == '__main__':
-    brightness_controller = BrightnessController()
-    brightness_controller.run()
+            self.release_resources()
+            print("Exiting at", datetime.now().strftime("%H:%M:%S"))
+            
+brightness_controller = BrightnessController()
+brightness_controller.run()
