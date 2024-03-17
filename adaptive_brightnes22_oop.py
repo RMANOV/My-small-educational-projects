@@ -53,41 +53,33 @@ class BrightnessController:
         return brightness
 
     def get_screenshot_brightness(self):
-        if self.is_active:
-            while not self.stop_event.is_set():
-                try:
-                    screenshot = pyautogui.screenshot()
-                    screenshot = np.array(screenshot)
-                    screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
-                    brightness = cv2.meanStdDev(
-                        screenshot)[0][0][0] / 255 * 100
-                    return brightness
-                except Exception as e:
-                    print(f"Error getting screenshot brightness: {
-                          str(e)} at {datetime.now().strftime('%H:%M:%S')}")
-                    time.sleep(self.update_interval * 10)
-                    self.save_state((self.prev_brightness, self.smoothed_brightness,
-                                     self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-                    cv2.destroyAllWindows()
+        if self.is_active and not self.stop_event.is_set():
+            try:
+                screenshot = pyautogui.screenshot()
+                screenshot = np.array(screenshot)
+                screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
+                brightness = cv2.meanStdDev(screenshot)[0][0][0] / 255 * 100
+                return brightness
+            except Exception as e:
+                print(f"Error getting screenshot brightness: {
+                      str(e)} at {datetime.now().strftime('%H:%M:%S')}")
+                return None
         else:
-            self.save_state((self.prev_brightness, self.smoothed_brightness,
-                             self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-            self.is_active = False
             return None
 
     def get_screenshot_brightness_thread(self, screenshot_brightness_queue):
         while not self.stop_event.is_set():
             if self.is_active:
                 screenshot_brightness = self.get_screenshot_brightness()
-                screenshot_brightness_queue.put(screenshot_brightness)
+                if screenshot_brightness is not None:
+                    screenshot_brightness_queue.put(screenshot_brightness)
                 time.sleep(0.1)
             else:
                 self.save_state((self.prev_brightness, self.smoothed_brightness,
                                  self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-                self.is_active = False
                 time.sleep(self.inactivity_check_interval)
                 self.inactivity_check_interval = min(
-                    self.inactivity_check_interval * 2, 1000000)
+                    self.inactivity_check_interval * 2, 60)
 
     def process_frames(self, frame_queue, brightness_queue):
         frames = []
@@ -150,6 +142,7 @@ class BrightnessController:
                     self.is_active = True
                     self.inactivity_printed = False
                     self.inactivity_check_interval = 1
+
                 if self.is_active:
                     current_brightness = sbc.get_brightness()[0]
                     if abs(current_brightness - self.prev_brightness) > 10:
@@ -158,6 +151,7 @@ class BrightnessController:
                         self.smoothed_brightness = current_brightness
                         self.integral_term = 0
                         self.prev_error = 0
+
                     ret, frame = cap.read()
                     if not ret:
                         print(f"Error reading frame from camera. Exiting...at {
@@ -170,20 +164,29 @@ class BrightnessController:
                                 block=True, timeout=1)
                         except Empty:
                             camera_brightness = prev_camera_brightness if prev_camera_brightness is not None else 50
+
                     try:
                         screenshot_brightness = screenshot_brightness_queue.get(
                             block=False)
                     except Empty:
                         screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
+
+                    if screenshot_brightness is None:
+                        print(f"Error getting screenshot brightness at {
+                              datetime.now().strftime('%H:%M:%S')}")
+                        screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
+
                     if prev_camera_brightness is None:
                         prev_camera_brightness = camera_brightness
                     if prev_screenshot_brightness is None:
                         prev_screenshot_brightness = screenshot_brightness
+
                     weight_camera = camera_brightness / 100
                     weight_screenshot = 1/2 * \
                         (1 - weight_camera) * (1 - weight_camera)
                     combined_brightness = weight_camera * camera_brightness + \
                         weight_screenshot * screenshot_brightness
+
                     brightness_diff = abs(
                         combined_brightness - self.smoothed_brightness)
                     if brightness_diff > 10:
@@ -192,6 +195,7 @@ class BrightnessController:
                         self.prev_error = 0
                     else:
                         setpoint = self.smoothed_brightness
+
                     error = setpoint - self.smoothed_brightness
                     self.integral_term = max(
                         -50, min(50, self.integral_term + error * self.update_interval))
@@ -201,9 +205,11 @@ class BrightnessController:
                         self.integral_term + self.kd * derivative_term
                     output = max(-10, min(10, output))
                     self.prev_error = error
+
                     self.smoothed_brightness += output
                     self.smoothed_brightness = max(
                         5, min(95, self.smoothed_brightness))
+
                     try:
                         sbc.set_brightness(round(self.smoothed_brightness))
                         if abs(self.smoothed_brightness - self.prev_brightness) > 5:
@@ -220,17 +226,20 @@ class BrightnessController:
                     except Exception as e:
                         print(f"Error setting brightness: {str(e)} at {
                               datetime.now().strftime('%H:%M:%S')}")
+
                     if time.time() - last_brightness_change_time > 5:
                         self.update_interval = min(
                             self.update_interval * 1.5, 5)
                     else:
                         self.update_interval = max(
                             self.update_interval / 1.5, 1)
+
                     prev_camera_brightness = camera_brightness
                     prev_screenshot_brightness = screenshot_brightness
                     time.sleep(self.update_interval)
                 else:
                     time.sleep(self.inactivity_check_interval)
+
         except KeyboardInterrupt:
             print(f'KeyboardInterrupt at {
                   datetime.now().strftime("%H:%M:%S")}')
