@@ -70,7 +70,12 @@ class BrightnessController:
                                      self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
                     cv2.destroyAllWindows()
         else:
-            return self.prev_brightness
+            self.update_interval = max(self.update_interval / 1.5, 1)
+            self.save_state((self.prev_brightness, self.smoothed_brightness,
+                             self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
+            time.sleep(1)
+            self.is_active=False
+            return None
 
     def get_screenshot_brightness_thread(self, screenshot_brightness_queue):
         while not self.stop_event.is_set():
@@ -79,6 +84,10 @@ class BrightnessController:
                 screenshot_brightness_queue.put(screenshot_brightness)
                 time.sleep(0.1)
             else:
+                self.update_interval = max(self.update_interval / 1.5, 1)
+                self.save_state((self.prev_brightness, self.smoothed_brightness,
+                                 self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
+                self.is_active=False
                 time.sleep(1)
 
     def process_frames(self, frame_queue, brightness_queue):
