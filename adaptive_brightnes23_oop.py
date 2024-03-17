@@ -66,9 +66,11 @@ class BrightnessController:
                 return brightness
             except Exception as e:
                 self.consecutive_errors += 1
-                if self.consecutive_errors % 5 == 0:
+                if self.consecutive_errors % 1 == 0: # Print error message every 1 consecutive errors
                     print(f"Error getting screenshot brightness: {
                           str(e)} at {datetime.now().strftime('%H:%M:%S')}")
+                    self.is_active = False
+
                 return None
         else:
             return None
@@ -82,10 +84,10 @@ class BrightnessController:
                 time.sleep(1)
             else:
                 self.save_state((self.prev_brightness, self.smoothed_brightness,
-                                 self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
+                                 self.integral_term, self.prev_error, self.kp, self.ki, self.kd)) # Save state if system is inactive
                 time.sleep(self.inactivity_check_interval)
                 self.inactivity_check_interval = min(
-                    self.inactivity_check_interval * 2, 60)
+                    self.inactivity_check_interval * 2, 10000000000) # Increase inactivity check interval if system is inactive
 
     def process_frames(self, frame_queue, brightness_queue):
         frames = []
@@ -204,9 +206,9 @@ class BrightnessController:
 
                     error = setpoint - self.smoothed_brightness
                     self.integral_term = max(
-                        -50, min(50, self.integral_term + error * self.update_interval))
+                        -50, min(50, self.integral_term + error * self.update_interval)) # Anti-windup
                     derivative_term = (
-                        error - self.prev_error) / self.update_interval
+                        error - self.prev_error) / self.update_interval # Derivative term
                     output = self.kp * error + self.ki * \
                         self.integral_term + self.kd * derivative_term
                     output = max(-10, min(10, output))
@@ -235,10 +237,10 @@ class BrightnessController:
 
                     if time.time() - last_brightness_change_time > 5:
                         self.update_interval = min(
-                            self.update_interval * 1.5, 5)
+                            self.update_interval * 1.5, 5) # Increase update interval if brightness has not changed for a while
                     else:
                         self.update_interval = max(
-                            self.update_interval / 1.5, 1)
+                            self.update_interval / 1.5, 1) # Decrease update interval if brightness has changed recently
 
                     prev_camera_brightness = camera_brightness
                     prev_screenshot_brightness = screenshot_brightness
