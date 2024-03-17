@@ -8,6 +8,7 @@ from threading import Thread, Event
 from queue import Queue
 import pickle
 import pynput
+import queue
 
 
 class BrightnessController:
