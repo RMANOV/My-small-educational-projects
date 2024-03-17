@@ -66,10 +66,18 @@ class BrightnessController:
                 return brightness
             except Exception as e:
                 self.consecutive_errors += 1
-                if self.consecutive_errors % 1 == 0: # Print error message every 1 consecutive errors
-                    print(f"Error getting screenshot brightness: {
+                
+                print(f"Error getting screenshot brightness: {
                           str(e)} at {datetime.now().strftime('%H:%M:%S')}")
-                    self.is_active = False
+                self.is_active = False
+                self.inactivity_printed = True
+                self.inactivity_check_interval = 1
+                self.update_interval = min(self.update_interval * 2, 5) # Increase update interval if there is an error
+                if self.consecutive_errors > 5:
+                    self.stop_event.set()
+                    print(f"Too many consecutive errors. Exiting...at {
+                          datetime.now().strftime('%H:%M:%S')}") # Stop if there are too many consecutive errors
+
 
                 return None
         else:
