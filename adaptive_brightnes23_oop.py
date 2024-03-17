@@ -35,6 +35,8 @@ class BrightnessController:
         self.is_active = True
         self.inactivity_printed = False
         self.inactivity_check_interval = 1
+        self.last_screenshot_time = 0
+        self.consecutive_errors = 0
 
     def on_activity(self, *args):
         self.last_activity_time = time.time()
@@ -53,17 +55,20 @@ class BrightnessController:
         return brightness
 
     def get_screenshot_brightness(self):
-        if self.is_active and not self.stop_event.is_set():
+        if self.is_active and not self.stop_event.is_set() and time.time() - self.last_screenshot_time >= 1:
             try:
                 screenshot = pyautogui.screenshot()
                 screenshot = np.array(screenshot)
                 screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
                 brightness = cv2.meanStdDev(screenshot)[0][0][0] / 255 * 100
+                self.last_screenshot_time = time.time()
+                self.consecutive_errors = 0
                 return brightness
             except Exception as e:
-                print(f"Error getting screenshot brightness: {
-                      str(e)} at {datetime.now().strftime('%H:%M:%S')}")
-                self.is_active = False
+                self.consecutive_errors += 1
+                if self.consecutive_errors % 5 == 0:
+                    print(f"Error getting screenshot brightness: {
+                          str(e)} at {datetime.now().strftime('%H:%M:%S')}")
                 return None
         else:
             return None
@@ -74,7 +79,7 @@ class BrightnessController:
                 screenshot_brightness = self.get_screenshot_brightness()
                 if screenshot_brightness is not None:
                     screenshot_brightness_queue.put(screenshot_brightness)
-                time.sleep(10)
+                time.sleep(1)
             else:
                 self.save_state((self.prev_brightness, self.smoothed_brightness,
                                  self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
@@ -175,7 +180,6 @@ class BrightnessController:
                     if screenshot_brightness is None:
                         print(f"Error getting screenshot brightness at {
                               datetime.now().strftime('%H:%M:%S')}")
-                        self.is_active = False
                         screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
 
                     if prev_camera_brightness is None:
