@@ -188,10 +188,18 @@ class BrightnessController:
                     except Empty:
                         screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
 
-                    if screenshot_brightness is None:
+                    if screenshot_brightness is None and not self.is_active and not self.inactivity_printed:
                         print(f"Error getting screenshot brightness at {
                               datetime.now().strftime('%H:%M:%S')}")
-                        screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
+                        self.inactivity_printed = True
+                        self.is_active = False
+
+                        self.stop_event.set()
+                        print(f"Too many consecutive errors. Exiting...at {
+                            datetime.now().strftime('%H:%M:%S')}") # Stop if there are too many consecutive errors
+                        cv2.destroyAllWindows()
+                        break
+
 
                     if prev_camera_brightness is None:
                         prev_camera_brightness = camera_brightness
