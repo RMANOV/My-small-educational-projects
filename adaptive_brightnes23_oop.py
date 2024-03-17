@@ -66,17 +66,19 @@ class BrightnessController:
                 return brightness
             except Exception as e:
                 self.consecutive_errors += 1
-                
-                print(f"Error getting screenshot brightness: {
-                          str(e)} at {datetime.now().strftime('%H:%M:%S')}")
-                self.is_active = False
-                self.inactivity_printed = True
-                self.inactivity_check_interval = 1
-                self.update_interval = min(self.update_interval * 2, 5) # Increase update interval if there is an error
-                if self.consecutive_errors > 5:
-                    self.stop_event.set()
-                    print(f"Too many consecutive errors. Exiting...at {
-                          datetime.now().strftime('%H:%M:%S')}") # Stop if there are too many consecutive errors
+                if not self.is_active and not self.inactivity_printed:
+                    print(f"System inactive. Pausing brightness control at {
+                          datetime.now().strftime('%H:%M:%S')}")
+                    self.inactivity_printed = True                
+                    self.is_active = False
+                    self.inactivity_printed = True
+                    self.inactivity_check_interval = 1
+                    self.update_interval = min(self.update_interval * 2, 5) # Increase update interval if there is an error
+                    if self.consecutive_errors > 3:
+                        self.stop_event.set()
+                        print(f"Too many consecutive errors. Exiting...at {
+                            datetime.now().strftime('%H:%M:%S')}") # Stop if there are too many consecutive errors
+                        cv2.destroyAllWindows()
 
 
                 return None
