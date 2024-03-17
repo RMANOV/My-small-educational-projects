@@ -52,21 +52,24 @@ class BrightnessController:
         return brightness
 
     def get_screenshot_brightness(self):
-        while not self.stop_event.is_set():
-            try:
-                screenshot = pyautogui.screenshot()
-                screenshot = np.array(screenshot)
-                screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
-                brightness = cv2.meanStdDev(screenshot)[0][0][0] / 255 * 100
-                return brightness
-            except Exception as e:
-                print(f"Error getting screenshot brightness: {
-                      str(e)} at {datetime.now().strftime('%H:%M:%S')}")
-                time.sleep(self.update_interval * 10)
-                self.update_interval = max(self.update_interval * 1.5, 5)
-                self.save_state((self.prev_brightness, self.smoothed_brightness,
-                                 self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-                cv2.destroyAllWindows()
+        if self.is_active:
+            while not self.stop_event.is_set():
+                try:
+                    screenshot = pyautogui.screenshot()
+                    screenshot = np.array(screenshot)
+                    screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
+                    brightness = cv2.meanStdDev(screenshot)[0][0][0] / 255 * 100
+                    return brightness
+                except Exception as e:
+                    print(f"Error getting screenshot brightness: {
+                        str(e)} at {datetime.now().strftime('%H:%M:%S')}")
+                    time.sleep(self.update_interval * 10)
+                    self.update_interval = max(self.update_interval * 1.5, 5)
+                    self.save_state((self.prev_brightness, self.smoothed_brightness,
+                                    self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
+                    cv2.destroyAllWindows()
+        else:
+            return self.prev_brightness
 
     def get_screenshot_brightness_thread(self, screenshot_brightness_queue):
         while not self.stop_event.is_set():
