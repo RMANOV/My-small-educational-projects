@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 import pyautogui
 from threading import Thread, Event
-from queue import Queue
+from queue import Queue, Empty
 import pickle
 import pynput
 import queue
@@ -34,10 +34,12 @@ class BrightnessController:
         self.stop_event = Event()
         self.last_activity_time = time.time()
         self.is_active = True
+        self.inactivity_printed = False
 
     def on_activity(self, *args):
         self.last_activity_time = time.time()
         self.is_active = True
+        self.inactivity_printed = False
 
     def turn_on_keyboard_backlight(self):
         pass
@@ -126,9 +128,13 @@ class BrightnessController:
             while not self.stop_event.is_set():
                 if time.time() - self.last_activity_time > self.inactivity_threshold:
                     self.is_active = False
-                    print(f"System inactive. Pausing brightness control at {
-                          datetime.now().strftime('%H:%M:%S')}")
-                    continue
+                    if not self.inactivity_printed:
+                        print(f"System inactive. Pausing brightness control at {
+                              datetime.now().strftime('%H:%M:%S')}")
+                        self.inactivity_printed = True
+                else:
+                    self.is_active = True
+                    self.inactivity_printed = False
 
                 current_brightness = sbc.get_brightness()[0]
                 if abs(current_brightness - self.prev_brightness) > 10:
