@@ -200,6 +200,8 @@ class BrightnessController:
                         cv2.destroyAllWindows()
                         break
 
+                    
+
 
                     if prev_camera_brightness is None:
                         prev_camera_brightness = camera_brightness
