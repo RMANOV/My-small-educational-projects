@@ -31,7 +31,7 @@ class BrightnessController:
             self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd = self.state
         self.stop_event = Event()
         self.last_activity_time = time.time()
-        self.activity_timeout = 5*60  # 5 minutes
+        self.activity_timeout = 1*60  # 5 minutes
 
     def on_move(self, x, y):
         self.last_activity_time = time.time()
@@ -248,4 +248,3 @@ class BrightnessController:
 if __name__ == "__main__":
     bc = BrightnessController()
     bc.adjust_screen_brightness()
-    
