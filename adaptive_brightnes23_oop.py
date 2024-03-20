@@ -76,20 +76,12 @@ class BrightnessController:
                     self.update_interval = min(self.update_interval * 2, 5) # Increase update interval if there is an error
                     self.stop_event.set() 
                     cv2.destroyAllWindows() 
-                    print(f"Too many consecutive errors. Exiting...at {
-                          datetime.now().strftime('%H:%M:%S')}") # Stop if there are too many consecutive errors
+                    
                 elif self.consecutive_errors > 10:
                     self.stop_event.set()
                     print(f"Too many consecutive errors. Exiting...at {
                           datetime.now().strftime('%H:%M:%S')}") # Stop if there are too many consecutive errors
                     cv2.destroyAllWindows()
-                else:
-                    print(f"Error getting screenshot brightness: {str(e)} at {
-                          datetime.now().strftime('%H:%M:%S')}") # Print error message
-
-
-
-
                 return None
         else:
             return None
@@ -203,14 +195,18 @@ class BrightnessController:
                         screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
 
                     if screenshot_brightness is None and not self.is_active and not self.inactivity_printed:
-                        print(f"Error getting screenshot brightness at {
+                        print(f"System inactive. Pausing brightness control at {
                               datetime.now().strftime('%H:%M:%S')}")
                         self.inactivity_printed = True
                         self.is_active = False
+                        # increase inactivity check interval if system is inactive
+                        self.inactivity_check_interval = min(
+                            self.inactivity_check_interval * 2, 10000000000)
+                        self.update_interval = min(
+                            self.update_interval * 2, 5) # Increase update interval if there is an error
 
                         self.stop_event.set()
-                        print(f"Too many consecutive errors. Exiting...at {
-                            datetime.now().strftime('%H:%M:%S')}") # Stop if there are too many consecutive errors
+                        
                         cv2.destroyAllWindows()
                         break
 
