@@ -38,40 +38,41 @@ class BrightnessController:
         self.last_screenshot_time = 0
         self.consecutive_errors = 0
 
-    def on_activity(self, *args):
+    def on_activity(self):
         self.last_activity_time = time.time()
         self.is_active = True
         self.inactivity_printed = False
         self.inactivity_check_interval = 1
+        self.stop_event.clear()  # Resume the threads
+        # Decrease update interval if system is active
+        self.update_interval = max(self.update_interval / 2, 1)
+        # Resume the brightness control
+        self.turn_on_keyboard_backlight()
+        # Load state if system is active
+        state = self.load_state()
+        if state is not None:
+            self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd = state
 
-
-    def on_inactivity(self, *args):
+    def on_inactivity(self):
         self.is_active = False
-        if not self.inactivity_printed:
-            print(f"System inactive. Pausing brightness control at {
-                  datetime.now().strftime('%H:%M:%S')}")
-            self.inactivity_printed = True
-            self.inactivity_check_interval = 1
-            self.update_interval = min(self.update_interval * 2, 5) # Increase update interval if there is an error
-            self.stop_event.set() # Stop the threads
-            cv2.destroyAllWindows() # Close the camera window
+        self.inactivity_printed = True
+        # Increase update interval if system is inactive
+        self.update_interval = min(self.update_interval * 2, 5)
+        self.stop_event.set()  # Pause the threads
+        self.consecutive_errors = 0
+        # Save state if system is inactive
+        self.save_state((self.prev_brightness, self.smoothed_brightness,
+                        self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
+        # Pause the brightness control
+        self.turn_off_keyboard_backlight()
 
-    def when_go_to_sleep(on_activity, on_inactivity):
-        while True:
-            #increase inactivity check interval if system is inactive
-            self.inactivity_check_interval = min(self.inactivity_check_interval * 2, 10000000000) 
-            if time.time() - self.last_activity_time > self.inactivity_threshold and not self.inactivity_printed and not self.is_active and self.stop_event.is_set():
-                on_inactivity() # Pause the brightness control
-            else:
-                on_activity() # Resume the brightness control
-            time.sleep(self.inactivity_check_interval) # Sleep for the inactivity check interval
-
-
-
-
-
-
-
+    def when_go_to_sleep(self):
+        if time.time() - self.last_activity_time > self.inactivity_threshold and not self.inactivity_printed and not self.is_active and self.stop_event.is_set():
+            self.on_inactivity()  # Pause the brightness control
+            return False
+        else:
+            self.on_activity()  # Resume the brightness control
+            return True
 
     def turn_on_keyboard_backlight(self):
         pass
@@ -83,9 +84,8 @@ class BrightnessController:
         brightness = cv2.meanStdDev(frame)[0][0][0] / 255 * 100
         return brightness
 
-    def get_screenshot_brightness(when_go_to_sleep):
-        if when_go_to_sleep:
-            self.when_go_to_sleep(on_activity, on_inactivity)
+    def get_screenshot_brightness(self):
+        if self.when_go_to_sleep():
             try:
                 screenshot = pyautogui.screenshot(region=(0, 0, 100, 100))
                 screenshot = np.array(screenshot)
@@ -95,25 +95,11 @@ class BrightnessController:
                 self.consecutive_errors = 0
                 return brightness
             except Exception as e:
-                on_inactivity()
+                self.on_inactivity()
                 self.consecutive_errors += 1
                 return None
         else:
-            try:
-                screenshot = pyautogui.screenshot(region=(0, 0, 100, 100))
-                screenshot = np.array(screenshot)
-                screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
-                brightness = self.analyze_image(screenshot)
-                self.last_screenshot_time = time.time()
-                self.consecutive_errors = 0
-                return brightness
-            except Exception as e:
-                self.consecutive_errors += 1
-                return None
-
-            
-        
-        
+            return None
 
     def get_screenshot_brightness_thread(self, screenshot_brightness_queue):
         while not self.stop_event.is_set():
@@ -124,12 +110,10 @@ class BrightnessController:
                 time.sleep(1)
             else:
                 self.save_state((self.prev_brightness, self.smoothed_brightness,
-                                 # Save state if system is inactive
                                  self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
                 time.sleep(self.inactivity_check_interval)
                 self.inactivity_check_interval = min(
-                    # Increase inactivity check interval if system is inactive
-                    self.inactivity_check_interval * 2, 10000000000)
+                    self.inactivity_check_interval * 2, 60)
 
     def process_frames(self, frame_queue, brightness_queue):
         frames = []
@@ -181,10 +165,8 @@ class BrightnessController:
                 return
             prev_camera_brightness = None
             prev_screenshot_brightness = None
-            if when_go_to_sleep:
-                self.when_go_to_sleep(on_activity, on_inactivity)
-            
-
+            while not self.stop_event.is_set():
+                self.when_go_to_sleep()
                 if self.is_active:
                     current_brightness = sbc.get_brightness()[0]
                     if abs(current_brightness - self.prev_brightness) > 10:
@@ -213,17 +195,6 @@ class BrightnessController:
                     except Empty:
                         screenshot_brightness = prev_screenshot_brightness if prev_screenshot_brightness is not None else 50
 
-                    if when_go_to_sleep:
-                        self.when_go_to_sleep(on_activity, on_inactivity)
-                        if time.time() - self.last_screenshot_time > 5:
-                            screenshot_brightness = self.get_screenshot_brightness()
-                            if screenshot_brightness is not None:
-                                screenshot_brightness_queue.put(
-                                    screenshot_brightness)
-                            else:
-                                self.consecutive_errors += 1
-                            self.last_screenshot_time = time.time()
-
                     if prev_camera_brightness is None:
                         prev_camera_brightness = camera_brightness
                     if prev_screenshot_brightness is None:
@@ -246,10 +217,9 @@ class BrightnessController:
 
                     error = setpoint - self.smoothed_brightness
                     self.integral_term = max(
-                        # Anti-windup
                         -50, min(50, self.integral_term + error * self.update_interval))
                     derivative_term = (
-                        error - self.prev_error) / self.update_interval  # Derivative term
+                        error - self.prev_error) / self.update_interval
                     output = self.kp * error + self.ki * \
                         self.integral_term + self.kd * derivative_term
                     output = max(-10, min(10, output))
@@ -278,11 +248,9 @@ class BrightnessController:
 
                     if time.time() - last_brightness_change_time > 5:
                         self.update_interval = min(
-                            # Increase update interval if brightness has not changed for a while
                             self.update_interval * 1.5, 5)
                     else:
                         self.update_interval = max(
-                            # Decrease update interval if brightness has changed recently
                             self.update_interval / 1.5, 1)
 
                     prev_camera_brightness = camera_brightness
