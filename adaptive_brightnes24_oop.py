@@ -39,63 +39,34 @@ class BrightnessController:
         self.consecutive_errors = 0
 
     def on_activity(self):
-        # self.last_activity_time = time.time()
-        # self.is_active = True
-        # self.inactivity_printed = False
-        # self.inactivity_check_interval = 1
-        # self.stop_event.clear()  # Resume the threads
-        # # Decrease update interval if system is active
-        # self.update_interval = max(self.update_interval / 2, 1)
-        # # Resume the brightness control
-        # self.turn_on_keyboard_backlight()
-        # # Load state if system is active
-        # state = self.load_state()
-        if not time.time() - self.last_activity_time > 5 and self.is_active and not self.stop_event.is_set():
-            self.last_activity_time = time.time()
-            self.is_active = True
-            self.inactivity_printed = False
-            self.inactivity_check_interval = 1
-            self.stop_event.clear()
-            self.update_interval = max(self.update_interval / 2, 1) # Decrease update interval if system is active
-            self.turn_on_keyboard_backlight()
-            state = self.load_state()
-            if state is not None:
-                self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd = state 
-            return True
-        else:
-            return False
+        self.last_activity_time = time.time()
+        self.is_active = True
+        self.inactivity_printed = False
+        self.inactivity_check_interval = 1
+        self.stop_event.clear()  # Resume the threads
+        # Decrease update interval if system is active
+        self.update_interval = max(self.update_interval / 2, 1)
+        # Resume the brightness control
+        self.turn_on_keyboard_backlight()
+        # Load state if system is active
+        state = self.load_state()
+
 
     def on_inactivity(self):
-        # self.is_active = False
-        # self.inactivity_printed = True
-        # # Increase update interval if system is inactive
-        # self.update_interval = min(self.update_interval * 2, 1000000000)
-        # self.stop_event.set()  # Pause the threads
-        # self.consecutive_errors = 0
-        # # Save state if system is inactive
-        # self.save_state((self.prev_brightness, self.smoothed_brightness,
-        #                 self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-        # # Pause the brightness control
-        # self.turn_off_keyboard_backlight()
-        # # Print message if system is inactive
-        # print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
-        if time.time() - self.last_screenshot_time > 5 and self.consecutive_errors > 5 and not self.is_active and self.stop_event.is_set() and not self.inactivity_printed: 
-            self.is_active = False
-            self.inactivity_printed = True
-            # Increase update interval if system is inactive
-            self.update_interval = min(self.update_interval * 2, 1000000000)
-            self.stop_event.set()
-            self.consecutive_errors = 0
-            # Save state if system is inactive
-            self.save_state((self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-            # Pause the brightness control
-            self.turn_off_keyboard_backlight()
-            # Print message if system is inactive
-            print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
-            self.stop_event.set() # Pause the threads
-            return True
-        else:
-            return False
+        self.is_active = False
+        self.inactivity_printed = True
+        # Increase update interval if system is inactive
+        self.update_interval = min(self.update_interval * 2, 1000000000)
+        self.stop_event.set()  # Pause the threads
+        self.consecutive_errors = 0
+        # Save state if system is inactive
+        self.save_state((self.prev_brightness, self.smoothed_brightness,
+                        self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
+        # Pause the brightness control
+        self.turn_off_keyboard_backlight()
+        # Print message if system is inactive
+        print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
+
 
     def when_go_to_sleep(self):
         if time.time() - self.last_activity_time > self.inactivity_threshold and not self.inactivity_printed and not self.is_active and self.stop_event.is_set():
