@@ -69,7 +69,7 @@ class BrightnessController:
 
 
     def when_go_to_sleep(self):
-        if time.time() - self.last_activity_time > self.inactivity_threshold and not self.inactivity_printed and not self.is_active and self.stop_event.is_set():
+        if time.time() - self.last_activity_time > self.inactivity_threshold and not self.is_active and self.stop_event.is_set():
             self.on_inactivity()  # Pause the brightness control
             return False
         else:
