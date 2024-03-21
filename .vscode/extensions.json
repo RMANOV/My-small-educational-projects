@@ -3,6 +3,27 @@
         "github.copilot-nightly",
         "github.copilot",
         "tabnine.tabnine-vscode",
-        "znck.grammarly"
+        "znck.grammarly",
+        "oracle.oracledevtools",
+        "softwaredotcom.swdc-vscode",
+        "github.copilot-chat",
+        "github.copilot-labs",
+        "ms-vsliveshare.vsliveshare",
+        "magicstack.magicpython",
+        "powerquery.vscode-powerquery",
+        "ms-vscode.powershell",
+        "ms-python.debugpy",
+        "donjayamanne.python-environment-manager",
+        "donjayamanne.python-extension-pack",
+        "louiswt.regexp-preview",
+        "ms-vscode-remote.remote-wsl",
+        "chrmarti.regex",
+        "wakatime.vscode-wakatime",
+        "ms-toolsai.jupyter",
+        "ms-vscode.js-debug-nightly",
+        "visualstudioexptteam.vscodeintellicode",
+        "vscjava.vscode-java-pack",
+        "grapecity.gc-excelviewer",
+        "dbaeumer.vscode-eslint"
     ]
 }
