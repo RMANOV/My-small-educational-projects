@@ -56,7 +56,7 @@ class BrightnessController:
         self.is_active = False
         self.inactivity_printed = True
         # Increase update interval if system is inactive
-        self.update_interval = min(self.update_interval * 2, 1000000000)
+        self.update_interval = min(self.update_interval * 5, 10000000000000000)
         self.consecutive_errors = 0
         # Save state if system is inactive
         self.save_state((self.prev_brightness, self.smoothed_brightness,
@@ -66,7 +66,7 @@ class BrightnessController:
         # Print message if system is inactive
         print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
         # Increase inactivity check interval if system is inactive
-        self.inactivity_check_interval = min( self.inactivity_check_interval * 5, 1000000000)
+        self.inactivity_check_interval = min( self.inactivity_check_interval * 5, 1000000000000000)
         self.stop_event.set()  # Pause the threads
 
 
