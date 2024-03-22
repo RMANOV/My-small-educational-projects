@@ -8,6 +8,7 @@ from threading import Thread, Event
 from queue import Queue, Empty
 import pickle
 import pynput
+import pretty_errors as pe
 
 
 class BrightnessController:
@@ -68,6 +69,7 @@ class BrightnessController:
         # Increase inactivity check interval if system is inactive
         self.inactivity_check_interval = min( self.inactivity_check_interval * 5, 1000000000000000)
         self.stop_event.set()  # Pause the threads
+        
 
 
     def when_go_to_sleep(self):
