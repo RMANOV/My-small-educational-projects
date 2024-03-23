@@ -78,7 +78,7 @@ class BrightnessController:
         self.is_active = False
         self.inactivity_printed = True
         # Increase update interval if system is inactive
-        # self.update_interval = min(self.update_interval * 5, 10000000000000000) 
+        self.update_interval = min(self.update_interval * 5, 10000000000000000) 
         # self.consecutive_errors = 0
         # Save state if system is inactive
         self.save_state((self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
@@ -90,9 +90,9 @@ class BrightnessController:
         # self.inactivity_check_interval = min(self.inactivity_check_interval * 1000, 10000000000000000)
         self.stop_event.set()
         cv2.destroyAllWindows()
+        time.sleep(self.update_interval)
         
         self.when_go_to_sleep()
-
         if self.when_go_to_sleep():
             self.on_activity()
         else:
