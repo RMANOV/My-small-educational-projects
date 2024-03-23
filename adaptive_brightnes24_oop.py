@@ -96,7 +96,6 @@ class BrightnessController:
         if self.when_go_to_sleep():
             self.on_activity()
         else:
-            time.sleep(self.inactivity_check_interval^2)
             self.on_inactivity()
 
 
