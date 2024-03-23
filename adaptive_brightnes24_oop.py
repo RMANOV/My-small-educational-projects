@@ -92,12 +92,12 @@ class BrightnessController:
         cv2.destroyAllWindows()
         
         self.when_go_to_sleep()
-        while not self.stop_event.is_set():
-            if self.when_go_to_sleep():
-                self.on_activity()
-            else:
-                self.on_inactivity()
-                time.sleep(self.inactivity_check_interval^2)
+
+        if self.when_go_to_sleep():
+            self.on_activity()
+        else:
+            time.sleep(self.inactivity_check_interval^2)
+            self.on_inactivity()
 
 
 
