@@ -87,10 +87,14 @@ class BrightnessController:
         # Print message if system is inactive
         print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
         # Increase inactivity check interval if system is inactive
-        self.inactivity_check_interval = min(self.inactivity_check_interval * 2, 60)
-        time.sleep(self.inactivity_check_interval)
+        self.inactivity_check_interval = min(self.inactivity_check_interval * 1000, 10000000000000000)
         self.stop_event.set()
+        time.sleep(self.inactivity_check_interval*1000)
         self.when_go_to_sleep()
+        if self.when_go_to_sleep():
+            self.on_activity()
+        else:
+            self.on_inactivity()
 
 
 
