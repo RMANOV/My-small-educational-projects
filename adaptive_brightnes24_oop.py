@@ -90,7 +90,11 @@ class BrightnessController:
         # self.inactivity_check_interval = min(self.inactivity_check_interval * 1000, 10000000000000000)
         self.stop_event.set()
         cv2.destroyAllWindows()
-        time.sleep(self.update_interval)
+        cap.release() # Release the camera
+        if not self.is_active:
+            time.sleep(self.update_interval)
+        else:
+            self.on_activity()
         
         self.when_go_to_sleep()
         if self.when_go_to_sleep():
