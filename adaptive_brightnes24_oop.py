@@ -54,30 +54,44 @@ class BrightnessController:
 
 
     def on_inactivity(self):
+    #     self.is_active = False
+    #     self.inactivity_printed = True
+    #     # Increase update interval if system is inactive
+    #     self.update_interval = min(self.update_interval * 5, 10000000000000000)
+    #     self.consecutive_errors = 0
+    #     # Save state if system is inactive
+    #     self.save_state((self.prev_brightness, self.smoothed_brightness,
+    #                     self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
+    #     # Pause the brightness control
+    #     self.turn_off_keyboard_backlight()
+    #     # Print message if system is inactive
+    #     print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
+    #     # Increase inactivity check interval if system is inactive
+
+        # self.stop_event.set()
+        # self.when_go_to_sleep()
+        # if self.when_go_to_sleep():
+        #     self.on_activity()
+        # else:
+        #     self.on_inactivity()
+
         self.is_active = False
         self.inactivity_printed = True
         # Increase update interval if system is inactive
-        self.update_interval = min(self.update_interval * 5, 10000000000000000)
+        self.update_interval = min(self.update_interval * 5, 10000000000000000) 
         self.consecutive_errors = 0
         # Save state if system is inactive
-        self.save_state((self.prev_brightness, self.smoothed_brightness,
-                        self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
+        self.save_state((self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
         # Pause the brightness control
         self.turn_off_keyboard_backlight()
         # Print message if system is inactive
         print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
         # Increase inactivity check interval if system is inactive
-        self.inactivity_check_interval = min( self.inactivity_check_interval * 100, 1000000000000)
-        # Wait for the time to go to sleep
-        time.sleep(self.inactivity_threshold)
+        self.inactivity_check_interval = min(self.inactivity_check_interval * 2, 60)
         time.sleep(self.inactivity_check_interval)
         self.stop_event.set()
         self.when_go_to_sleep()
-        if self.when_go_to_sleep():
-            self.on_activity()
-        else:
-            self.on_inactivity()
-            
+
 
 
 
