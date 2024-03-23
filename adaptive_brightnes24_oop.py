@@ -88,7 +88,7 @@ class BrightnessController:
         print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
         # Increase inactivity check interval if system is inactive
         # self.inactivity_check_interval = min(self.inactivity_check_interval * 1000, 10000000000000000)
-        self.stop_event.set().is_set()
+        self.stop_event.set()
         cv2.destroyAllWindows()
         
         self.when_go_to_sleep()
