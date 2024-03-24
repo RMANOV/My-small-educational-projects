@@ -105,12 +105,12 @@ class BrightnessController:
                     time.sleep(self.update_interval)
                     time.sleep(self.inactivity_check_interval)
                     print("-", end="")
-                    self.consecutive_errors = 0
                     return False
             else:
+                self.consecutive_errors = 0
                 self.on_activity()
                 return True
-                
+
 
 
             #         return False
