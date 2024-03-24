@@ -54,87 +54,19 @@ class BrightnessController:
 
 
     def on_inactivity(self):
-    #     self.is_active = False
-    #     self.inactivity_printed = True
-    #     # Increase update interval if system is inactive
-    #     self.update_interval = min(self.update_interval * 5, 10000000000000000)
-    #     self.consecutive_errors = 0
-    #     # Save state if system is inactive
-    #     self.save_state((self.prev_brightness, self.smoothed_brightness,
-    #                     self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-    #     # Pause the brightness control
-    #     self.turn_off_keyboard_backlight()
-    #     # Print message if system is inactive
-    #     print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
-    #     # Increase inactivity check interval if system is inactive
+        if not self.inactivity_printed:
+            print('System is inactive. Pausing brightness control...')
+            self.inactivity_printed = True
+        self.is_active = False
+        self.stop_event.set()  # Pause the threads
+        # Increase update interval if system is inactive
+        self.update_interval = min(self.update_interval * 2, 1000000000000)
+        time.sleep(self.inactivity_check_interval)
+        self.inactivity_check_interval = min( self.inactivity_check_interval * 2, 1000000000000)
+        cv2.destroyAllWindows()
+        return False
 
-        # self.stop_event.set()
-        # self.when_go_to_sleep()
-        # if self.when_go_to_sleep():
-        #     self.on_activity()
-        # else:
-        #     self.on_inactivity()
-            while not self.is_active and self.stop_event.is_set():
-                    self.is_active = False
-                    self.inactivity_printed = True
-                    # Increase update interval if system is inactive
-                    self.update_interval = min(self.update_interval * 5, 10000000000000000) 
-                    # self.consecutive_errors = 0
-                    # Save state if system is inactive
-                    self.save_state((self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-                    # Pause the brightness control
-                    self.turn_off_keyboard_backlight()
-                    # Print message if system is inactive
-                    print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
-                    # Increase inactivity check interval if system is inactive
-                    self.inactivity_check_interval = min(self.inactivity_check_interval * 1000, 10000000000000000)
-                    self.stop_event.set()
-                    cv2.destroyAllWindows()
-                    # Release the camera
-                    # if not cap.isOpened():
-                    #     cap.release()
-                    # # Stop the mouse listener
-                    # mouse_listener.stop()
-                    # # Stop the keyboard listener
-                    # keyboard_listener.stop()
-                    # # Stop the threads
-                    # for _ in range(self.num_threads):
-                    #     frame_queue.put(None)
-                    # # Turn off the keyboard backlight
-                    # self.turn_off_keyboard_backlight()
-                    time.sleep(self.update_interval)
-                    time.sleep(self.inactivity_check_interval)
-                    print("-", end="")
-                    return False
-            else:
-                self.consecutive_errors = 0
-                self.on_activity()
-                return True
-
-
-
-            #         return False
-            # else:
-            #     self.on_activity()
-            #     return True
-            # if not self.is_active and self.stop_event.is_set():
-            #     time.sleep(self.update_interval)
-            # self.is_active = False
-            # self.inactivity_printed = True
-            # # Increase update interval if system is inactive
-            # self.update_interval = min(self.update_interval * 5, 10000000000000000)
-            # self.consecutive_errors = 0
-
-                
-            #         self.when_go_to_sleep()
-            #         if self.when_go_to_sleep():
-            #             self.on_activity()
-            #         else:
-            #             self.on_inactivity()
-            #         return False
-            # else:
-            #     self.on_activity()
-            #     return True
+        
 
                 
     def when_go_to_sleep(self):
