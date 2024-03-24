@@ -57,6 +57,8 @@ class BrightnessController:
         if not self.inactivity_printed:
             print('System is inactive. Pausing brightness control...')
             self.inactivity_printed = True
+        save_state((self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
+        self.turn_off_keyboard_backlight()
         self.is_active = False
         self.stop_event.set()  # Pause the threads
         # Increase update interval if system is inactive
@@ -66,7 +68,7 @@ class BrightnessController:
         cv2.destroyAllWindows()
         return False
 
-        
+
 
                 
     def when_go_to_sleep(self):
