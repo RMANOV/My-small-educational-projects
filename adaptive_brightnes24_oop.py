@@ -108,7 +108,7 @@ class BrightnessController:
                     # self.turn_off_keyboard_backlight()
                     time.sleep(self.update_interval)
                     time.sleep(self.inactivity_check_interval)
-                    print9("-", end="")
+                    print("-", end="")
                     return False
             else:
                 self.on_activity()
