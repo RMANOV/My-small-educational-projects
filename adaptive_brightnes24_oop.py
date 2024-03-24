@@ -74,8 +74,6 @@ class BrightnessController:
         #     self.on_activity()
         # else:
         #     self.on_inactivity()
-            if self.when_go_to_sleep():
-                self.on_activity()
             while True:
                     if not self.is_active:
                         time.sleep(self.update_interval)
@@ -113,6 +111,14 @@ class BrightnessController:
             else:
                 self.on_activity()
                 return True
+            if not self.is_active:
+                time.sleep(self.update_interval)
+            self.is_active = False
+            self.inactivity_printed = True
+            # Increase update interval if system is inactive
+            self.update_interval = min(self.update_interval * 5, 10000000000000000)
+            self.consecutive_errors = 0
+            
                 
             #         self.when_go_to_sleep()
             #         if self.when_go_to_sleep():
