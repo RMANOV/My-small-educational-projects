@@ -38,6 +38,7 @@ class BrightnessController:
         self.inactivity_check_interval = 1
         self.last_screenshot_time = 0
         self.consecutive_errors = 0
+        cap = cv2.VideoCapture(self.camera_index)
 
     def on_activity(self):
         self.last_activity_time = time.time()
@@ -54,24 +55,28 @@ class BrightnessController:
 
 
     def on_inactivity(self):
-        if not self.inactivity_printed:
-            print('System is inactive. Pausing brightness control...')
-            self.inactivity_printed = True
-        save_state((self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-        self.turn_off_keyboard_backlight()
+        self.save_state((self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
         self.is_active = False
-        self.stop_event.set()  # Pause the threads
-        # Increase update interval if system is inactive
-        self.update_interval = min(self.update_interval * 2, 1000000000000)
-        time.sleep(self.inactivity_check_interval)
-        self.inactivity_check_interval = min( self.inactivity_check_interval * 2, 1000000000000)
-        cv2.destroyAllWindows()
-        self.when_go_to_sleep()
-        return False
+        while not self.when_go_to_sleep():
+            self.is_active = False
+            if not self.inactivity_printed:
+                print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
+                self.inactivity_printed = True
+
+            self.inactivity_check_interval = min(self.inactivity_check_interval * 2, 100000000000000000000000)
+            self.update_interval = max(self.update_interval * 2, 100000000000000000000000)
+            
+            time.sleep(self.inactivity_check_interval)
+            return False
+        else:
+            self.is_active = True
+            self.on_activity()
+            return True
 
 
 
-                
+
+
     def when_go_to_sleep(self):
         # if time.time() - self.last_activity_time > self.inactivity_threshold and not self.is_active and self.stop_event.is_set():
         #     self.on_inactivity()  # Pause the brightness control
