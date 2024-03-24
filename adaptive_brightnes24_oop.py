@@ -56,7 +56,12 @@ class BrightnessController:
 
     def on_inactivity(self):
         self.save_state((self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
+        exit()
         self.is_active = False
+        self.stop_event.set()  # Pause the threads
+        cv2.destroyAllWindows()
+        
+
         while not self.when_go_to_sleep():
             self.is_active = False
             if not self.inactivity_printed:
@@ -67,6 +72,7 @@ class BrightnessController:
             self.update_interval = max(self.update_interval * 2, 100000000000000000000000)
             
             time.sleep(self.inactivity_check_interval)
+            
             return False
         else:
             self.is_active = True
