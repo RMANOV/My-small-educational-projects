@@ -46,7 +46,7 @@ class BrightnessController:
         self.inactivity_check_interval = 1
         self.stop_event.clear()  # Resume the threads
         # Decrease update interval if system is active
-        self.update_interval = max(self.update_interval / 2, 1)
+        self.update_interval = max(self.update_interval / 2, 5)
         # Resume the brightness control
         self.turn_on_keyboard_backlight()
         # Load state if system is active
