@@ -108,16 +108,21 @@ class BrightnessController:
                     # self.turn_off_keyboard_backlight()
                     time.sleep(self.update_interval)
                     time.sleep(self.inactivity_check_interval)
-                
-                    self.when_go_to_sleep()
-                    if self.when_go_to_sleep():
-                        self.on_activity()
-                    else:
-                        self.on_inactivity()
+                    print9("-", end="")
                     return False
             else:
                 self.on_activity()
                 return True
+                
+            #         self.when_go_to_sleep()
+            #         if self.when_go_to_sleep():
+            #             self.on_activity()
+            #         else:
+            #             self.on_inactivity()
+            #         return False
+            # else:
+            #     self.on_activity()
+            #     return True
 
                 
     def when_go_to_sleep(self):
