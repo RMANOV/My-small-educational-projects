@@ -66,6 +66,7 @@ class BrightnessController:
         time.sleep(self.inactivity_check_interval)
         self.inactivity_check_interval = min( self.inactivity_check_interval * 2, 1000000000000)
         cv2.destroyAllWindows()
+        self.when_go_to_sleep()
         return False
 
 
