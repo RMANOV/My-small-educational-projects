@@ -76,7 +76,7 @@ class BrightnessController:
             return False
         else:
             self.is_active = True
-            self.on_activity()
+            self.inactivity_printed = False
             return True
 
 
