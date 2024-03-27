@@ -9,6 +9,7 @@ from queue import Queue, Empty
 import pickle
 import pynput
 import pretty_errors as pe
+import ctypes
 
 
 class BrightnessController:
@@ -40,6 +41,9 @@ class BrightnessController:
         self.consecutive_errors = 0
         cap = cv2.VideoCapture(self.camera_index)
 
+    def is_screensaver_active(self):
+        return ctypes.windll.user32.SystemParametersInfoW(114, 0, None, 0)
+
     def on_activity(self):
         self.last_activity_time = time.time()
         self.is_active = True
@@ -48,30 +52,29 @@ class BrightnessController:
         self.stop_event.clear()  # Resume the threads
         # Decrease update interval if system is active
         self.update_interval = max(self.update_interval / 2, 5)
-        # Resume the brightness control
-        self.turn_on_keyboard_backlight()
-        # Load state if system is active
-        state = self.load_state()
-
+        
+        if not self.is_screensaver_active():
+            # Resume the brightness control
+            self.turn_on_keyboard_backlight()
+            # Load state if system is active
+            state = self.load_state()
 
     def on_inactivity(self):
         self.save_state((self.prev_brightness, self.smoothed_brightness, self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-        exit()
         self.is_active = False
         self.stop_event.set()  # Pause the threads
         cv2.destroyAllWindows()
         
-
         while not self.when_go_to_sleep():
             self.is_active = False
             if not self.inactivity_printed:
                 print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
                 self.inactivity_printed = True
-
             self.inactivity_check_interval = min(self.inactivity_check_interval * 2, 100000000000000000000000)
             self.update_interval = max(self.update_interval * 2, 100000000000000000000000)
             
-            time.sleep(self.inactivity_check_interval)
+            if self.is_screensaver_active():
+                self.pause_brightness_control(time.sleep(self.inactivity_check_interval))
             
             return False
         else:
@@ -79,24 +82,17 @@ class BrightnessController:
             self.inactivity_printed = False
             return True
 
-
-
-
-
     def when_go_to_sleep(self):
-        # if time.time() - self.last_activity_time > self.inactivity_threshold and not self.is_active and self.stop_event.is_set():
-        #     self.on_inactivity()  # Pause the brightness control
-        #     return False
-        # else:
-        #     self.on_activity()  # Resume the brightness control
-        #     return True
         while True:
             if time.time() - self.last_activity_time > self.inactivity_threshold and not self.is_active and self.stop_event.is_set():
                 self.on_inactivity()  # Pause the brightness control
-                return False
             else:
                 self.on_activity()  # Resume the brightness control
                 return True
+
+    def pause_brightness_control(self):
+        self.stop_event.set()  # Pause the threads
+        self.turn_off_keyboard_backlight()
 
 
     def turn_on_keyboard_backlight(self):
