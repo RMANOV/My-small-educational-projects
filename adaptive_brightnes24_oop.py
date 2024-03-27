@@ -70,12 +70,14 @@ class BrightnessController:
             if not self.inactivity_printed:
                 print(f'Inactivity detected at {datetime.now().strftime("%H:%M:%S")}')
                 self.inactivity_printed = True
-            self.inactivity_check_interval = min(self.inactivity_check_interval * 2, 100000000000000000000000)
-            self.update_interval = max(self.update_interval * 2, 100000000000000000000000)
             
             if self.is_screensaver_active():
                 # self.pause_brightness_control(time.sleep(self.inactivity_check_interval))
                 self.pause_brightness_control(on_inactivity)
+            return False
+
+            self.inactivity_check_interval = min(self.inactivity_check_interval * 2, 100000000000000000000000)
+            self.update_interval = max(self.update_interval * 2, 100000000000000000000000)
             return False
         else:
             self.is_active = True
