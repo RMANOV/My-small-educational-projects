@@ -74,8 +74,8 @@ class BrightnessController:
             self.update_interval = max(self.update_interval * 2, 100000000000000000000000)
             
             if self.is_screensaver_active():
-                self.pause_brightness_control(time.sleep(self.inactivity_check_interval))
-            
+                # self.pause_brightness_control(time.sleep(self.inactivity_check_interval))
+                self.pause_brightness_control(on_inactivity)
             return False
         else:
             self.is_active = True
