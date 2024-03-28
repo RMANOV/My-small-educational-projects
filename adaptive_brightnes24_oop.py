@@ -261,7 +261,7 @@ class BrightnessController:
                             last_brightness_change_time = time.time()
                         else:
                             self.when_go_to_sleep()
-                            print("-", end="")                            
+                            print("-", end="")
                         if self.smoothed_brightness < 20:
                             self.turn_on_keyboard_backlight()
                         self.save_state((self.prev_brightness, self.smoothed_brightness,
