@@ -23,7 +23,6 @@ class BrightnessController:
         self.frame_interval = frame_interval
         self.update_interval = update_interval
         self.inactivity_threshold = inactivity_threshold
-        self.state = self.load_state()
         self.setup_state()
         self.stop_event = Event()
         self.last_activity_time = time.time()
@@ -45,6 +44,7 @@ class BrightnessController:
         self.screenshot_weight = 0.3
 
     def setup_state(self):
+        self.state = self.load_state()
         if self.state is None:
             self.prev_brightness = sbc.get_brightness()[0]
             self.smoothed_brightness = self.prev_brightness
@@ -286,10 +286,9 @@ class BrightnessController:
         try:
             with open('brightness_controller_state.pkl', 'rb') as f:
                 state = pickle.load(f)
-                (self.prev_brightness, self.smoothed_brightness, self.integral_term,
-                 self.prev_error, self.kp, self.ki, self.kd) = state
-        except (FileNotFoundError, ValueError):
-            pass
+                return state
+        except (FileNotFoundError, ValueError, EOFError):
+            return None
 
     def save_state(self, state):
         with open('brightness_controller_state.pkl', 'wb') as f:
