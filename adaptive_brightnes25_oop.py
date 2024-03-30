@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import screen_brightness_control as sbc
+from screen_brightness_control.exceptions import NoValidDisplayError
 from datetime import datetime
 import time
 import pyautogui
@@ -46,7 +47,10 @@ class BrightnessController:
     def setup_state(self):
         self.state = self.load_state()
         if self.state is None:
-            self.prev_brightness = sbc.get_brightness()[0]
+            try:
+                self.prev_brightness = sbc.get_brightness()[0]
+            except NoValidDisplayError:
+                self.prev_brightness = 50
             self.smoothed_brightness = self.prev_brightness
             self.integral_term = 0
             self.prev_error = 0
@@ -190,7 +194,10 @@ class BrightnessController:
             while not self.stop_event.is_set():
                 self.when_go_to_sleep()
                 if self.is_active:
-                    current_brightness = sbc.get_brightness()[0]
+                    try:
+                        current_brightness = sbc.get_brightness()[0]
+                    except NoValidDisplayError:
+                        current_brightness = self.prev_brightness
                     brightness_diff = abs(
                         current_brightness - self.prev_brightness)
                     if brightness_diff > self.brightness_change_threshold:
@@ -261,9 +268,11 @@ class BrightnessController:
                             self.turn_on_keyboard_backlight()
                         self.save_state((self.prev_brightness, self.smoothed_brightness,
                                          self.integral_term, self.prev_error, self.kp, self.ki, self.kd))
-                    except Exception as e:
-                        print(f"Error setting brightness: {str(e)} at {
+                    except NoValidDisplayError:
+                        print(f"Error setting brightness: no displays detected at {
                               datetime.now().strftime('%H:%M:%S')}")
+                        self.smoothed_brightness = self.prev_brightness
+                        self.update_interval = max(self.update_interval * 2, 1)
 
                     self.update_interval = min(self.update_interval * 1.5, 5) if time.time(
                     ) - last_brightness_change_time > 5 else max(self.update_interval / 1.5, 0.1)
