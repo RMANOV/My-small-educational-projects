@@ -273,6 +273,7 @@ class BrightnessController:
                               datetime.now().strftime('%H:%M:%S')}")
                         self.smoothed_brightness = self.prev_brightness
                         self.update_interval = max(self.update_interval * 2, 1)
+                        exit()
 
                     self.update_interval = min(self.update_interval * 1.5, 5) if time.time(
                     ) - last_brightness_change_time > 5 else max(self.update_interval / 1.5, 0.1)

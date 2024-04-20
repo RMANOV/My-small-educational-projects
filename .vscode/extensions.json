@@ -11,7 +11,6 @@
         "ms-vsliveshare.vsliveshare",
         "magicstack.magicpython",
         "powerquery.vscode-powerquery",
-        "ms-vscode.powershell",
         "ms-python.debugpy",
         "donjayamanne.python-environment-manager",
         "donjayamanne.python-extension-pack",
@@ -24,6 +23,7 @@
         "visualstudioexptteam.vscodeintellicode",
         "vscjava.vscode-java-pack",
         "grapecity.gc-excelviewer",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "googlecloudtools.cloudcode"
     ]
 }
