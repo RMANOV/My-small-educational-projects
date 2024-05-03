@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-native": "^0.73.0"
+  }
+}
