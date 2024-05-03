@@ -30,7 +30,7 @@ disk_label = tk.Label(window, text="", font=(
     "Calibri", 14), bg="black", fg="white", bd=0)
 network_label = tk.Label(window, text="", font=(
     "Calibri", 14), bg="black", fg="white", bd=0)
-recommendation_label = tk.Label(window, text="", font=(
+temperature_label = tk.Label(window, text="", font=(
     "Calibri", 14), bg="black", fg="white", bd=0)
 
 # Get the time of start of the program
@@ -52,19 +52,19 @@ def get_hardware_temperatures():
         return temperatures
     except (requests.exceptions.RequestException, ValueError) as e:
         print(f"Error retrieving temperatures: {str(e)}")
-        return {}
+        return None
 
 
-def calculate_health_index(temperatures, cpu_usage, ram_usage, disk_usage, network_usage):
+def calculate_health_index(temperatures, cpu_usage, ram_usage, disk_usage):
     max_health_index = 100
-    critical_temp_threshold = 60
-    high_temp_threshold = 50
+    critical_temp_threshold = 80
+    warning_temp_threshold = 60
 
     if temperatures:
         max_temp = max(temperatures.values())
         if max_temp >= critical_temp_threshold:
             temp_factor = 0
-        elif max_temp >= high_temp_threshold:
+        elif max_temp >= warning_temp_threshold:
             temp_factor = 50
         else:
             temp_factor = 100
@@ -72,12 +72,11 @@ def calculate_health_index(temperatures, cpu_usage, ram_usage, disk_usage, netwo
         temp_factor = 100
 
     cpu_factor = 100 - cpu_usage
-    ram_factor = 100 - (ram_usage * 0.5)
+    ram_factor = 100 - ram_usage
     disk_factor = 100 - disk_usage
-    network_factor = 100 - (network_usage * 0.001)
 
-    health_index = (temp_factor * 0.4 + cpu_factor * 0.3 + disk_factor *
-                    0.2 + ram_factor * 0.1) / (1 + network_factor * 0.001)
+    health_index = (temp_factor * 0.4 + cpu_factor * 0.3 +
+                    ram_factor * 0.2 + disk_factor * 0.1)
     health_index = max(0, min(health_index, max_health_index))
 
     return int(health_index), max_health_index
@@ -92,48 +91,50 @@ def system_health_monitor():
     temperatures = get_hardware_temperatures()
 
     health_index, max_health_index = calculate_health_index(
-        temperatures, cpu_usage, ram_usage, disk_usage, network_usage)
+        temperatures, cpu_usage, ram_usage, disk_usage)
 
     legend = ""
-    recommendation = ""
     if health_index >= 80:
         color = "white"
         legend = "System running smoothly"
     elif health_index >= 60:
         color = "yellow"
-        if cpu_usage > 90:
-            legend += "High CPU usage. "
-            recommendation += "Close unnecessary programs or processes. "
-        if disk_usage > 95:
-            legend += "Disk nearly full. "
-            recommendation += "Free up disk space. "
-        if temperatures and any(temp > 90 for temp in temperatures.values()):
-            legend += "High temperatures!"
-            recommendation += "Check cooling system and ensure proper ventilation. "
+        legend = "System running with some issues"
     elif health_index >= 40:
         color = "orange"
-        legend = "Performance impacted. Check resources."
-        if cpu_usage > 90:
-            recommendation += "Close CPU-intensive programs or limit their usage. "
-        if ram_usage > 90:
-            recommendation += "Close memory-intensive programs or add more RAM. "
-        if "Chrome" in (p.name() for p in psutil.process_iter()):
-            recommendation += "Close Chrome or reduce the number of open tabs. "
+        legend = "System performance degraded"
     else:
         color = "red"
-        legend = "System health critical!"
-        recommendation = "System information will update shortly."
+        legend = "System health critical"
 
     health_label.config(fg=color)
     legend_label.config(text=legend, fg=color)
-    recommendation_label.config(text=recommendation, fg=color)
 
     # Update individual component labels
-    cpu_label.config(text=f"CPU Usage: {cpu_usage}%")
-    ram_label.config(text=f"RAM Usage: {ram_usage}%")
-    disk_label.config(text=f"Disk Usage: {disk_usage}%")
+    cpu_color = "red" if cpu_usage > 90 else "white"
+    cpu_label.config(text=f"CPU Usage: {cpu_usage}%", fg=cpu_color)
+
+    ram_color = "red" if ram_usage > 90 else "white"
+    ram_label.config(text=f"RAM Usage: {ram_usage}%", fg=ram_color)
+
+    disk_color = "red" if disk_usage > 95 else "white"
+    disk_label.config(text=f"Disk Usage: {disk_usage}%", fg=disk_color)
+
     network_label.config(text=f"Network Usage: {
-                         network_usage / 1024 / 1024:.2f} MB/s")
+                         network_usage / 1024 / 1024:.2f} MB/s", fg="white")
+
+    temp_text = "Temperatures:\n"
+    temp_color = "white"
+    if temperatures is not None:
+        for component, temp in temperatures.items():
+            if temp > 80:
+                temp_color = "red"
+            elif temp > 60:
+                temp_color = "orange"
+            temp_text += f"{component}: {temp}°C\n"
+    else:
+        temp_text += "N/A"
+    temperature_label.config(text=temp_text, fg=temp_color)
 
     return f"{health_index} / {max_health_index}"
 
@@ -167,13 +168,8 @@ def timer_from_start_of_program():
     return timer
 
 
-def update_time():
+def update_labels():
     current_time = datetime.datetime.now().strftime("%H:%M:%S")
-    time_label.config(text=current_time)
-    window.after(1000, update_time)
-
-
-def update_system_info():
     current_date = datetime.datetime.now().strftime("%d.%m.%Y")
     current_day_name = datetime.datetime.now().strftime("%A")
     timer1 = timer_from_start_of_program()
@@ -186,28 +182,27 @@ def update_system_info():
     else:
         uptime = "Uptime data not available"
 
+    time_label.config(text=current_time)
     date_label.config(text=f"Date: {current_date}\nDay: {current_day_name}")
     health_label.config(text=f"System Health Index:\n{system_health}")
     info_label.config(text=f"Uptime: {uptime}\nTimer from start: {timer1}")
 
-    # Update system info every 30 seconds
-    window.after(30000, update_system_info)
+    window.after(1000, update_labels)
 
 
-# Call the update functions to start updating the labels
-update_time()
-update_system_info()
+# Call the update_labels function to start updating the labels
+update_labels()
 
 # Pack the label widgets into the window
 date_label.pack(side=tk.TOP, fill=tk.X)
 time_label.pack(expand=True)
 health_label.pack(side=tk.TOP, fill=tk.X)
 legend_label.pack(side=tk.TOP, fill=tk.X)
-cpu_label.pack(side=tk.TOP, fill=tk.X)
-ram_label.pack(side=tk.TOP, fill=tk.X)
-disk_label.pack(side=tk.TOP, fill=tk.X)
-network_label.pack(side=tk.TOP, fill=tk.X)
-recommendation_label.pack(side=tk.TOP, fill=tk.X)
+cpu_label.place(relx=1.0, rely=0.0, anchor='ne')
+ram_label.place(relx=1.0, rely=0.05, anchor='ne')
+disk_label.place(relx=1.0, rely=0.1, anchor='ne')
+network_label.place(relx=1.0, rely=0.15, anchor='ne')
+temperature_label.place(relx=1.0, rely=0.2, anchor='ne')
 info_label.pack(side=tk.BOTTOM, fill=tk.X)
 
 # Disable window resizing to prevent flickering
