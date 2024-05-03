@@ -40,3 +40,33 @@ if id "username" >/dev/null 2>&1; then echo "User exists"; else echo "User does 
 
 how to check if a group exists in Linux
 if grep -q "groupname" /etc/group; then echo "Group exists"; else echo "Group does not exist"; fi
+
+ubuntu
+i forgot my linux sudo password, how do i reset it?
+
+resetting the sudo password is a bit tricky, but it can be done. here is how you can do it:
+
+1. boot your computer in recovery mode. you can do this by pressing the power button and the restart button at the same time.
+2. select the option to enter the recovery mode.
+3. wait for the system to boot up.
+4. select the option to drop to a root shell.
+5. type the following command: `passwd root`
+6. you will be prompted to enter the new password.
+7. type the new password twice.
+8. press enter to save the new password.
+9. reboot your computer.
+
+now, you should be able to use the new password to log in as root.
+
+im in the wsl and i forgot my linux sudo password, how do i reset it?
+
+resetting the sudo password in the wsl is a bit different than resetting it on a regular linux system. here is how you can do it:
+
+1. open the wsl terminal.
+2. type the following command: `sudo passwd root`
+3. you will be prompted to enter the new password.
+4. type the new password twice.
+
+
+
+
