@@ -90,58 +90,70 @@ def calculate_health_index(cpu_usage, ram_usage, disk_usage, hardware_info):
     component_states = {}
 
     cpu_state = calculate_component_state(cpu_usage, 50, 70)
-    component_states['CPU Usage'] = cpu_state
+    component_states['CPU Usage'] = (cpu_state, cpu_usage)
 
     ram_state = calculate_component_state(ram_usage, 60, 80)
-    component_states['RAM Usage'] = ram_state
+    component_states['RAM Usage'] = (ram_state, ram_usage)
 
     disk_state = calculate_component_state(disk_usage, 60, 80)
-    component_states['Disk Usage'] = disk_state
+    component_states['Disk Usage'] = (disk_state, disk_usage)
 
     temp_state = "white"
+    temp_value = 0
     for component, temp in hardware_info.get('Temperatures', {}).items():
         if temp > 50:
             temp_state = "red"
-            break
+            temp_value = max(temp_value, temp)
         elif temp > 40:
             temp_state = "orange"
-    component_states['Temperatures'] = temp_state
+            temp_value = max(temp_value, temp)
+    component_states['Temperatures'] = (temp_state, temp_value)
 
     load_state = "white"
+    load_value = 0
     for component, load in hardware_info.get('Load', {}).items():
         if load > 80:
             load_state = "red"
-            break
+            load_value = max(load_value, load)
         elif load > 60:
             load_state = "orange"
-    component_states['Load'] = load_state
+            load_value = max(load_value, load)
+    component_states['Load'] = (load_state, load_value)
 
     fan_state = "white"
+    fan_value = float('inf')
     for component, fan_speed in hardware_info.get('Fan', {}).items():
         if fan_speed < 500:
             fan_state = "red"
-            break
+            fan_value = min(fan_value, fan_speed)
         elif fan_speed < 1000:
             fan_state = "orange"
-    component_states['Fan'] = fan_state
+            fan_value = min(fan_value, fan_speed)
+    component_states['Fan'] = (fan_state, fan_value)
 
     voltage_state = "white"
+    voltage_value = 0
     for component, voltage in hardware_info.get('Voltage', {}).items():
         if voltage < 0.95 or voltage > 1.05:
             voltage_state = "red"
+            voltage_value = voltage
             break
         elif voltage < 0.98 or voltage > 1.02:
             voltage_state = "orange"
-    component_states['Voltage'] = voltage_state
+            voltage_value = voltage
+    component_states['Voltage'] = (voltage_state, voltage_value)
 
     clock_state = "white"
+    clock_value = 0
     for component, clock in hardware_info.get('Clock', {}).items():
         if clock < 0.95 or clock > 1.05:
             clock_state = "red"
+            clock_value = clock
             break
         elif clock < 0.98 or clock > 1.02:
             clock_state = "orange"
-    component_states['Clock'] = clock_state
+            clock_value = clock
+    component_states['Clock'] = (clock_state, clock_value)
 
     component_factors = {
         'Temperatures': 0.3,
@@ -154,8 +166,8 @@ def calculate_health_index(cpu_usage, ram_usage, disk_usage, hardware_info):
         'Clock': 0.02
     }
 
-    health_index = sum(100 if state == "white" else 50 if state ==
-                       "orange" else 0 for state in component_states.values())
+    health_index = sum(100 if state[0] == "white" else 50 if state[0]
+                       == "orange" else 0 for state in component_states.values())
     health_index = health_index / \
         len(component_states) if component_states else 100
     health_index = max(0, min(health_index, max_health_index))
@@ -166,8 +178,8 @@ def calculate_health_index(cpu_usage, ram_usage, disk_usage, hardware_info):
     weighted_health_index = sum(
         h * w for h, w in zip(health_index_history, weights)) / sum(weights)
 
-    overall_state = "red" if any(state == "red" for state in component_states.values()) else \
-                    "orange" if any(state == "orange" for state in component_states.values()) else \
+    overall_state = "red" if any(state[0] == "red" for state in component_states.values()) else \
+                    "orange" if any(state[0] == "orange" for state in component_states.values()) else \
                     "white"
 
     return int(weighted_health_index), overall_state, component_states
@@ -195,22 +207,33 @@ def system_health_monitor():
 
     legend_label.config(text=legend, fg=overall_state)
 
-    cpu_label.config(text=f"CPU Usage: {
-                     component_states['CPU Usage']}", fg=component_states['CPU Usage'])
-    ram_label.config(text=f"RAM Usage: {
-                     component_states['RAM Usage']}", fg=component_states['RAM Usage'])
-    disk_label.config(text=f"Disk Usage: {
-                      component_states['Disk Usage']}", fg=component_states['Disk Usage'])
-    temp_label.config(text=f"Temperatures: {
-                      component_states['Temperatures']}", fg=component_states['Temperatures'])
-    load_label.config(
-        text=f"Load: {component_states['Load']}", fg=component_states['Load'])
-    fan_label.config(
-        text=f"Fan: {component_states['Fan']}", fg=component_states['Fan'])
+    cpu_state, cpu_value = component_states['CPU Usage']
+    cpu_label.config(text=f"CPU Usage: {cpu_value:.0f}%", fg=cpu_state)
+
+    ram_state, ram_value = component_states['RAM Usage']
+    ram_label.config(text=f"RAM Usage: {ram_value:.0f}%", fg=ram_state)
+
+    disk_state, disk_value = component_states['Disk Usage']
+    disk_label.config(text=f"Disk Usage: {disk_value:.0f}%", fg=disk_state)
+
+    temp_state, temp_value = component_states['Temperatures']
+    temp_label.config(text=f"Temperature: {temp_value:.0f}°C", fg=temp_state)
+
+    load_state, load_value = component_states['Load']
+    load_label.config(text=f"Load: {load_value:.0f}%", fg=load_state)
+
+    fan_state, fan_value = component_states['Fan']
+    if fan_value == float('inf'):
+        fan_label.config(text=f"Fan: N/A", fg=fan_state)
+    else:
+        fan_label.config(text=f"Fan: {fan_value:.0f} RPM", fg=fan_state)
+
+    voltage_state, voltage_value = component_states['Voltage']
     voltage_label.config(
-        text=f"Voltage: {component_states['Voltage']}", fg=component_states['Voltage'])
-    clock_label.config(
-        text=f"Clock: {component_states['Clock']}", fg=component_states['Clock'])
+        text=f"Voltage: {voltage_value:.0f} V", fg=voltage_state)
+
+    clock_state, clock_value = component_states['Clock']
+    clock_label.config(text=f"Clock: {clock_value:.0f} GHz", fg=clock_state)
 
     return f"{health_index} / 100"
 
