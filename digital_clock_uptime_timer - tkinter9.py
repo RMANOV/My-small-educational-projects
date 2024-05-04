@@ -27,31 +27,41 @@ component_labels = {}
 
 time_of_start = datetime.datetime.now()
 
+
 def get_last_restart_time():
     try:
         with open("uptime.txt", "r") as file:
             uptime_data = file.read()
-        last_restart_date = re.search(
-            r"(\d{2}\.\d{2}\.\d{4})", uptime_data).group(1)
-        last_restart_time = re.search(
-            r"(\d{2}:\d{2}:\d{2})", uptime_data).group(1)
-        return last_restart_date, last_restart_time
+            match = re.search(
+                r"Last restart: (\d{2}\.\d{2}\.\d{4}) (\d{2}:\d{2}:\d{2})", uptime_data)
+            if match:
+                last_restart_date = match.group(1)
+                last_restart_time = match.group(2)
+                return last_restart_date, last_restart_time
+            else:
+                return None
     except:
         return None
+
 
 def timer_from_start_of_program():
     current_time = datetime.datetime.now()
     time_difference = current_time - time_of_start
     return f"{time_difference.seconds // 3600} hr, {time_difference.seconds % 36000 // 60} min, {time_difference.seconds % 60} sec"
 
-def show_recommendations(component_states, overall_state):
+
+def show_recommendations(component_states):
     recommendations = []
     for component, state in component_states.items():
-        if state and state[0] == "red":  # Check if state is not None before accessing
+        if state and state[0] == "red":
             recommendations.append(f"{component} is critical.")
-    return "\n".join(recommendations), overall_state
+    if not recommendations:
+        recommendations.append("")
+    return "\n".join(recommendations)
+
 
 health_index_history = deque(maxlen=10)
+
 
 def get_hardware_info():
     hardware_info = {}
@@ -66,6 +76,7 @@ def get_hardware_info():
         pass
     return hardware_info
 
+
 def calculate_component_state(value, warning_threshold, critical_threshold, unit):
     if value == float('inf') or value == 0:
         return None
@@ -76,22 +87,33 @@ def calculate_component_state(value, warning_threshold, critical_threshold, unit
     else:
         return "white", f"{int(value)} {unit}"
 
+
 def calculate_health_index(component_states):
-    filtered_states = {k: v for k, v in component_states.items() if v is not None}
+    filtered_states = {k: v for k,
+                       v in component_states.items() if v is not None}
     max_health_index = 100
-    health_index = sum(100 if state[0] == "white" else 50 if state[0]
-                       == "orange" else 0 for state in filtered_states.values())
-    health_index = health_index / \
-        len(filtered_states) if filtered_states else 100
+    critical_components = sum(
+        1 for state in filtered_states.values() if state[0] == "red")
+    warning_components = sum(
+        1 for state in filtered_states.values() if state[0] == "orange")
+    healthy_components = len(filtered_states) - \
+        critical_components - warning_components
+
+    health_index = (healthy_components * 100 + warning_components *
+                    50) / len(filtered_states) if filtered_states else 100
     health_index = max(0, min(health_index, max_health_index))
+
     health_index_history.append(health_index)
     weights = list(range(1, len(health_index_history) + 1))
     weighted_health_index = sum(
         h * w for h, w in zip(health_index_history, weights)) / sum(weights)
-    overall_state = "red" if any(state[0] == "red" for state in filtered_states.values()) else \
-                    "orange" if any(state[0] == "orange" for state in filtered_states.values()) else \
+
+    overall_state = "red" if critical_components > 0 else \
+                    "orange" if warning_components > 0 else \
                     "white"
+
     return int(weighted_health_index), overall_state
+
 
 def system_health_monitor():
     cpu_usage = psutil.cpu_percent()
@@ -120,12 +142,6 @@ def system_health_monitor():
     }
 
     health_index, overall_state = calculate_health_index(component_states)
-    health_label.config(fg=overall_state)
-
-    legend = "System running smoothly" if overall_state == "white" else \
-             "System running with some issues" if overall_state == "orange" else \
-             "System health critical"
-    legend_label.config(text=legend, fg=overall_state)
 
     for component, state in component_states.items():
         if state:
@@ -138,41 +154,48 @@ def system_health_monitor():
                 component_labels[component] = label
             label.config(text=f"{component}: {state[1]}", fg=state[0])
 
-    return f"{health_index} / 100", component_states
+    return f"{health_index} / 100", component_states, overall_state
+
 
 def update_labels():
     current_time = datetime.datetime.now().strftime("%H:%M:%S")
     current_date = datetime.datetime.now().strftime("%d.%m.%Y")
     current_day_name = datetime.datetime.now().strftime("%A")
     last_restart = get_last_restart_time()
-    system_health, component_states = system_health_monitor()
 
     time_label.config(text=current_time)
     if date_label.cget("text") != f"Date: {current_date}\nDay: {current_day_name}":
-        date_label.config(text=f"Date: {current_date}\nDay: {current_day_name}")
-    health_label.config(text=f"System Health Index:\n{system_health}")
+        date_label.config(text=f"Date: {current_date}\nDay: {
+                          current_day_name}")
+
+    system_health, component_states, overall_state = system_health_monitor()
+    health_label.config(text=f"System Health Index:\n{system_health}", fg=overall_state)
+
+    legend = "System running smoothly" if overall_state == "white" else \
+             "System running with some issues" if overall_state == "orange" else \
+             "System health critical"
+    legend_label.config(text=legend, fg=overall_state)
 
     if last_restart:
-        last_restart_date, last_restart_time = last_restart
         last_restart_datetime = datetime.datetime.strptime(
-            f"{last_restart_date} {last_restart_time}", "%d.%m.%Y %H:%M:%S")
-        uptime_days = (datetime.datetime.now() - last_restart_datetime).days
-        uptime_hours = (datetime.datetime.now() -
-                        last_restart_datetime).seconds // 3600
-        info_label.config(text=f"Uptime: {uptime_days} days, {uptime_hours} hours\nTimer from start: {timer_from_start_of_program()}")
+            f"{last_restart[0]} {last_restart[1]}", "%d.%m.%Y %H:%M:%S")
+        uptime = datetime.datetime.now() - last_restart_datetime
+        info_label.config(text=f"Uptime: {uptime.days} days, {
+                          uptime.seconds // 3600} hr\nTimer from start: {timer_from_start_of_program()}")
     else:
         info_label.config(
-            # X hr,Y min,6 sec
             text=f"Uptime: N/A\nTimer from start: {timer_from_start_of_program()}")
 
-    recommendations, overall_state = show_recommendations(component_states, system_health)
-    recommendation_label.config(text=recommendations, fg="red" if overall_state == "red" else "orange" if overall_state == "orange" else "white")
+    recommendations = show_recommendations(component_states)
+    recommendation_label.config(text=recommendations, fg=overall_state)
 
-    uptime_data = f"Last restart: {current_date} {current_time}\nTimer from start: {timer_from_start_of_program()}"
+    uptime_data = f"Last restart: {current_date} {
+        current_time}\nTimer from start: {timer_from_start_of_program()}"
     with open("uptime.txt", "w") as file:
         file.write(uptime_data)
 
     window.after(1000, update_labels)
+
 
 time_label.pack(expand=True)
 date_label.pack(side=tk.TOP, fill=tk.X)
