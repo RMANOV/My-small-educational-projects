@@ -12,7 +12,7 @@ window.state('zoomed')
 window.configure(background='black')
 
 time_label = tk.Label(window, text="", font=(
-    "Calibri", 350), bg="black", fg="white", bd=0)
+    "Calibri", 320), bg="black", fg="white", bd=0)
 date_label = tk.Label(window, text="", font=(
     "Calibri", 30), bg="black", fg="white", bd=0)
 health_label = tk.Label(window, text="", font=(
@@ -116,7 +116,7 @@ def system_health_monitor():
 def show_recommendations(component_states):
     recommendations = []
     for component, state in component_states.items():
-        if state[0] == "red":
+        if state[0] == "red" or state[0] == "orange":
             if component == "CPU Usage":
                 recommendations.append("- Reduce CPU load")
             elif component == "RAM Usage":
