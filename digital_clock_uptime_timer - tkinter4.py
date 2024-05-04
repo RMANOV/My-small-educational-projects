@@ -111,13 +111,13 @@ def system_health_monitor():
     legend_label.config(text=legend, fg=color)
 
     # Update individual component labels
-    cpu_color = "red" if cpu_usage > 90 else "white"
+    cpu_color = "red" if cpu_usage > 90 else "orange" if cpu_usage > 70 else "white"
     cpu_label.config(text=f"CPU Usage: {cpu_usage}%", fg=cpu_color)
 
-    ram_color = "red" if ram_usage > 90 else "white"
+    ram_color = "red" if ram_usage > 90 else "orange" if ram_usage > 70 else "white"
     ram_label.config(text=f"RAM Usage: {ram_usage}%", fg=ram_color)
 
-    disk_color = "red" if disk_usage > 95 else "white"
+    disk_color = "red" if disk_usage > 95 else "orange" if disk_usage > 80 else "white"
     disk_label.config(text=f"Disk Usage: {disk_usage}%", fg=disk_color)
 
     network_label.config(text=f"Network Usage: {
