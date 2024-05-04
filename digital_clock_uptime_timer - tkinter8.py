@@ -187,5 +187,6 @@ legend_label.pack(side=tk.TOP, fill=tk.X)
 info_label.pack(side=tk.BOTTOM, fill=tk.X)
 recommendation_label.pack(side=tk.BOTTOM, fill=tk.X)
 
+
 update_labels()
 window.mainloop()
