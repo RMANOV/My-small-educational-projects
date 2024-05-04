@@ -22,7 +22,7 @@ legend_label = tk.Label(window, text="", font=(
 recommendation_label = tk.Label(window, text="", font=(
     "Calibri", 80), bg="black", fg="white", bd=0)
 info_label = tk.Label(window, text="", font=(
-    "Calibri", 18), bg="black", fg="white", bd=0)
+    "Calibri", 30), bg="black", fg="white", bd=0)
 component_labels = {}
 
 time_of_start = datetime.datetime.now()
@@ -30,30 +30,53 @@ time_of_start = datetime.datetime.now()
 
 def get_last_restart_time():
     try:
-        with open("uptime.txt", "r") as file:
-            uptime_data = file.read()
-            match = re.search(
-                r"Last restart: (\d{2}\.\d{2}\.\d{4}) (\d{2}:\d{2}:\d{2})", uptime_data)
-            if match:
-                last_restart_date = match.group(1)
-                last_restart_time = match.group(2)
-                return last_restart_date, last_restart_time
+        last_restart_timestamp = psutil.boot_time()
+        last_restart_datetime = datetime.datetime.fromtimestamp(
+            last_restart_timestamp)
+        current_datetime = datetime.datetime.now()
+        time_since_restart = current_datetime - last_restart_datetime
+
+        days = time_since_restart.days
+        hours, remainder = divmod(time_since_restart.seconds, 3600)
+        minutes, _ = divmod(remainder, 60)
+
+        # return f"{days} days, {hours:02d} hours, {minutes:02d} minutes"
+        # if no days or hours, return minutes
+        if days == 0:
+            if hours == 0:
+                return f"{minutes} minutes"
             else:
-                return None
+                return f"{hours} hours, {minutes} minutes"
+        else:
+            return f"{days} days, {hours} hours, {minutes} minutes"
     except:
-        return None
+        return "N/A"
 
 
 def timer_from_start_of_program():
     current_time = datetime.datetime.now()
     time_difference = current_time - time_of_start
-    return f"{time_difference.seconds // 3600} hr, {time_difference.seconds % 36000 // 60} min, {time_difference.seconds % 60} sec"
+    days = time_difference.days
+    hours, remainder = divmod(time_difference.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    # return f"{days} days, {hours:02d} hours, {minutes:02d} minutes, {seconds:02d} seconds"
+    # if no days or hours or minutes, return seconds
+    if days == 0:
+        if hours == 0:
+            if minutes == 0:
+                return f"{seconds} seconds"
+            else:
+                return f"{minutes} minutes, {seconds} seconds"
+        else:
+            return f"{hours} hours, {minutes} minutes, {seconds} seconds"
+    else:
+        return f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds"
 
 
 def show_recommendations(component_states):
     recommendations = []
     for component, state in component_states.items():
-        if state and state[0] == "red":
+        if state and (state[0] == "red" or state[0] == "orange"):
             recommendations.append(f"{component} is critical.")
     if not recommendations:
         recommendations.append("")
@@ -161,7 +184,6 @@ def update_labels():
     current_time = datetime.datetime.now().strftime("%H:%M:%S")
     current_date = datetime.datetime.now().strftime("%d.%m.%Y")
     current_day_name = datetime.datetime.now().strftime("%A")
-    last_restart = get_last_restart_time()
 
     time_label.config(text=current_time)
     if date_label.cget("text") != f"Date: {current_date}\nDay: {current_day_name}":
@@ -169,30 +191,20 @@ def update_labels():
                           current_day_name}")
 
     system_health, component_states, overall_state = system_health_monitor()
-    health_label.config(text=f"System Health Index:\n{system_health}", fg=overall_state)
+    health_label.config(text=f"System Health Index:\n{
+                        system_health}", fg=overall_state)
 
     legend = "System running smoothly" if overall_state == "white" else \
              "System running with some issues" if overall_state == "orange" else \
              "System health critical"
     legend_label.config(text=legend, fg=overall_state)
 
-    if last_restart:
-        last_restart_datetime = datetime.datetime.strptime(
-            f"{last_restart[0]} {last_restart[1]}", "%d.%m.%Y %H:%M:%S")
-        uptime = datetime.datetime.now() - last_restart_datetime
-        info_label.config(text=f"Uptime: {uptime.days} days, {
-                          uptime.seconds // 3600} hr\nTimer from start: {timer_from_start_of_program()}")
-    else:
-        info_label.config(
-            text=f"Uptime: N/A\nTimer from start: {timer_from_start_of_program()}")
+    last_restart_time = get_last_restart_time()
+    info_label.config(
+        text=f"Uptime: {last_restart_time}\nTimer from start: {timer_from_start_of_program()}")
 
     recommendations = show_recommendations(component_states)
     recommendation_label.config(text=recommendations, fg=overall_state)
-
-    uptime_data = f"Last restart: {current_date} {
-        current_time}\nTimer from start: {timer_from_start_of_program()}"
-    with open("uptime.txt", "w") as file:
-        file.write(uptime_data)
 
     window.after(1000, update_labels)
 
