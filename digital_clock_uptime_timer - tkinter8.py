@@ -14,13 +14,15 @@ window.configure(background='black')
 time_label = tk.Label(window, text="", font=(
     "Calibri", 350), bg="black", fg="white", bd=0)
 date_label = tk.Label(window, text="", font=(
-    "Calibri", 40), bg="black", fg="white", bd=0)
+    "Calibri", 30), bg="black", fg="white", bd=0)
 health_label = tk.Label(window, text="", font=(
-    "Calibri", 70), bg="black", fg="white", bd=0)
+    "Calibri", 60), bg="black", fg="white", bd=0)
 legend_label = tk.Label(window, text="", font=(
-    "Calibri", 50), bg="black", fg="white", bd=0)
+    "Calibri", 40), bg="black", fg="white", bd=0)
 info_label = tk.Label(window, text="", font=(
-    "Calibri", 20), bg="black", fg="white", bd=0)
+    "Calibri", 18), bg="black", fg="white", bd=0)
+recommendation_label = tk.Label(window, text="", font=(
+    "Calibri", 18), bg="black", fg="white", bd=0)
 component_labels = {}
 
 time_of_start = datetime.datetime.now().strftime("%H:%M:%S")
@@ -42,13 +44,15 @@ def get_hardware_info():
     return hardware_info
 
 
-def calculate_component_state(value, warning_threshold, critical_threshold):
-    if value >= critical_threshold:
-        return "red"
+def calculate_component_state(value, warning_threshold, critical_threshold, unit):
+    if value == float('inf'):
+        return "white", "N/A"
+    elif value >= critical_threshold:
+        return "red", f"{int(value)} {unit}"
     elif value >= warning_threshold:
-        return "orange"
+        return "orange", f"{int(value)} {unit}"
     else:
-        return "white"
+        return "white", f"{int(value)} {unit}"
 
 
 def calculate_health_index(component_states):
@@ -72,16 +76,20 @@ def system_health_monitor():
     cpu_usage = psutil.cpu_percent()
     ram_usage = psutil.virtual_memory().percent
     disk_usage = psutil.disk_usage('/').percent
+    network_usage = psutil.net_io_counters().bytes_sent + \
+        psutil.net_io_counters().bytes_recv
+    network_usage_mb = network_usage / (1024 * 1024)
     hardware_info = get_hardware_info()
 
     component_states = {
-        'CPU Usage': (calculate_component_state(cpu_usage, 50, 70), cpu_usage),
-        'RAM Usage': (calculate_component_state(ram_usage, 80, 90), ram_usage),
-        'Disk Usage': (calculate_component_state(disk_usage, 80, 90), disk_usage),
-        'Temperatures': (calculate_component_state(max(hardware_info.get('Temperature', {}).values(), default=0), 70, 80), max(hardware_info.get('Temperature', {}).values(), default=0)),
-        'Fan': (calculate_component_state(min(hardware_info.get('Fan', {}).values(), default=float('inf')), 500, 1000), min(hardware_info.get('Fan', {}).values(), default=float('inf'))),
-        'Power': (calculate_component_state(max(hardware_info.get('Power', {}).values(), default=0), 40, 50), max(hardware_info.get('Power', {}).values(), default=0)),
-        'Clock': (calculate_component_state(max(hardware_info.get('Clock', {}).values(), default=0), 2000, 3500), max(hardware_info.get('Clock', {}).values(), default=0))
+        'CPU Usage': calculate_component_state(cpu_usage, 50, 70, "%"),
+        'RAM Usage': calculate_component_state(ram_usage, 80, 90, "%"),
+        'Disk Usage': calculate_component_state(disk_usage, 80, 90, "%"),
+        'Temperatures': calculate_component_state(max(hardware_info.get('Temperature', {}).values(), default=0), 70, 80, "°C"),
+        'Fan': calculate_component_state(min(hardware_info.get('Fan', {}).values(), default=float('inf')), 500, 1000, "RPM"),
+        'Power': calculate_component_state(max(hardware_info.get('Power', {}).values(), default=0), 40, 50, "W"),
+        'Clock': calculate_component_state(max(hardware_info.get('Clock', {}).values(), default=0), 2000, 3500, "MHz"),
+        'Network Usage': ("white", f"{int(network_usage_mb)} MB")
     }
 
     health_index, overall_state = calculate_health_index(component_states)
@@ -100,15 +108,30 @@ def system_health_monitor():
             label.place(relx=1.0, rely=0.05 *
                         len(component_labels), anchor='ne')
             component_labels[component] = label
-        label.config(text=f"{component}: {state[1]:.2f}", fg=state[0])
+        label.config(text=f"{component}: {state[1]}", fg=state[0])
 
-    return f"{health_index} / 100"
+    return f"{health_index} / 100", component_states
 
 
 def show_recommendations(component_states):
-    recommendations = [f"- {component}: {state[1]:.2f}" for component,
-                       state in component_states.items() if state[0] == "red"]
-    return "Recommendations:\n" + "\n".join(recommendations) if recommendations else ""
+    recommendations = []
+    for component, state in component_states.items():
+        if state[0] == "red":
+            if component == "CPU Usage":
+                recommendations.append("- Reduce CPU load")
+            elif component == "RAM Usage":
+                recommendations.append("- Close unused programs")
+            elif component == "Disk Usage":
+                recommendations.append("- Free up disk space")
+            elif component == "Temperatures":
+                recommendations.append("- Check cooling system")
+            elif component == "Fan":
+                recommendations.append("- Check fan functionality")
+            elif component == "Power":
+                recommendations.append("- Check power supply")
+            elif component == "Clock":
+                recommendations.append("- Check clock speeds")
+    return "\n".join(recommendations) if recommendations else ""
 
 
 def get_last_restart():
@@ -139,7 +162,7 @@ def update_labels():
     current_day_name = datetime.datetime.now().strftime("%A")
     timer = timer_from_start_of_program()
     last_restart = get_last_restart()
-    system_health = system_health_monitor()
+    system_health, component_states = system_health_monitor()
 
     time_label.config(text=current_time)
     date_label.config(text=f"Date: {current_date}\nDay: {current_day_name}")
@@ -150,6 +173,10 @@ def update_labels():
         if last_restart else "Uptime data not available"
     info_label.config(text=f"{uptime}\nTimer from start: {timer}")
 
+    recommendations = show_recommendations(component_states)
+    recommendation_label.config(
+        text=recommendations, fg=health_label.cget("fg"))
+
     window.after(1000, update_labels)
 
 
@@ -158,6 +185,7 @@ date_label.pack(side=tk.TOP, fill=tk.X)
 health_label.pack(side=tk.TOP, fill=tk.X)
 legend_label.pack(side=tk.TOP, fill=tk.X)
 info_label.pack(side=tk.BOTTOM, fill=tk.X)
+recommendation_label.pack(side=tk.BOTTOM, fill=tk.X)
 
 update_labels()
 window.mainloop()
