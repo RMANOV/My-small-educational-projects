@@ -19,9 +19,9 @@ health_label = tk.Label(window, text="", font=(
     "Calibri", 60), bg="black", fg="white", bd=0)
 legend_label = tk.Label(window, text="", font=(
     "Calibri", 40), bg="black", fg="white", bd=0)
-info_label = tk.Label(window, text="", font=(
-    "Calibri", 18), bg="black", fg="white", bd=0)
 recommendation_label = tk.Label(window, text="", font=(
+    "Calibri", 80), bg="black", fg="white", bd=0)
+info_label = tk.Label(window, text="", font=(
     "Calibri", 18), bg="black", fg="white", bd=0)
 component_labels = {}
 
@@ -118,19 +118,19 @@ def show_recommendations(component_states):
     for component, state in component_states.items():
         if state[0] == "red" or state[0] == "orange":
             if component == "CPU Usage":
-                recommendations.append("- Reduce CPU load")
+                recommendations.append("Reduce CPU load")
             elif component == "RAM Usage":
-                recommendations.append("- Close unused programs")
+                recommendations.append("Close unused programs")
             elif component == "Disk Usage":
-                recommendations.append("- Free up disk space")
+                recommendations.append("Free up disk space")
             elif component == "Temperatures":
-                recommendations.append("- Check cooling system")
+                recommendations.append("Check cooling system")
             elif component == "Fan":
-                recommendations.append("- Check fan functionality")
+                recommendations.append("Check fan functionality")
             elif component == "Power":
-                recommendations.append("- Check power supply")
+                recommendations.append("Check power supply")
             elif component == "Clock":
-                recommendations.append("- Check clock speeds")
+                recommendations.append("Check clock speeds")
     return "\n".join(recommendations) if recommendations else ""
 
 
