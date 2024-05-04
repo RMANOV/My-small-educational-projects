@@ -4,6 +4,7 @@ import os
 import re
 import psutil
 import wmi
+from collections import deque
 
 # Create the main window
 window = tk.Tk()
@@ -22,12 +23,31 @@ legend_label = tk.Label(window, text="", font=(
     "Calibri", 40), bg="black", fg="white", bd=0)
 info_label = tk.Label(window, text="", font=(
     "Calibri", 14), bg="black", fg="white", bd=0)
-component_label = tk.Label(window, text="", font=(
-    "Calibri", 14), bg="black", fg="white", bd=0, justify=tk.LEFT)
+
+# Create labels for each component
+cpu_label = tk.Label(window, text="", font=(
+    "Calibri", 14), bg="black", fg="white", bd=0)
+ram_label = tk.Label(window, text="", font=(
+    "Calibri", 14), bg="black", fg="white", bd=0)
+disk_label = tk.Label(window, text="", font=(
+    "Calibri", 14), bg="black", fg="white", bd=0)
+temp_label = tk.Label(window, text="", font=(
+    "Calibri", 14), bg="black", fg="white", bd=0)
+load_label = tk.Label(window, text="", font=(
+    "Calibri", 14), bg="black", fg="white", bd=0)
+fan_label = tk.Label(window, text="", font=(
+    "Calibri", 14), bg="black", fg="white", bd=0)
+voltage_label = tk.Label(window, text="", font=(
+    "Calibri", 14), bg="black", fg="white", bd=0)
+clock_label = tk.Label(window, text="", font=(
+    "Calibri", 14), bg="black", fg="white", bd=0)
 
 # Get the time of start of the program
 time_of_start = datetime.datetime.now().strftime("%H:%M:%S")
 date_of_start = datetime.datetime.now().strftime("%d.%m.%Y")
+
+# Initialize a deque to store the health index history
+health_index_history = deque(maxlen=10)
 
 
 def get_hardware_info():
@@ -140,11 +160,17 @@ def calculate_health_index(cpu_usage, ram_usage, disk_usage, hardware_info):
         len(component_states) if component_states else 100
     health_index = max(0, min(health_index, max_health_index))
 
+    # Calculate the time-weighted average of the health index
+    health_index_history.append(health_index)
+    weights = list(range(1, len(health_index_history) + 1))
+    weighted_health_index = sum(
+        h * w for h, w in zip(health_index_history, weights)) / sum(weights)
+
     overall_state = "red" if any(state == "red" for state in component_states.values()) else \
                     "orange" if any(state == "orange" for state in component_states.values()) else \
                     "white"
 
-    return int(health_index), overall_state, component_states
+    return int(weighted_health_index), overall_state, component_states
 
 
 def system_health_monitor():
@@ -169,11 +195,22 @@ def system_health_monitor():
 
     legend_label.config(text=legend, fg=overall_state)
 
-    component_text = "Component States:\n"
-    for component, state in component_states.items():
-        component_text += f"{component}: {state}\n"
-
-    component_label.config(text=component_text)
+    cpu_label.config(text=f"CPU Usage: {
+                     component_states['CPU Usage']}", fg=component_states['CPU Usage'])
+    ram_label.config(text=f"RAM Usage: {
+                     component_states['RAM Usage']}", fg=component_states['RAM Usage'])
+    disk_label.config(text=f"Disk Usage: {
+                      component_states['Disk Usage']}", fg=component_states['Disk Usage'])
+    temp_label.config(text=f"Temperatures: {
+                      component_states['Temperatures']}", fg=component_states['Temperatures'])
+    load_label.config(
+        text=f"Load: {component_states['Load']}", fg=component_states['Load'])
+    fan_label.config(
+        text=f"Fan: {component_states['Fan']}", fg=component_states['Fan'])
+    voltage_label.config(
+        text=f"Voltage: {component_states['Voltage']}", fg=component_states['Voltage'])
+    clock_label.config(
+        text=f"Clock: {component_states['Clock']}", fg=component_states['Clock'])
 
     return f"{health_index} / 100"
 
@@ -237,7 +274,14 @@ date_label.pack(side=tk.TOP, fill=tk.X)
 time_label.pack(expand=True)
 health_label.pack(side=tk.TOP, fill=tk.X)
 legend_label.pack(side=tk.TOP, fill=tk.X)
-component_label.place(relx=1.0, rely=0.0, anchor='ne')
+cpu_label.place(relx=1.0, rely=0.0, anchor='ne')
+ram_label.place(relx=1.0, rely=0.05, anchor='ne')
+disk_label.place(relx=1.0, rely=0.1, anchor='ne')
+temp_label.place(relx=1.0, rely=0.15, anchor='ne')
+load_label.place(relx=1.0, rely=0.2, anchor='ne')
+fan_label.place(relx=1.0, rely=0.25, anchor='ne')
+voltage_label.place(relx=1.0, rely=0.3, anchor='ne')
+clock_label.place(relx=1.0, rely=0.35, anchor='ne')
 info_label.pack(side=tk.BOTTOM, fill=tk.X)
 
 # Disable window resizing to prevent flickering
