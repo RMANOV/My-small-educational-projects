@@ -3,6 +3,7 @@ import tkinter as tk
 import os
 import re
 import psutil
+import wmi
 
 # Create the main window
 window = tk.Tk()
@@ -12,7 +13,7 @@ window.configure(background='black')  # Set the background to absolute black
 
 # Create label widgets for different information
 time_label = tk.Label(window, text="", font=(
-    "Calibri",400), bg="black", fg="white", bd=0)
+    "Calibri", 400), bg="black", fg="white", bd=0)
 date_label = tk.Label(window, text="", font=(
     "Calibri", 24), bg="black", fg="white", bd=0)
 health_label = tk.Label(window, text="", font=(
@@ -40,13 +41,11 @@ date_of_start = datetime.datetime.now().strftime("%d.%m.%Y")
 def get_component_temperatures():
     temperatures = {}
     try:
-        temp_info = psutil.sensors_temperatures()
-        for component, temp_list in temp_info.items():
-            for temp in temp_list:
-                if temp.label:
-                    temperatures[temp.label] = temp.current
-                else:
-                    temperatures[component] = temp.current
+        w = wmi.WMI(namespace="root\\OpenHardwareMonitor")
+        temperature_info = w.Sensor()
+        for sensor in temperature_info:
+            if sensor.SensorType == u'Temperature':
+                temperatures[sensor.Name] = sensor.Value
     except:
         pass
     return temperatures
@@ -75,11 +74,11 @@ def calculate_health_index(cpu_usage, ram_usage, disk_usage, temperatures):
     temp_state = "white"
     temp_factor = 100
     for temp in temperatures.values():
-        if temp > 70:
+        if temp > 60:
             temp_state = "red"
             temp_factor = 0
             break
-        elif temp > 50:
+        elif temp > 40:
             temp_state = "orange"
             temp_factor = 50
 
