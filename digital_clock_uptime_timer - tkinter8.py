@@ -12,7 +12,7 @@ window.state('zoomed')
 window.configure(background='black')
 
 time_label = tk.Label(window, text="", font=(
-    "Calibri", 120), bg="black", fg="white", bd=0)
+    "Calibri", 350), bg="black", fg="white", bd=0)
 date_label = tk.Label(window, text="", font=(
     "Calibri", 40), bg="black", fg="white", bd=0)
 health_label = tk.Label(window, text="", font=(
@@ -44,11 +44,11 @@ def get_hardware_info():
 
 def calculate_component_state(value, warning_threshold, critical_threshold):
     if value >= critical_threshold:
-        return "red", "Critical"
+        return "red"
     elif value >= warning_threshold:
-        return "orange", "Warning"
+        return "orange"
     else:
-        return "white", "Okay"
+        return "white"
 
 
 def calculate_health_index(component_states):
@@ -75,13 +75,13 @@ def system_health_monitor():
     hardware_info = get_hardware_info()
 
     component_states = {
-        'CPU Usage': calculate_component_state(cpu_usage, 50, 70),
-        'RAM Usage': calculate_component_state(ram_usage, 80, 90),
-        'Disk Usage': calculate_component_state(disk_usage, 80, 90),
-        'Temperatures': calculate_component_state(max(hardware_info.get('Temperature', {}).values(), default=0), 70, 80),
-        'Fan': calculate_component_state(min(hardware_info.get('Fan', {}).values(), default=float('inf')), 500, 1000),
-        'Power': calculate_component_state(max(hardware_info.get('Power', {}).values(), default=0), 40, 50),
-        'Clock': calculate_component_state(max(hardware_info.get('Clock', {}).values(), default=0), 2000, 3500)
+        'CPU Usage': (calculate_component_state(cpu_usage, 50, 70), cpu_usage),
+        'RAM Usage': (calculate_component_state(ram_usage, 80, 90), ram_usage),
+        'Disk Usage': (calculate_component_state(disk_usage, 80, 90), disk_usage),
+        'Temperatures': (calculate_component_state(max(hardware_info.get('Temperature', {}).values(), default=0), 70, 80), max(hardware_info.get('Temperature', {}).values(), default=0)),
+        'Fan': (calculate_component_state(min(hardware_info.get('Fan', {}).values(), default=float('inf')), 500, 1000), min(hardware_info.get('Fan', {}).values(), default=float('inf'))),
+        'Power': (calculate_component_state(max(hardware_info.get('Power', {}).values(), default=0), 40, 50), max(hardware_info.get('Power', {}).values(), default=0)),
+        'Clock': (calculate_component_state(max(hardware_info.get('Clock', {}).values(), default=0), 2000, 3500), max(hardware_info.get('Clock', {}).values(), default=0))
     }
 
     health_index, overall_state = calculate_health_index(component_states)
@@ -97,15 +97,16 @@ def system_health_monitor():
         if label is None:
             label = tk.Label(window, text="", font=(
                 "Calibri", 14), bg="black", fg="white", bd=0)
-            label.pack(side=tk.TOP, fill=tk.X)
+            label.place(relx=1.0, rely=0.05 *
+                        len(component_labels), anchor='ne')
             component_labels[component] = label
-        label.config(text=f"{component}: {state[1]}", fg=state[0])
+        label.config(text=f"{component}: {state[1]:.2f}", fg=state[0])
 
     return f"{health_index} / 100"
 
 
 def show_recommendations(component_states):
-    recommendations = [f"- {component}: {state[2]}" for component,
+    recommendations = [f"- {component}: {state[1]:.2f}" for component,
                        state in component_states.items() if state[0] == "red"]
     return "Recommendations:\n" + "\n".join(recommendations) if recommendations else ""
 
@@ -152,7 +153,7 @@ def update_labels():
     window.after(1000, update_labels)
 
 
-time_label.pack(side=tk.TOP, fill=tk.X)
+time_label.pack(expand=True)
 date_label.pack(side=tk.TOP, fill=tk.X)
 health_label.pack(side=tk.TOP, fill=tk.X)
 legend_label.pack(side=tk.TOP, fill=tk.X)
