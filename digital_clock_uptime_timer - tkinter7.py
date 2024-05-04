@@ -22,16 +22,8 @@ legend_label = tk.Label(window, text="", font=(
     "Calibri", 40), bg="black", fg="white", bd=0)
 info_label = tk.Label(window, text="", font=(
     "Calibri", 14), bg="black", fg="white", bd=0)
-cpu_label = tk.Label(window, text="", font=(
-    "Calibri", 14), bg="black", fg="white", bd=0)
-ram_label = tk.Label(window, text="", font=(
-    "Calibri", 14), bg="black", fg="white", bd=0)
-disk_label = tk.Label(window, text="", font=(
-    "Calibri", 14), bg="black", fg="white", bd=0)
-network_label = tk.Label(window, text="", font=(
-    "Calibri", 14), bg="black", fg="white", bd=0)
-temperature_label = tk.Label(window, text="", font=(
-    "Calibri", 14), bg="black", fg="white", bd=0)
+component_label = tk.Label(window, text="", font=(
+    "Calibri", 14), bg="black", fg="white", bd=0, justify=tk.LEFT)
 
 # Get the time of start of the program
 time_of_start = datetime.datetime.now().strftime("%H:%M:%S")
@@ -75,78 +67,84 @@ def calculate_component_state(value, warning_threshold, critical_threshold):
 def calculate_health_index(cpu_usage, ram_usage, disk_usage, hardware_info):
     max_health_index = 100
 
-    cpu_state = calculate_component_state(cpu_usage, 60, 80)
-    ram_state = calculate_component_state(ram_usage, 70, 90)
-    disk_state = calculate_component_state(disk_usage, 70, 90)
+    component_states = {}
 
-    cpu_factor = 100 - cpu_usage
-    ram_factor = 100 - ram_usage
-    disk_factor = 100 - disk_usage
+    cpu_state = calculate_component_state(cpu_usage, 50, 70)
+    component_states['CPU Usage'] = cpu_state
+
+    ram_state = calculate_component_state(ram_usage, 60, 80)
+    component_states['RAM Usage'] = ram_state
+
+    disk_state = calculate_component_state(disk_usage, 60, 80)
+    component_states['Disk Usage'] = disk_state
 
     temp_state = "white"
-    temp_factor = 100
-    for temp in hardware_info.get('Temperatures', {}).values():
-        if temp > 60:
+    for component, temp in hardware_info.get('Temperatures', {}).items():
+        if temp > 50:
             temp_state = "red"
-            temp_factor = 0
             break
         elif temp > 40:
             temp_state = "orange"
-            temp_factor = 50
+    component_states['Temperatures'] = temp_state
 
     load_state = "white"
-    load_factor = 100
-    for load in hardware_info.get('Load', {}).values():
-        if load > 90:
+    for component, load in hardware_info.get('Load', {}).items():
+        if load > 80:
             load_state = "red"
-            load_factor = 0
             break
-        elif load > 70:
+        elif load > 60:
             load_state = "orange"
-            load_factor = 50
+    component_states['Load'] = load_state
 
     fan_state = "white"
-    fan_factor = 100
-    for fan_speed in hardware_info.get('Fan', {}).values():
+    for component, fan_speed in hardware_info.get('Fan', {}).items():
         if fan_speed < 500:
             fan_state = "red"
-            fan_factor = 0
             break
         elif fan_speed < 1000:
             fan_state = "orange"
-            fan_factor = 50
+    component_states['Fan'] = fan_state
 
     voltage_state = "white"
-    voltage_factor = 100
-    for voltage in hardware_info.get('Voltage', {}).values():
+    for component, voltage in hardware_info.get('Voltage', {}).items():
         if voltage < 0.95 or voltage > 1.05:
             voltage_state = "red"
-            voltage_factor = 0
             break
         elif voltage < 0.98 or voltage > 1.02:
             voltage_state = "orange"
-            voltage_factor = 50
+    component_states['Voltage'] = voltage_state
 
     clock_state = "white"
-    clock_factor = 100
-    for clock in hardware_info.get('Clock', {}).values():
+    for component, clock in hardware_info.get('Clock', {}).items():
         if clock < 0.95 or clock > 1.05:
             clock_state = "red"
-            clock_factor = 0
             break
         elif clock < 0.98 or clock > 1.02:
             clock_state = "orange"
-            clock_factor = 50
+    component_states['Clock'] = clock_state
 
-    health_index = (temp_factor * 0.3 + load_factor * 0.2 + cpu_factor * 0.2 + ram_factor *
-                    0.1 + disk_factor * 0.1 + fan_factor * 0.05 + voltage_factor * 0.03 + clock_factor * 0.02)
+    component_factors = {
+        'Temperatures': 0.3,
+        'Load': 0.2,
+        'CPU Usage': 0.2,
+        'RAM Usage': 0.1,
+        'Disk Usage': 0.1,
+        'Fan': 0.05,
+        'Voltage': 0.03,
+        'Clock': 0.02
+    }
+
+    health_index = sum(100 if state == "white" else 50 if state ==
+                       "orange" else 0 for state in component_states.values())
+    health_index = health_index / \
+        len(component_states) if component_states else 100
     health_index = max(0, min(health_index, max_health_index))
 
-    overall_state = "red" if cpu_state == "red" or ram_state == "red" or disk_state == "red" or temp_state == "red" or load_state == "red" or fan_state == "red" or voltage_state == "red" or clock_state == "red" else \
-                    "orange" if cpu_state == "orange" or ram_state == "orange" or disk_state == "orange" or temp_state == "orange" or load_state == "orange" or fan_state == "orange" or voltage_state == "orange" or clock_state == "orange" else \
+    overall_state = "red" if any(state == "red" for state in component_states.values()) else \
+                    "orange" if any(state == "orange" for state in component_states.values()) else \
                     "white"
 
-    return int(health_index), overall_state
+    return int(health_index), overall_state, component_states
 
 
 def system_health_monitor():
@@ -157,7 +155,7 @@ def system_health_monitor():
         psutil.net_io_counters().bytes_recv
     hardware_info = get_hardware_info()
 
-    health_index, overall_state = calculate_health_index(
+    health_index, overall_state, component_states = calculate_health_index(
         cpu_usage, ram_usage, disk_usage, hardware_info)
 
     health_label.config(fg=overall_state)
@@ -171,19 +169,11 @@ def system_health_monitor():
 
     legend_label.config(text=legend, fg=overall_state)
 
-    # Update individual component labels
-    cpu_label.config(text=f"CPU Usage: {cpu_usage}%")
-    ram_label.config(text=f"RAM Usage: {ram_usage}%")
-    disk_label.config(text=f"Disk Usage: {disk_usage}%")
-    network_label.config(text=f"Network Usage: {
-                         network_usage / 1024 / 1024:.2f} MB/s")
+    component_text = "Component States:\n"
+    for component, state in component_states.items():
+        component_text += f"{component}: {state}\n"
 
-    temp_text = "Temperatures:\n"
-    for component, temp in hardware_info.get('Temperatures', {}).items():
-        temp_text += f"{component}: {temp}°C\n"
-    if not hardware_info.get('Temperatures'):
-        temp_text = "Temperatures: N/A"
-    temperature_label.config(text=temp_text)
+    component_label.config(text=component_text)
 
     return f"{health_index} / 100"
 
@@ -247,11 +237,7 @@ date_label.pack(side=tk.TOP, fill=tk.X)
 time_label.pack(expand=True)
 health_label.pack(side=tk.TOP, fill=tk.X)
 legend_label.pack(side=tk.TOP, fill=tk.X)
-cpu_label.place(relx=1.0, rely=0.0, anchor='ne')
-ram_label.place(relx=1.0, rely=0.05, anchor='ne')
-disk_label.place(relx=1.0, rely=0.1, anchor='ne')
-network_label.place(relx=1.0, rely=0.15, anchor='ne')
-temperature_label.place(relx=1.0, rely=0.2, anchor='ne')
+component_label.place(relx=1.0, rely=0.0, anchor='ne')
 info_label.pack(side=tk.BOTTOM, fill=tk.X)
 
 # Disable window resizing to prevent flickering
