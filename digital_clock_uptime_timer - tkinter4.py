@@ -55,31 +55,48 @@ def get_hardware_temperatures():
         return None
 
 
-def calculate_health_index(temperatures, cpu_usage, ram_usage, disk_usage):
-    max_health_index = 100
-    critical_temp_threshold = 80
-    warning_temp_threshold = 60
-
-    if temperatures:
-        max_temp = max(temperatures.values())
-        if max_temp >= critical_temp_threshold:
-            temp_factor = 0
-        elif max_temp >= warning_temp_threshold:
-            temp_factor = 50
-        else:
-            temp_factor = 100
+def calculate_component_state(value, warning_threshold, critical_threshold):
+    if value >= critical_threshold:
+        return "red"
+    elif value >= warning_threshold:
+        return "orange"
     else:
-        temp_factor = 100
+        return "white"
+
+
+def calculate_health_index(cpu_usage, ram_usage, disk_usage, temperatures):
+    max_health_index = 100
+
+    cpu_state = calculate_component_state(cpu_usage, 15, 30)
+    ram_state = calculate_component_state(ram_usage, 70, 90)
+    disk_state = calculate_component_state(disk_usage, 50, 80)
 
     cpu_factor = 100 - cpu_usage
     ram_factor = 100 - ram_usage
     disk_factor = 100 - disk_usage
 
+    if temperatures:
+        temp_state = "white"
+        for temp in temperatures.values():
+            if temp > 70:
+                temp_state = "red"
+                break
+            elif temp > 50:
+                temp_state = "orange"
+        temp_factor = 0 if temp_state == "red" else 50 if temp_state == "orange" else 100
+    else:
+        temp_state = "white"
+        temp_factor = 100
+
     health_index = (temp_factor * 0.4 + cpu_factor * 0.3 +
                     ram_factor * 0.2 + disk_factor * 0.1)
     health_index = max(0, min(health_index, max_health_index))
 
-    return int(health_index), max_health_index
+    overall_state = "red" if cpu_state == "red" or ram_state == "red" or disk_state == "red" or temp_state == "red" else \
+                    "orange" if cpu_state == "orange" or ram_state == "orange" or disk_state == "orange" or temp_state == "orange" else \
+                    "white"
+
+    return int(health_index), overall_state, cpu_state, ram_state, disk_state, temp_state
 
 
 def system_health_monitor():
@@ -90,53 +107,36 @@ def system_health_monitor():
         psutil.net_io_counters().bytes_recv
     temperatures = get_hardware_temperatures()
 
-    health_index, max_health_index = calculate_health_index(
-        temperatures, cpu_usage, ram_usage, disk_usage)
+    health_index, overall_state, cpu_state, ram_state, disk_state, temp_state = calculate_health_index(
+        cpu_usage, ram_usage, disk_usage, temperatures)
 
-    legend = ""
-    if health_index >= 80:
-        color = "white"
+    health_label.config(fg=overall_state)
+
+    if overall_state == "white":
         legend = "System running smoothly"
-    elif health_index >= 60:
-        color = "yellow"
+    elif overall_state == "orange":
         legend = "System running with some issues"
-    elif health_index >= 40:
-        color = "orange"
-        legend = "System performance degraded"
     else:
-        color = "red"
         legend = "System health critical"
 
-    health_label.config(fg=color)
-    legend_label.config(text=legend, fg=color)
+    legend_label.config(text=legend, fg=overall_state)
 
     # Update individual component labels
-    cpu_color = "red" if cpu_usage > 90 else "orange" if cpu_usage > 70 else "white"
-    cpu_label.config(text=f"CPU Usage: {cpu_usage}%", fg=cpu_color)
-
-    ram_color = "red" if ram_usage > 90 else "orange" if ram_usage > 70 else "white"
-    ram_label.config(text=f"RAM Usage: {ram_usage}%", fg=ram_color)
-
-    disk_color = "red" if disk_usage > 95 else "orange" if disk_usage > 80 else "white"
-    disk_label.config(text=f"Disk Usage: {disk_usage}%", fg=disk_color)
-
+    cpu_label.config(text=f"CPU Usage: {cpu_usage}%", fg=cpu_state)
+    ram_label.config(text=f"RAM Usage: {ram_usage}%", fg=ram_state)
+    disk_label.config(text=f"Disk Usage: {disk_usage}%", fg=disk_state)
     network_label.config(text=f"Network Usage: {
                          network_usage / 1024 / 1024:.2f} MB/s", fg="white")
 
     temp_text = "Temperatures:\n"
-    temp_color = "white"
     if temperatures is not None:
         for component, temp in temperatures.items():
-            if temp > 80:
-                temp_color = "red"
-            elif temp > 60:
-                temp_color = "orange"
             temp_text += f"{component}: {temp}°C\n"
     else:
         temp_text += "N/A"
-    temperature_label.config(text=temp_text, fg=temp_color)
+    temperature_label.config(text=temp_text, fg=temp_state)
 
-    return f"{health_index} / {max_health_index}"
+    return f"{health_index} / 100"
 
 
 def get_last_restart():
