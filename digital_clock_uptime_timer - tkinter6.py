@@ -12,7 +12,7 @@ window.configure(background='black')  # Set the background to absolute black
 
 # Create label widgets for different information
 time_label = tk.Label(window, text="", font=(
-    "Calibri", 80), bg="black", fg="white", bd=0)
+    "Calibri",400), bg="black", fg="white", bd=0)
 date_label = tk.Label(window, text="", font=(
     "Calibri", 24), bg="black", fg="white", bd=0)
 health_label = tk.Label(window, text="", font=(
