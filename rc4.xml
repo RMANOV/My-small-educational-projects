@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_config xmlns="http://openbox.org/3.4/rc" xmlns:xi="http://www.w3.org/2001/XInclude">
+<resistance>
+  <strength>0</strength>
+  <screen_edge_strength>0</screen_edge_strength>
+</resistance>
+<focus>
+  <focusNew>yes</focusNew>
+  <followMouse>yes</followMouse>
+  <focusLast>yes</focusLast>
+  <underMouse>yes</underMouse>
+  <focusDelay>0</focusDelay>
+  <raiseOnFocus>yes</raiseOnFocus>
+</focus>
+<placement>
+  <policy>Smart</policy>
+  <center>yes</center>
+  <monitor>Primary</monitor>
+  <primaryMonitor>1</primaryMonitor>
+</placement>
+<theme>
+  <name>Clearlooks</name>
+  <titleLayout>NLIMC</titleLayout>
+  <keepBorder>no</keepBorder>
+  <animateIconify>no</animateIconify>
+  <font place="ActiveWindow">
+    <name>sans</name>
+    <size>10</size>
+    <weight>bold</weight>
+    <slant>normal</slant>
+  </font>
+  <font place="InactiveWindow">
+    <name>sans</name>
+    <size>10</size>
+    <weight>bold</weight>
+    <slant>normal</slant>
+  </font>
+  <font place="MenuHeader">
+    <name>sans</name>
+    <size>10</size>
+    <weight>bold</weight>
+    <slant>normal</slant>
+  </font>
+  <font place="MenuItem">
+    <name>sans</name>
+    <size>10</size>
+    <weight>bold</weight>
+    <slant>normal</slant>
+  </font>
+  <font place="ActiveOnScreenDisplay">
+    <name>sans</name>
+    <size>10</size>
+    <weight>bold</weight>
+    <slant>normal</slant>
+  </font>
+  <font place="InactiveOnScreenDisplay">
+    <name>sans</name>
+    <size>10</size>
+    <weight>bold</weight>
+    <slant>normal</slant>
+  </font>
+</theme>
+<desktops>
+  <number>1</number>
+  <firstdesk>1</firstdesk>
+  <popupTime>0</popupTime>
+</desktops>
+<resize>
+  <drawContents>yes</drawContents>
+  <popupShow>Nonpixel</popupShow>
+  <popupPosition>Center</popupPosition>
+  <popupFixedPosition>
+    <x>0</x>
+    <y>0</y>
+  </popupFixedPosition>
+</resize>
+<margins>
+  <top>0</top>
+  <bottom>0</bottom>
+  <left>0</left>
+  <right>0</right>
+</margins>
+<dock>
+  <position>TopLeft</position>
+  <floatingX>0</floatingX>
+  <floatingY>0</floatingY>
+  <noStrut>yes</noStrut>
+  <stacking>Above</stacking>
+  <direction>Vertical</direction>
+  <autoHide>yes</autoHide>
+  <hideDelay>0</hideDelay>
+  <showDelay>0</showDelay>
+  <moveButton>Middle</moveButton>
+</dock>
+<keyboard>
+  <chainQuitKey>C-g</chainQuitKey>
+  <!-- Опростена секция <keyboard> -->
+  <keybind key="W-F1">
+    <action name="GoToDesktop"><to>1</to></action>
+  </keybind>
+  <keybind key="W-d">
+    <action name="ToggleShowDesktop"/>
+  </keybind>
+  <keybind key="A-F4">
+    <action name="Close"/>
+  </keybind>
+  <keybind key="A-space">
+    <action name="ShowMenu"><menu>client-menu</menu></action>
+  </keybind>
+</keyboard>
+<mouse>
+  <dragThreshold>1</dragThreshold>
+  <doubleClickTime>200</doubleClickTime>
+  <screenEdgeWarpTime>0</screenEdgeWarpTime>
+  <screenEdgeWarpMouse>true</screenEdgeWarpMouse>
+  <context name="Frame">
+    <mousebind button="A-Left" action="Press">
+      <action name="Focus"/>
+      <action name="Raise"/>
+    </mousebind>
+    <mousebind button="A-Left" action="Click">
+      <action name="Unshade"/>
+    </mousebind>
+    <mousebind button="A-Left" action="Drag">
+      <action name="Move"/>
+    </mousebind>
+    <mousebind button="A-Right" action="Press">
+      <action name="Focus"/>
+      <action name="Raise"/>
+      <action name="Unshade"/>
+    </mousebind>
+    <mousebind button="A-Right" action="Drag">
+      <action name="Resize"/>
+    </mousebind>
+    <mousebind button="A-Middle" action="Press">
+      <action name="Lower"/>
+      <action name="FocusToBottom"/>
+      <action name="Unfocus"/>
+    </mousebind>
+  </context>
+  <context name="Titlebar">
+    <mousebind button="Left" action="Drag">
+      <action name="Move"/>
+    </mousebind>
+    <mousebind button="Left" action="DoubleClick">
+      <action name="ToggleMaximize"/>
+    </mousebind>
+    <!-- Останалите контексти в секцията <mouse> са премахнати -->
+  </context>
+  <context name="Desktop">
+    <mousebind button="Left" action="Press">
+      <action name="Focus"/>
+      <action name="Raise"/>
+    </mousebind>
+    <mousebind button="Right" action="Press">
+      <action name="Focus"/>
+      <action name="Raise"/>
+    </mousebind>
+  </context>
+</mouse>
+<menu>
+  <file>menu.xml</file>
+  <hideDelay>0</hideDelay>
+  <middle>yes</middle>
+  <submenuShowDelay>0</submenuShowDelay>
+  <submenuHideDelay>0</submenuHideDelay>
+  <showIcons>yes</showIcons>
+  <manageDesktops>yes</manageDesktops>
+</menu>
+<applications>
+</applications>

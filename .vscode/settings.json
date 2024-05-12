@@ -1,5 +1,7 @@
 {
     "editor.tabCompletion": "on",
     "diffEditor.codeLens": true,
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "workbench.experimental.cloudChanges.partialMatches.enabled": true,
+    "redhat.telemetry.enabled": true
 }

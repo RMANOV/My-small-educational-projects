@@ -1,3 +1,4 @@
+
 import datetime
 import tkinter as tk
 import os
@@ -17,9 +18,12 @@ time_of_start = datetime.datetime.now().strftime("%H:%M:%S")
 date_of_start = datetime.datetime.now().strftime("%d.%m.%Y")
 
 # Define a function to get the weather data for current location from the OpenWeatherMap API
+
+
 def get_weather_data():
     # get current location
-    location = os.popen("wmic path win32_computersystemproduct get uuid").read()
+    location = os.popen(
+        "wmic path win32_computersystemproduct get uuid").read()
     match_location = re.search(r"UUID\s+(.+)", location)
     if match_location:
         try:
@@ -33,7 +37,8 @@ def get_weather_data():
     # get weather data from the OpenWeatherMap API
     def get_weather(location_str):
         try:
-            url = f"http://api.openweathermap.org/data/2.5/weather?q={location_str}&appid=API_KEY&units=metric"
+            url = f"http://api.openweathermap.org/data/2.5/weather?q={
+                location_str}&appid=API_KEY&units=metric"
             response = requests.get(url)
             response.raise_for_status()
         except requests.exceptions.HTTPError as error:
@@ -66,8 +71,10 @@ def get_last_restart():
         if match:
             try:
                 last_restart_str = match.group(1)
-                last_restart_date, junk, last_restart_time = last_restart_str.split(" ")
-                last_restart = (last_restart_date + "-" + last_restart_time).strip()
+                last_restart_date, junk, last_restart_time = last_restart_str.split(
+                    " ")
+                last_restart = (last_restart_date + "-" +
+                                last_restart_time).strip()
                 return last_restart_date, last_restart_time
             except ValueError:
                 print("Could not get last restart time.")
@@ -82,7 +89,8 @@ def timer_from_start_of_program():
     ).seconds
     # if seconds is more than 60, calculate minutes and seconds and hours, else return seconds
     if timer > 60:
-        timer = f"{timer // 3600} h, {(timer // 60) % 60} min, {timer % 60} sec"
+        timer = f"{timer // 3600} h, {(timer // 60) %
+                                      60} min, {timer % 60} sec"
     return timer
 
 
@@ -113,10 +121,12 @@ def update_time():
             current_year_day = datetime.datetime.now().strftime("%j Day")
 
     # calculate the uptime in days and hours
-    uptime = f'{ (datetime.datetime.now() - datetime.datetime.strptime(last_r[0], "%d.%m.%Y")).days} days, { (datetime.datetime.now() - datetime.datetime.strptime(last_r[1], "%H:%M:%S")).seconds // 3600} hours'
+    uptime = f'{(datetime.datetime.now() - datetime.datetime.strptime(last_r[0], "%d.%m.%Y")).days} days, {
+        (datetime.datetime.now() - datetime.datetime.strptime(last_r[1], "%H:%M:%S")).seconds // 3600} hours'
 
     # Concatenate the date, time, and active users into a single string
-    current_time_str = f"{current_time}\n{current_date}\n{current_week}\n{current_day}\n{current_year_day}\nUp-time: {uptime}\nUp-time date: {last_r[0]}\nUp-time time: {last_r[1]}\nTimer from start : {timer1} \nWeather: {weather_condition}"
+    current_time_str = f"{current_time}\n{current_date}\n{current_week}\n{current_day}\n{current_year_day}\nUp-time: {
+        uptime}\nUp-time date: {last_r[0]}\nUp-time time: {last_r[1]}\nTimer from start : {timer1} \nWeather: {weather_condition}"
 
     # Update the label text
     time_label.config(text=current_time_str)
