@@ -24,6 +24,7 @@
         "vscjava.vscode-java-pack",
         "grapecity.gc-excelviewer",
         "dbaeumer.vscode-eslint",
-        "googlecloudtools.cloudcode"
+        "googlecloudtools.cloudcode",
+        "nautime.nautime"
     ]
 }
