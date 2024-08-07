@@ -1,0 +1,13 @@
+
+## Description
+
+# This is a simple PowerShell prompt that displays the current date and time in the format `HH:mm:ss dd-MM-yyyy`. The prompt also displays the current directory and the prompt character `>`.
+
+```powershell
+function prompt {
+    $date = Get-Date -Format "HH:mm:ss dd-MM-yyyy"
+    "$date PS $($executionContext.SessionState.Path.CurrentLocation)$('>' * ($nestedPromptLevel + 1)) "
+}
+
+
+```
