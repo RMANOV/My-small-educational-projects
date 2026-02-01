@@ -1,8 +1,9 @@
-- 👋 Hi, I’m @RMANOV
-- 👀 I’m interested in Programming
-- 🌱 I’m currently learning and using Python, Java, DB, Algorithms, and Visual Basic for Applications, for fun and work!
-- 💞️ I want to collaborate on Python, Java, DB, Algorithms, and Visual Basic for Applications!
-- 📫 How to reach me - r.manov@gmail.com; Linkedin - linkedin.com/in/ruslan-m-a7a40266; Tel - +359897526740.
+- 👋 Hi, I'm @RMANOV — 17+ years turning complex business problems into production code
+- 🦀 Building high-performance Rust+PyO3 systems — quant finance, signal processing, system tools
+- 🔬 Currently exploring: regime-switching models, particle filters, zero-copy NumPy, GIL-free computation
+- 💞️ Open to collaborate on Rust, PyO3, quantitative systems, algorithmic trading & performance engineering
+- 📫 r.manov@gmail.com · [LinkedIn](https://linkedin.com/in/ruslan-m-a7a40266)
+- 📍 Sofia, Bulgaria
 
 <!---
 RMANOV/RMANOV is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
